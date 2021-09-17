@@ -1,3 +1,5 @@
+import * as bcrypt from 'bcrypt';
+
 import { Injectable } from '@nestjs/common';
 
 import { CreateUserDto } from './user.dto';
@@ -8,12 +10,17 @@ import { UserRepository } from './user.repository';
 export class UserService {
   constructor(private usersRepository: UserRepository) {}
 
-  createUser(createUserDto: CreateUserDto): string {
-    const user = new User();
-    user.email = createUserDto.email;
-    user.password = createUserDto.password;
+  async createUser(createUserDto: CreateUserDto): Promise<any> {
+    const { email, password } = createUserDto;
 
-    this.usersRepository.save(user);
+    const saltOrRounds = 10;
+    const hash = await bcrypt.hash(password, saltOrRounds);
+
+    const user = new User();
+    user.email = email;
+    user.password = hash;
+
+    await this.usersRepository.save(user);
 
     return '';
   }
