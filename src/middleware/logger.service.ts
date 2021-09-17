@@ -57,7 +57,7 @@ export class LoggerService implements LS {
     };
   }
 
-  error(message: string, trace: string) {
+  error(message: string, trace?: string) {
     this.logger.error(message, trace);
   }
   warn(message: string) {
