@@ -41,6 +41,7 @@ export class LoggerService implements LS {
       transports: [
         new winston.transports.File({
           level: 'http',
+          format: combine(loggingFormat),
           filename: `${moment(new Date()).format('YYYY-MM-DD')}.log`,
           dirname: 'log',
           maxsize: 5000000,
