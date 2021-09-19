@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { AuthModule } from './auth/auth.module';
 import CatchException from './common/exceptions/http-exception.filter';
 import { AppLoggerMiddleware } from './common/middlewares/logger.middleware';
 import configuration from './config/database/configuration';
@@ -32,6 +33,7 @@ import { UserModule } from './user/user.module';
         entities: [__dirname + '/**/*.entity.js'],
       }),
     }),
+    AuthModule,
     UserModule,
   ],
   controllers: [],
