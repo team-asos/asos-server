@@ -1,4 +1,4 @@
-import { LoggerService } from 'src/middleware/logger.service';
+import { LoggerService } from 'src/common/utils/logger/logger.service';
 
 import {
   ArgumentsHost,

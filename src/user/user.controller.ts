@@ -1,4 +1,4 @@
-import HttpError from 'src/error/HttpError';
+import HttpError from 'src/common/utils/errors/HttpError';
 
 import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
 
