@@ -19,7 +19,16 @@ export class AuthController {
   async login(@Body() loginUserDto: LoginUserDto) {
     const isMatch = await this.authService.validateUser(loginUserDto);
 
-    if (isMatch) return 'ok';
-    else throw new HttpError(HttpStatus.UNAUTHORIZED, 'Unauthorized');
+    if (isMatch === true) return 'ok';
+    else if (isMatch === false)
+      throw new HttpError(
+        HttpStatus.UNAUTHORIZED,
+        '비밀번호가 잘못되었습니다.',
+      );
+    else if (isMatch === undefined)
+      throw new HttpError(
+        HttpStatus.UNAUTHORIZED,
+        '존재하지 않는 사용자입니다.',
+      );
   }
 }

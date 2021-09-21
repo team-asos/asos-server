@@ -6,17 +6,17 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class AuthService {
-  constructor(private usersRepository: UserRepository) {}
+  constructor(private userRepository: UserRepository) {}
 
-  async validateUser(loginUserDto: LoginUserDto): Promise<boolean> {
+  async validateUser(loginUserDto: LoginUserDto): Promise<boolean | undefined> {
     const { email, password } = loginUserDto;
 
-    const user = await this.usersRepository.findOne({
-      email,
-    });
+    const user = await this.userRepository.getUserByEmail(email);
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    if (user) {
+      const isMatch = await bcrypt.compare(password, user.password);
 
-    return isMatch;
+      return isMatch;
+    } else return undefined;
   }
 }

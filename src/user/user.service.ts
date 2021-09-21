@@ -8,7 +8,13 @@ import { UserRepository } from './user.repository';
 
 @Injectable()
 export class UserService {
-  constructor(private usersRepository: UserRepository) {}
+  constructor(private userRepository: UserRepository) {}
+
+  async getUsers(): Promise<User[]> {
+    const users = await this.userRepository.find();
+
+    return users;
+  }
 
   async createUser(createUserDto: CreateUserDto): Promise<any> {
     const { email, password } = createUserDto;
@@ -20,7 +26,7 @@ export class UserService {
     user.email = email;
     user.password = hash;
 
-    await this.usersRepository.save(user);
+    await this.userRepository.save(user);
 
     return '';
   }
