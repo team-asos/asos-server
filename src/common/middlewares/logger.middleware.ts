@@ -6,13 +6,17 @@ import { LoggerService } from '../utils/logger/logger.service';
 
 @Injectable()
 export class AppLoggerMiddleware implements NestMiddleware {
-  private logger = new LoggerService();
+  private logger;
+
+  constructor() {
+    this.logger = new LoggerService();
+  }
 
   use(request: Request, response: Response, next: NextFunction): void {
     const { ip, method, path: url, httpVersion } = request;
     const userAgent = request.get('user-agent') || '';
 
-    response.on('close', () => {
+    response.on('finish', () => {
       const { statusCode } = response;
       const contentLength = response.get('content-length');
 
