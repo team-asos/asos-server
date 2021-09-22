@@ -19,6 +19,6 @@ export class AuthController {
   async login(@Body() loginUserDto: LoginUserDto) {
     const isValidate = await this.authService.validateUser(loginUserDto);
 
-    if (isValidate) return 'ok';
+    if (isValidate) return 'success';
   }
 }
