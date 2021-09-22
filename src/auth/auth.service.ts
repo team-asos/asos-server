@@ -15,7 +15,7 @@ export class AuthService {
   async validateUser(loginUserDto: LoginUserDto): Promise<boolean | undefined> {
     const { email, password } = loginUserDto;
 
-    const user = await this.userRepository.getUserByEmail(email);
+    const user = await this.userRepository.getOneByEmail(email);
 
     if (user === undefined)
       throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_USER);

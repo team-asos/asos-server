@@ -25,6 +25,10 @@ export class ConfigService {
     return Number(this.get(key));
   }
 
+  public getBoolean(key: string): boolean {
+    return Boolean(this.get(key));
+  }
+
   get env(): string {
     return this.get('NODE_ENV');
   }
@@ -46,6 +50,7 @@ export class ConfigService {
       username: this.get('DATABASE_USERNAME'),
       password: this.get('DATABASE_PASSWORD'),
       database: this.get('DATABASE_DATABASE'),
+      synchronize: this.getBoolean('DATABASE_SYNCHRONIZE'),
       entities: [__dirname + '/../**/*.entity.js'],
       namingStrategy: new SnakeNamingStrategy(),
       keepConnectionAlive: true,
