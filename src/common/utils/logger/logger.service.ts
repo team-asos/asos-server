@@ -1,79 +1,37 @@
-import * as moment from 'moment';
+import { ConfigService } from 'src/config/config.service';
 import * as winston from 'winston';
 
-import { LoggerService as LS } from '@nestjs/common';
+import { ConsoleLogger, Injectable } from '@nestjs/common';
 
-const { colorize, combine, printf } = winston.format;
+@Injectable()
+export class LoggerService extends ConsoleLogger {
+  private readonly logger: winston.Logger;
 
-export class LoggerService implements LS {
-  private logger: winston.Logger;
-
-  private logLevels: winston.config.AbstractConfigSetLevels = {
-    error: 0,
-    warn: 1,
-    info: 2,
-    http: 3,
-    debug: 5,
-  };
-
-  private logColors: winston.config.AbstractConfigSetColors = {
-    error: 'red',
-    warn: 'yellow',
-    http: 'green',
-    info: 'cyan',
-    debug: 'blue',
-  };
-
-  constructor() {
-    winston.addColors(this.logColors);
-
-    const timeStamp = () => moment().format('YYYY-MM-DD HH:mm:ss');
-
-    const loggingFormat = printf(({ level, message }) => {
-      if (typeof message === 'object') {
-        message = JSON.stringify(message, null, 2);
-      }
-      return `${timeStamp()} ${level} : ${message}`;
-    });
-
-    this.logger = winston.createLogger({
-      levels: this.logLevels,
-      transports: [
-        new winston.transports.File({
-          level: 'http',
-          format: combine(loggingFormat),
-          filename: `${moment(new Date()).format('YYYY-MM-DD')}.log`,
-          dirname: 'log',
-          maxsize: 5000000,
-        }),
-        new winston.transports.Console({
-          level: 'debug',
-          format: combine(colorize(), loggingFormat),
-        }),
-      ],
-    });
+  constructor(private readonly configService: ConfigService) {
+    super(LoggerService.name);
+    this.logger = winston.createLogger(configService.winstonConfig);
 
     console.log = (message: any, params?: any) => {
       this.logger.debug(message, params);
     };
   }
 
-  error(message: string, trace?: string) {
+  error(message: string, trace?: string): void {
     this.logger.error(message, trace);
   }
-  warn(message: string) {
+  warn(message: string): void {
     this.logger.warn(message);
   }
-  http(message: string) {
-    this.logger.http(message);
-  }
-  info(message: string) {
+  info(message: string): void {
     this.logger.info(message);
   }
-  debug(message: string) {
+  http(message: string): void {
+    this.logger.http(message);
+  }
+  debug(message: string): void {
     this.logger.debug(message);
   }
-  log(message: string) {
+  log(message: string): void {
     this.logger.info(message);
   }
 }

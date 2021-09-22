@@ -1,17 +1,14 @@
-import { LoggerService } from 'src/common/utils/logger/logger.service';
-
 import {
   ArgumentsHost,
   Catch,
   ExceptionFilter,
   HttpException,
+  Logger,
 } from '@nestjs/common';
 import { HttpArgumentsHost } from '@nestjs/common/interfaces';
 
 @Catch()
 export default class CatchException implements ExceptionFilter {
-  private logger = new LoggerService();
-
   // ExceptionFilter 인터페이스를 구현해야 하는 함수
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx: HttpArgumentsHost = host.switchToHttp();
@@ -33,7 +30,7 @@ export default class CatchException implements ExceptionFilter {
       };
     }
 
-    this.logger.error({
+    Logger.error({
       ...httpError,
       name: exception.name,
     });

@@ -1,24 +1,47 @@
+import * as morgan from 'morgan';
+
 import { NestFactory } from '@nestjs/core';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { AppModule } from './app.module';
 import { LoggerService } from './common/utils/logger/logger.service';
+import { ConfigModule } from './config/config.module';
+import { ConfigService } from './config/config.service';
+import { setupSwagger } from './config/swagger/setup';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    logger: new LoggerService(),
-  });
+  const app = await NestFactory.create(AppModule, { logger: false });
+
+  // Logger
+  const loggerService = app.select(ConfigModule).get(LoggerService);
+  app.useLogger(loggerService);
+  app.use(
+    morgan(
+      'HTTP/:http-version :method :remote-addr :url :remote-user :status :res[content-length] :referrer :user-agent :response-time ms',
+      {
+        stream: {
+          write: message => {
+            loggerService.http(message);
+          },
+        },
+      },
+    ),
+  );
 
   // Swagger
-  const config = new DocumentBuilder()
-    .setTitle('Capstone API')
-    .setDescription('The capstone design API description')
-    .setVersion('1.0.0')
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  const configService = app.select(ConfigModule).get(ConfigService);
+  if (['development'].includes(configService.env)) {
+    setupSwagger(app, configService.swaggerConfig);
+  }
 
-  await app.listen(3000);
+  const port = configService.get('PORT');
+  const host = configService.get('HOST');
+  await app.listen(port, host);
+
+  if (configService.env === 'development') {
+    console.log(configService.env);
+  }
+
+  loggerService.warn(`server running on port ${host}:${port}`);
 }
 
 bootstrap();
