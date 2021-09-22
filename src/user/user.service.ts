@@ -1,6 +1,7 @@
 import * as bcrypt from 'bcrypt';
+import HttpError from 'src/common/utils/errors/HttpError';
 
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 
 import { CreateUserDto } from './user.dto';
 import { User } from './user.entity';
@@ -10,13 +11,22 @@ import { UserRepository } from './user.repository';
 export class UserService {
   constructor(private userRepository: UserRepository) {}
 
-  async getUsers(): Promise<User[]> {
+  async findAll(): Promise<User[]> {
     const users = await this.userRepository.find();
 
     return users;
   }
 
-  async createUser(createUserDto: CreateUserDto): Promise<any> {
+  async findOne(userId: number): Promise<User> {
+    const user = await this.userRepository.findOne(userId);
+
+    if (user === undefined)
+      throw new HttpError(HttpStatus.NOT_FOUND, '존재하지 않는 사용자입니다.');
+
+    return user;
+  }
+
+  async createOne(createUserDto: CreateUserDto): Promise<void> {
     const { email, password } = createUserDto;
 
     const saltOrRounds = 10;
@@ -28,6 +38,6 @@ export class UserService {
 
     await this.userRepository.save(user);
 
-    return '';
+    return;
   }
 }

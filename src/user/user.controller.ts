@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { CreateUserDto } from './user.dto';
@@ -14,18 +14,29 @@ export class UserController {
   @HttpCode(200)
   @ApiOperation({ summary: '모든 유저 조회' })
   @ApiResponse({ status: 200, description: 'Success' })
-  async getUsers(): Promise<User[]> {
-    const users = await this.userService.getUsers();
+  async findAll(): Promise<User[]> {
+    const users = await this.userService.findAll();
 
     return users;
+  }
+
+  @Get(':userId')
+  @HttpCode(200)
+  @ApiOperation({ summary: '특정 유저 조회' })
+  @ApiResponse({ status: 200, description: 'Success' })
+  @ApiResponse({ status: 404, description: 'Wrong Id' })
+  async findOne(@Param('userId') userId: number): Promise<User> {
+    const user = await this.userService.findOne(userId);
+
+    return user;
   }
 
   @Post()
   @HttpCode(201)
   @ApiOperation({ summary: '유저 생성' })
   @ApiResponse({ status: 201, description: 'Success' })
-  async createUser(@Body() createUserDto: CreateUserDto): Promise<string> {
-    await this.userService.createUser(createUserDto);
+  async createOne(@Body() createUserDto: CreateUserDto): Promise<string> {
+    await this.userService.createOne(createUserDto);
 
     return 'ok';
   }
