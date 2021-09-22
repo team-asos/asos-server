@@ -2,6 +2,7 @@ import { Reservation } from 'src/reservation/reservation.entity';
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -20,6 +21,9 @@ export class User {
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
 
   @OneToMany(() => Reservation, reservation => reservation.user)
   reservations: Reservation[];

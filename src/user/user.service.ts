@@ -43,4 +43,13 @@ export class UserService {
 
     return;
   }
+
+  async deleteOne(userId: number): Promise<void> {
+    const user = await this.userRepository.findOne(userId);
+
+    if (user === undefined)
+      throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_USER);
+
+    await this.userRepository.deleteOneById(userId);
+  }
 }

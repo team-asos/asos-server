@@ -1,4 +1,12 @@
-import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { CreateUserDto } from './user.dto';
@@ -37,6 +45,16 @@ export class UserController {
   @ApiResponse({ status: 201, description: 'Success' })
   async createOne(@Body() createUserDto: CreateUserDto): Promise<string> {
     await this.userService.createOne(createUserDto);
+
+    return 'success';
+  }
+
+  @Delete(':userId')
+  @HttpCode(200)
+  @ApiOperation({ summary: '특정 유저 삭제' })
+  @ApiResponse({ status: 200, description: 'Success' })
+  async deleteOne(@Param('userId') userId: number): Promise<string> {
+    await this.userService.deleteOne(userId);
 
     return 'success';
   }
