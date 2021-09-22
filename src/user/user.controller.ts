@@ -24,7 +24,7 @@ export class UserController {
   @HttpCode(200)
   @ApiOperation({ summary: '특정 유저 조회' })
   @ApiResponse({ status: 200, description: 'Success' })
-  @ApiResponse({ status: 404, description: 'Wrong Id' })
+  @ApiResponse({ status: 404, description: 'Wrong userId' })
   async findOne(@Param('userId') userId: number): Promise<User> {
     const user = await this.userService.findOne(userId);
 

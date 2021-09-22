@@ -1,4 +1,4 @@
-import { Controller, Get, HttpCode, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { CreateReservationDto } from './reservation.dto';
@@ -22,9 +22,12 @@ export class ReservationController {
 
   @Post()
   @HttpCode(201)
-  @ApiOperation({ summary: '모든 예약 조회' })
-  @ApiResponse({ status: 200, description: 'Success' })
-  async createOne(createReservationDto: CreateReservationDto): Promise<string> {
+  @ApiOperation({ summary: '예약 생성' })
+  @ApiResponse({ status: 201, description: 'Success' })
+  @ApiResponse({ status: 404, description: 'Wrong userId' })
+  async createOne(
+    @Body() createReservationDto: CreateReservationDto,
+  ): Promise<string> {
     await this.reservationService.createOne(createReservationDto);
 
     return 'success';
