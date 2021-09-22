@@ -1,4 +1,5 @@
 import * as bcrypt from 'bcrypt';
+import { ErrorMessage } from 'src/common/utils/errors/ErrorMessage';
 import HttpError from 'src/common/utils/errors/HttpError';
 
 import { HttpStatus, Injectable } from '@nestjs/common';
@@ -21,7 +22,7 @@ export class UserService {
     const user = await this.userRepository.findOne(userId);
 
     if (user === undefined)
-      throw new HttpError(HttpStatus.NOT_FOUND, '존재하지 않는 사용자입니다.');
+      throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_USER);
 
     return user;
   }
