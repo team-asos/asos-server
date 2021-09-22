@@ -1,3 +1,5 @@
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER } from '@nestjs/core';
@@ -7,6 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import CatchException from './common/exceptions/http-exception.filter';
 import { AppLoggerMiddleware } from './common/middlewares/logger.middleware';
 import configuration from './config/database/configuration';
+import { ReservationModule } from './reservation/reservation.module';
 import { UserModule } from './user/user.module';
 
 @Module({
@@ -31,10 +34,12 @@ import { UserModule } from './user/user.module';
         database: configService.get('database.database'),
         synchronize: configService.get('database.synchronize'),
         entities: [__dirname + '/**/*.entity.js'],
+        namingStrategy: new SnakeNamingStrategy(),
       }),
     }),
     AuthModule,
     UserModule,
+    ReservationModule,
   ],
   controllers: [],
   providers: [

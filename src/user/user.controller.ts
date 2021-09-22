@@ -38,6 +38,6 @@ export class UserController {
   async createOne(@Body() createUserDto: CreateUserDto): Promise<string> {
     await this.userService.createOne(createUserDto);
 
-    return 'ok';
+    return 'success';
   }
 }

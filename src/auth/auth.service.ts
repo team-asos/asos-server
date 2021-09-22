@@ -5,10 +5,12 @@ import { LoginUserDto } from 'src/user/user.dto';
 import { UserRepository } from 'src/user/user.repository';
 
 import { HttpStatus, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class AuthService {
-  constructor(private userRepository: UserRepository) {}
+  @InjectRepository(UserRepository)
+  private readonly userRepository: UserRepository;
 
   async validateUser(loginUserDto: LoginUserDto): Promise<boolean | undefined> {
     const { email, password } = loginUserDto;

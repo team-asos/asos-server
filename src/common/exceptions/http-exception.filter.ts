@@ -17,7 +17,7 @@ export default class CatchException implements ExceptionFilter {
     const ctx: HttpArgumentsHost = host.switchToHttp();
     const response = ctx.getResponse();
 
-    let httpError = null;
+    let httpError;
 
     if (exception instanceof HttpException) {
       // status: XXX, message: 'XXX' 형식의 에러인지 판단합니다.
