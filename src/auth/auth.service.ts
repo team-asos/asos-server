@@ -6,12 +6,14 @@ import { User } from 'src/user/user.entity';
 import { UserRepository } from 'src/user/user.repository';
 
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  @InjectRepository(UserRepository)
-  private readonly userRepository: UserRepository;
+  constructor(
+    private userRepository: UserRepository,
+    private jwtService: JwtService,
+  ) {}
 
   async validateUser(loginUserDto: LoginUserDto): Promise<User> {
     const { email, password } = loginUserDto;
@@ -20,15 +22,23 @@ export class AuthService {
 
     if (user === undefined)
       throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_USER);
-    else {
-      const isMatch = await bcrypt.compare(password, user.password);
 
-      if (isMatch) return user;
-      else
-        throw new HttpError(
-          HttpStatus.UNAUTHORIZED,
-          ErrorMessage.WRONG_PASSWORD,
-        );
-    }
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch)
+      throw new HttpError(HttpStatus.UNAUTHORIZED, ErrorMessage.WRONG_PASSWORD);
+
+    return user;
+  }
+
+  async login(user: User): Promise<{ access_token: string }> {
+    const payload = {
+      id: user.id,
+      name: user.name,
+    };
+
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
   }
 }
