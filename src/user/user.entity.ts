@@ -26,7 +26,7 @@ export class User {
   tel: string;
 
   @Column({ default: 0 })
-  auth: number;
+  role: number;
 
   @Column()
   dept: string;

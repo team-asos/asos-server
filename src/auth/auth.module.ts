@@ -20,7 +20,7 @@ import { AuthService } from './auth.service';
       useFactory: (configService: ConfigService) => {
         return {
           secret: configService.get('SECRET_KEY'),
-          signOptions: { expiresIn: '60s' },
+          signOptions: { expiresIn: '1d' },
         };
       },
     }),
