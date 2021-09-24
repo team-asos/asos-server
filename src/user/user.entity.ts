@@ -25,7 +25,7 @@ export class User {
   @Column()
   tel: string;
 
-  @Column()
+  @Column({ default: 0 })
   auth: number;
 
   @Column()
