@@ -7,7 +7,7 @@ describe('Auth Controller Test', () => {
     await request(app)
       .post('/auth')
       .send({
-        email: 'test1@example.com',
+        email: 'test@example.com',
         password: '123123123',
       })
       .expect(200);
@@ -32,7 +32,7 @@ describe('Auth Controller Test', () => {
     const res = await request(app)
       .post('/auth')
       .send({
-        email: 'test1@example.com',
+        email: 'test@example.com',
         password: 'wrong',
       })
       .expect(401);
