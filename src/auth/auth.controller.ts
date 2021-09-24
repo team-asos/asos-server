@@ -1,24 +1,22 @@
-import { LoginUserDto } from 'src/user/user.dto';
+import { User } from 'src/user/user.entity';
 
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
+import { Controller, HttpCode, Post, Request, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-
-import { AuthService } from './auth.service';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
-
+  @UseGuards(AuthGuard('local'))
   @Post()
   @HttpCode(200)
   @ApiOperation({ summary: '로그인' })
   @ApiResponse({ status: 200, description: 'Success' })
   @ApiResponse({ status: 401, description: 'Wrong Password' })
   @ApiResponse({ status: 404, description: 'Wrong Email' })
-  async login(@Body() loginUserDto: LoginUserDto) {
-    const isValidate = await this.authService.validateUser(loginUserDto);
+  async login(@Request() req): Promise<User> {
+    const user = req.user;
 
-    if (isValidate) return 'success';
+    return user;
   }
 }
