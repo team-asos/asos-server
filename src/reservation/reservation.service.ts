@@ -30,8 +30,8 @@ export class ReservationService {
     if (user === undefined)
       throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_USER);
 
-    const reservation = new Reservation();
-    reservation.user = user;
+    let reservation = new Reservation();
+    reservation = { ...reservation, ...createReservationDto };
 
     await this.reservationRepository.save(reservation);
 
