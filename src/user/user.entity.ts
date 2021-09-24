@@ -16,8 +16,23 @@ export class User {
   @Column()
   email: string;
 
+  @Column()
+  name: string;
+
   @Column({ select: false })
   password: string;
+
+  @Column()
+  tel: string;
+
+  @Column({ default: 0 })
+  auth: number;
+
+  @Column()
+  dept: string;
+
+  @Column()
+  job: string;
 
   @CreateDateColumn()
   createdAt: Date;
