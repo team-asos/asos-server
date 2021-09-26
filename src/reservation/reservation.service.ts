@@ -3,7 +3,6 @@ import HttpError from 'src/common/utils/errors/HttpError';
 import { UserRepository } from 'src/user/user.repository';
 
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 
 import { CreateReservationDto } from './reservation.dto';
 import { Reservation } from './reservation.entity';
@@ -11,11 +10,10 @@ import { ReservationRepository } from './reservation.repository';
 
 @Injectable()
 export class ReservationService {
-  @InjectRepository(UserRepository)
-  private readonly userRepository: UserRepository;
-
-  @InjectRepository(ReservationRepository)
-  private readonly reservationRepository: ReservationRepository;
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly reservationRepository: ReservationRepository,
+  ) {}
 
   async findAll(): Promise<Reservation[]> {
     const reservations = await this.reservationRepository.find();
