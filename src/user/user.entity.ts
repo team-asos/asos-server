@@ -1,10 +1,13 @@
+import { Inquire } from 'src/inquire/inquire.entity';
 import { Reservation } from 'src/reservation/reservation.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -39,6 +42,10 @@ export class User {
 
   @DeleteDateColumn()
   deletedAt: Date;
+
+  @OneToOne(() => Inquire, inquire => inquire.user)
+  @JoinColumn()
+  inquire: Inquire;
 
   @OneToMany(() => Reservation, reservation => reservation.user)
   reservations: Reservation[];

@@ -1,11 +1,11 @@
+import { Floor } from 'src/floor/floor.entity';
 import { Reservation } from 'src/reservation/reservation.entity';
-import { Room } from 'src/room/room.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
-  OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -15,14 +15,23 @@ export class Seat {
   id: number;
 
   @Column()
-  type: number;
+  x: number;
+
+  @Column()
+  y: number;
+
+  @Column()
+  width: number;
+
+  @Column()
+  height: number;
 
   @CreateDateColumn()
   createdAt: Date;
 
-  @OneToMany(() => Reservation, reservation => reservation.seat)
-  reservations: Reservation[];
+  @OneToOne(() => Reservation, reservation => reservation.seat)
+  reservation: Reservation;
 
-  @ManyToOne(() => Room, room => room.seats)
-  room: Room;
+  @ManyToOne(() => Floor, floor => floor.seats)
+  floor: Floor;
 }

@@ -1,3 +1,4 @@
+import { Room } from 'src/room/room.entity';
 import { Seat } from 'src/seat/seat.entity';
 import { User } from 'src/user/user.entity';
 import {
@@ -5,7 +6,9 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -29,6 +32,11 @@ export class Reservation {
   @ManyToOne(() => User, user => user.reservations)
   user: User;
 
-  @ManyToOne(() => Seat, seat => seat.reservations)
+  @OneToOne(() => Seat, seat => seat.reservation)
+  @JoinColumn()
   seat: Seat;
+
+  @OneToOne(() => Room, room => room.reservation)
+  @JoinColumn()
+  room: Room;
 }
