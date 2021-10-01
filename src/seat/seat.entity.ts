@@ -3,6 +3,7 @@ import { Reservation } from 'src/reservation/reservation.entity';
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   ManyToOne,
   OneToOne,
