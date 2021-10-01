@@ -1,4 +1,6 @@
+import { Facility } from 'src/facility/facility.entity';
 import { Room } from 'src/room/room.entity';
+import { Seat } from 'src/seat/seat.entity';
 import {
   CreateDateColumn,
   Entity,
@@ -14,6 +16,12 @@ export class Floor {
   @CreateDateColumn()
   createdAt: Date;
 
+  @OneToMany(() => Seat, seat => seat.floor)
+  seats: Seat[];
+
   @OneToMany(() => Room, room => room.floor)
   rooms: Room[];
+
+  @OneToMany(() => Facility, facility => facility.floor)
+  facilities: Facility[];
 }

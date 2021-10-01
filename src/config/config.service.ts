@@ -44,7 +44,7 @@ export class ConfigService {
 
   get typeOrmConfig(): TypeOrmModuleOptions {
     return {
-      type: 'postgres',
+      type: 'mysql',
       host: this.get('DATABASE_HOST'),
       port: this.getNumber('DATABASE_PORT'),
       username: this.get('DATABASE_USERNAME'),
