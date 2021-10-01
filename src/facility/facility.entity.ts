@@ -1,4 +1,4 @@
-import { Room } from 'src/room/room.entity';
+import { Floor } from 'src/floor/floor.entity';
 import {
   Column,
   CreateDateColumn,
@@ -15,9 +15,21 @@ export class Facility {
   @Column()
   type: number;
 
+  @Column()
+  x: number;
+
+  @Column()
+  y: number;
+
+  @Column()
+  width: number;
+
+  @Column()
+  height: number;
+
   @CreateDateColumn()
   createdAt: Date;
 
-  @ManyToOne(() => Room, room => room.facilities)
-  room: Room;
+  @ManyToOne(() => Floor, floor => floor.facilities)
+  floor: Floor;
 }
