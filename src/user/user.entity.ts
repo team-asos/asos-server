@@ -1,4 +1,5 @@
 import { Inquire } from 'src/inquire/inquire.entity';
+import { Participant } from 'src/participant/participant.entity';
 import { Reservation } from 'src/reservation/reservation.entity';
 import {
   Column,
@@ -49,4 +50,7 @@ export class User {
 
   @OneToMany(() => Reservation, reservation => reservation.user)
   reservations: Reservation[];
+
+  @OneToMany(() => Participant, participant => participant.user)
+  participants: Participant[];
 }
