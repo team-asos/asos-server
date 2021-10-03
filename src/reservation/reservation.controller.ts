@@ -28,8 +28,8 @@ export class ReservationController {
   @ApiOperation({ summary: '회의실 예약 생성' })
   @ApiResponse({ status: 201, description: 'Success' })
   @ApiResponse({
-    status: 404,
-    description: 'Wrong userId / Wrong ParticipantId',
+    status: 400,
+    description: 'Fail To Save Participant',
   })
   async createRoomOne(
     @Body() createRoomReservationDto: CreateRoomReservationDto,
