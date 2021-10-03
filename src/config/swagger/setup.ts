@@ -11,5 +11,21 @@ export function setupSwagger(app: INestApplication, config: ISwaggerConfig) {
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup(config.path, app, document);
+  SwaggerModule.setup(config.path, app, document, {
+    swaggerOptions: {
+      tagsSorter: 'alpha',
+      operationsSorter: (a: any, b: any) => {
+        const methodsOrder = ['get', 'post', 'put', 'patch', 'delete'];
+        let result =
+          methodsOrder.indexOf(a.get('method')) -
+          methodsOrder.indexOf(b.get('method'));
+
+        if (result === 0) {
+          result = a.get('path').localeCompare(b.get('path'));
+        }
+
+        return result;
+      },
+    },
+  });
 }
