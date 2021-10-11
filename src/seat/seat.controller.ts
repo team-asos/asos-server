@@ -28,25 +28,15 @@ export class SeatController {
     return seats;
   }
 
-  // @Get(':userId')
-  // @HttpCode(200)
-  // @ApiOperation({ summary: '사용자 좌석 조회' })
-  // @ApiResponse({ status: 200, description: 'Success' })
-  // @ApiResponse({ status: 404, description: 'Wrong userId' })
-  // async findOne(@Param('userId') userId: number): Promise<Seat> {
-  //   const seat = await this.seatService.findOne(userId);
-  //   return seat;
-  // }
-
-  // @Post()
-  // @HttpCode(201)
-  // @ApiOperation({ summary: '좌석 생성' })
-  // @ApiResponse({ status: 201, description: 'Success' })
-  // @ApiResponse({ status: 404, description: 'Wrong seatId' })
-  // async createOne(@Body() createSeatDto: CreateSeatDto): Promise<string> {
-  //   await this.seatService.createOne(createSeatDto);
-  //   return 'success';
-  // }
+  @Post()
+  @HttpCode(201)
+  @ApiOperation({ summary: '좌석 생성' })
+  @ApiResponse({ status: 201, description: 'Success' })
+  @ApiResponse({ status: 404, description: 'Wrong seatId' })
+  async createOne(@Body() createSeatDto: CreateSeatDto): Promise<string> {
+    await this.seatService.createOne(createSeatDto);
+    return 'success';
+  }
 
   @Delete(':seatId')
   @HttpCode(200)

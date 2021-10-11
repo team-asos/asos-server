@@ -11,10 +11,5 @@ export class CreateSeatDto {
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  reservationId: string;
-
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  userId: string;
+  seatId: string;
 }

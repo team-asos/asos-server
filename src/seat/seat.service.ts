@@ -7,6 +7,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { CreateSeatDto } from './seat.dto';
 import { Seat } from './seat.entity';
 import { SeatRepository } from './seat.repository';
+import { Floor } from 'src/floor/floor.entity';
 
 @Injectable()
 export class SeatService {
@@ -21,25 +22,32 @@ export class SeatService {
     return seats;
   }
 
-  // async findOne(reservationId: number): Promise<Seat> {
-  //   const seat = await this.seatRepository.findOne(reservationId);
+  async findOne(userId: number): Promise<Seat> {
+    const seat = await this.seatRepository.findOne(userId);
 
-  //   if (seat === undefined)
-  //     throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_USER);
+    if (seat === undefined)
+      throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_SEAT);
 
-  //   return seat;
-  // }
+    return seat;
+  }
 
-  // async createOne(CreateSeatDto: CreateSeatDto): Promise<void> {
-  //   const { reservationId } = CreateSeatDto;
+  async createOne(createSeatDto: CreateSeatDto): Promise<void> {
+    try {
+      const { seatId } = createSeatDto;
+      const floor = await this.floorRepository.findOne(floorId);
 
-  //   const reservation = await this.reservationRepository.findOne(reservationId);
-  //   if (reservation === undefined)
-  //     throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_USER);
+      if (floor === undefined)
+        throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_FLOOR);
 
-  //   const seat = new Seat();
-  //   seat.reservation = reservation;
-  // }
+      let seat = new Seat();
+
+      seat = { ...seat, ...createSeatDto, floor };
+
+      await this.seatRepository.save(seat);
+    } catch {
+    } finally {
+    }
+  }
 
   async deleteOne(seatId: number): Promise<void> {
     const seat = await this.seatRepository.findOne();
