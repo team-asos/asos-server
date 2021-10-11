@@ -7,6 +7,7 @@ import CatchException from './common/exceptions/http-exception.filter';
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
 import { ReservationModule } from './reservation/reservation.module';
+import { RoomModule } from './room/room.module';
 import { UserModule } from './user/user.module';
 
 @Module({
@@ -19,6 +20,7 @@ import { UserModule } from './user/user.module';
     AuthModule,
     UserModule,
     ReservationModule,
+    RoomModule,
   ],
   controllers: [],
   providers: [
