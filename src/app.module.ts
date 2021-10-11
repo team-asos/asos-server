@@ -9,6 +9,7 @@ import { ConfigService } from './config/config.service';
 import { FloorModule } from './floor/floor.module';
 import { ReservationModule } from './reservation/reservation.module';
 import { SeatModule } from './seat/seat.module';
+import { RoomModule } from './room/room.module';
 import { UserModule } from './user/user.module';
 
 @Module({
@@ -22,6 +23,7 @@ import { UserModule } from './user/user.module';
     UserModule,
     ReservationModule,
     SeatModule,
+    RoomModule,
     FloorModule,
   ],
   controllers: [],
