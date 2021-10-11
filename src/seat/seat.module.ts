@@ -1,6 +1,7 @@
+import { FloorRepository } from 'src/floor/floor.repository';
+
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { FloorRepository } from 'src/floor/floor.repository';
 
 import { SeatController } from './seat.controller';
 import { SeatRepository } from './seat.repository';
