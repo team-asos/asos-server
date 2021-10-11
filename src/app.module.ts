@@ -8,6 +8,7 @@ import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
 import { FloorModule } from './floor/floor.module';
 import { ReservationModule } from './reservation/reservation.module';
+import { SeatModule } from './seat/seat.module';
 import { RoomModule } from './room/room.module';
 import { UserModule } from './user/user.module';
 
@@ -21,6 +22,7 @@ import { UserModule } from './user/user.module';
     AuthModule,
     UserModule,
     ReservationModule,
+    SeatModule,
     RoomModule,
     FloorModule,
   ],
