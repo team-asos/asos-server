@@ -23,7 +23,7 @@ export class ReservationService {
     private readonly connection: Connection,
   ) {}
 
-  async findAll(): Promise<Reservation[]> {
+  async findAll(): Promise<Reservation[] | undefined> {
     const reservations = await this.reservationRepository.find();
 
     return reservations;
