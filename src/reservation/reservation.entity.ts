@@ -1,3 +1,4 @@
+import { Participant } from 'src/participant/participant.entity';
 import { Room } from 'src/room/room.entity';
 import { Seat } from 'src/seat/seat.entity';
 import { User } from 'src/user/user.entity';
@@ -8,6 +9,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -18,7 +20,10 @@ export class Reservation {
   id: number;
 
   @Column()
-  reservationTime: number;
+  startTime: Date;
+
+  @Column()
+  endTime: Date;
 
   @Column()
   status: number;
@@ -29,9 +34,6 @@ export class Reservation {
   @DeleteDateColumn()
   deletedAt: Date;
 
-  @ManyToOne(() => User, user => user.reservations)
-  user: User;
-
   @OneToOne(() => Seat, seat => seat.reservation)
   @JoinColumn()
   seat: Seat;
@@ -39,4 +41,10 @@ export class Reservation {
   @OneToOne(() => Room, room => room.reservation)
   @JoinColumn()
   room: Room;
+
+  @OneToMany(() => Participant, participant => participant.reservation)
+  participants: Participant[];
+
+  @ManyToOne(() => User, user => user.reservations)
+  user: User;
 }
