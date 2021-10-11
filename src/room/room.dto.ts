@@ -26,5 +26,10 @@ export class CreateRoomDto {
   @ApiProperty()
   @IsNumber()
   @IsNotEmpty()
+  maxUser: number;
+
+  @ApiProperty()
+  @IsNumber()
+  @IsNotEmpty()
   floorId: number;
 }
