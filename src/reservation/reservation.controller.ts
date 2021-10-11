@@ -17,7 +17,7 @@ export class ReservationController {
   @HttpCode(200)
   @ApiOperation({ summary: '모든 예약 조회' })
   @ApiResponse({ status: 200, description: 'Success' })
-  async findAll(): Promise<Reservation[] | undefined> {
+  async findAll(): Promise<Reservation[]> {
     const reservations = await this.reservationService.findAll();
 
     return reservations;
