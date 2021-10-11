@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import CatchException from './common/exceptions/http-exception.filter';
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
+import { FloorModule } from './floor/floor.module';
 import { ReservationModule } from './reservation/reservation.module';
 import { UserModule } from './user/user.module';
 
@@ -19,6 +20,7 @@ import { UserModule } from './user/user.module';
     AuthModule,
     UserModule,
     ReservationModule,
+    FloorModule,
   ],
   controllers: [],
   providers: [
