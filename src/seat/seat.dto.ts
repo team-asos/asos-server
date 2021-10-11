@@ -1,15 +1,30 @@
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateSeatDto {
   @ApiProperty()
-  @IsString()
+  @IsNumber()
   @IsNotEmpty()
-  type: string;
+  x: number;
+
+  @ApiProperty()
+  @IsNumber()
+  @IsNotEmpty()
+  y: number;
+
+  @ApiProperty()
+  @IsNumber()
+  @IsNotEmpty()
+  width: number;
+
+  @ApiProperty()
+  @IsNumber()
+  @IsNotEmpty()
+  height: number;
 
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
-  seatId: string;
+  floorId: string;
 }

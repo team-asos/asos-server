@@ -8,12 +8,13 @@ import { CreateSeatDto } from './seat.dto';
 import { Seat } from './seat.entity';
 import { SeatRepository } from './seat.repository';
 import { Floor } from 'src/floor/floor.entity';
+import { FloorRepository } from 'src/floor/floor.repository';
 
 @Injectable()
 export class SeatService {
   constructor(
-    private reservationRepository: ReservationRepository,
     private seatRepository: SeatRepository,
+    private floorRepository: FloorRepository,
   ) {}
 
   async findAll(): Promise<Seat[]> {
@@ -32,21 +33,17 @@ export class SeatService {
   }
 
   async createOne(createSeatDto: CreateSeatDto): Promise<void> {
-    try {
-      const { seatId } = createSeatDto;
-      const floor = await this.floorRepository.findOne(floorId);
+    const { floorId } = createSeatDto;
+    const floor = await this.floorRepository.findOne(floorId);
 
-      if (floor === undefined)
-        throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_FLOOR);
+    if (floor === undefined)
+      throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_FLOOR);
 
-      let seat = new Seat();
+    let seat = new Seat();
 
-      seat = { ...seat, ...createSeatDto, floor };
+    seat = { ...seat, ...createSeatDto, floor };
 
-      await this.seatRepository.save(seat);
-    } catch {
-    } finally {
-    }
+    await this.seatRepository.save(seat);
   }
 
   async deleteOne(seatId: number): Promise<void> {
