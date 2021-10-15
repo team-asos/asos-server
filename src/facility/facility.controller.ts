@@ -32,7 +32,8 @@ export class FacilityController {
   @HttpCode(201)
   @ApiOperation({ summary: '시설 생성' })
   @ApiResponse({ status: 201, description: 'Success' })
-  @ApiResponse({ status: 404, description: 'Wrong facilityId' })
+  @ApiResponse({ status: 400, description: 'Fail to Save Facility' })
+  @ApiResponse({ status: 404, description: 'Wrong floorId' })
   async createOne(
     @Body() createFacilityDto: CreateFacilityDto,
   ): Promise<string> {
