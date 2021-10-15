@@ -11,6 +11,7 @@ import { ReservationModule } from './reservation/reservation.module';
 import { SeatModule } from './seat/seat.module';
 import { RoomModule } from './room/room.module';
 import { UserModule } from './user/user.module';
+import { FacilityModule } from './facility/facility.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { UserModule } from './user/user.module';
     SeatModule,
     RoomModule,
     FloorModule,
+    FacilityModule,
   ],
   controllers: [],
   providers: [
