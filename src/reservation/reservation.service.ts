@@ -1,5 +1,5 @@
+import HttpError from 'src/common/exceptions/http.exception';
 import { ErrorMessage } from 'src/common/utils/errors/ErrorMessage';
-import HttpError from 'src/common/utils/errors/HttpError';
 import { Participant } from 'src/participant/participant.entity';
 import { ParticipantRepository } from 'src/participant/participant.repository';
 import { UserRepository } from 'src/user/user.repository';
