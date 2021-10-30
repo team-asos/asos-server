@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcrypt';
+import HttpError from 'src/common/exceptions/http.exception';
 import { ErrorMessage } from 'src/common/utils/errors/ErrorMessage';
-import HttpError from 'src/common/utils/errors/HttpError';
 
 import { HttpStatus, Injectable } from '@nestjs/common';
 

@@ -1,6 +1,7 @@
+import HttpError from 'src/common/exceptions/http.exception';
 import { ErrorMessage } from 'src/common/utils/errors/ErrorMessage';
-import HttpError from 'src/common/utils/errors/HttpError';
 import { FloorRepository } from 'src/floor/floor.repository';
+
 import { HttpStatus, Injectable } from '@nestjs/common';
 
 import { CreateFacilityDto } from './facility.dto';
