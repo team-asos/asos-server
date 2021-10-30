@@ -1,5 +1,6 @@
 import * as morgan from 'morgan';
 
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app.module';
@@ -9,7 +10,16 @@ import { ConfigService } from './config/config.service';
 import { setupSwagger } from './config/swagger/setup';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { logger: false });
+  const app = await NestFactory.create(AppModule);
+
+  // Validation
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+    }),
+  );
 
   // Logger
   const loggerService = app.select(ConfigModule).get(LoggerService);
