@@ -4,7 +4,7 @@ import { ErrorMessage } from 'src/common/utils/errors/ErrorMessage';
 
 import { HttpStatus, Injectable } from '@nestjs/common';
 
-import { CreateUserDto } from './user.dto';
+import { CreateUserDto } from './dtos/create-user.dto';
 import { User } from './user.entity';
 import { UserRepository } from './user.repository';
 

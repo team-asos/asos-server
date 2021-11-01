@@ -1,7 +1,7 @@
 import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { CreateRoomDto } from './room.dto';
+import { CreateRoomDto } from './dtos/create-room.dto';
 import { Room } from './room.entity';
 import { RoomService } from './room.service';
 

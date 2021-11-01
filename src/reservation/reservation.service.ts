@@ -7,10 +7,8 @@ import { Connection } from 'typeorm';
 
 import { HttpStatus, Injectable } from '@nestjs/common';
 
-import {
-  CreateRoomReservationDto,
-  CreateSeatReservationDto,
-} from './reservation.dto';
+import { CreateRoomReservationDto } from './dtos/create-room-reservation.dto';
+import { CreateSeatReservationDto } from './dtos/create-seat-reservation.dto';
 import { Reservation } from './reservation.entity';
 import { ReservationRepository } from './reservation.repository';
 

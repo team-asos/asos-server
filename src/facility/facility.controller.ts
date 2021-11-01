@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { CreateFacilityDto } from './facility.dto';
+import { CreateFacilityDto } from './dtos/create-facility.dto';
 import { Facility } from './facility.entity';
 import { FacilityService } from './facility.service';
 

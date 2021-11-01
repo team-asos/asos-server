@@ -1,10 +1,8 @@
 import { Body, Controller, Get, HttpCode, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import {
-  CreateRoomReservationDto,
-  CreateSeatReservationDto,
-} from './reservation.dto';
+import { CreateRoomReservationDto } from './dtos/create-room-reservation.dto';
+import { CreateSeatReservationDto } from './dtos/create-seat-reservation.dto';
 import { Reservation } from './reservation.entity';
 import { ReservationService } from './reservation.service';
 
