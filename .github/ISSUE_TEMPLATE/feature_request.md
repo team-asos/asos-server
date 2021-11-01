@@ -1,10 +1,9 @@
 ---
 name: Feature request
 about: 요청할 새로운 기능이 있어요.
-title: "[FEATURE]"
+title: '[FEATURE]'
 labels: enhancement
 assignees: doputer, uiurihappy
-
 ---
 
 ## 기능 요약
@@ -17,4 +16,4 @@ assignees: doputer, uiurihappy
 
 ## 기타
 
-추가로 알려줄 사항이 있다면 적어주세요.
+추가로 알려줄 사항이 있다면 적어주세요.
