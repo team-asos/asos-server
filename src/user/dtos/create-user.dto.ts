@@ -14,8 +14,8 @@ export class CreateUserDto {
   tel: string;
 
   @IsString()
-  dept: string;
+  department: string;
 
   @IsString()
-  job: string;
+  position: string;
 }
