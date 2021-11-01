@@ -10,6 +10,7 @@ import {
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -17,7 +18,7 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Column()
@@ -33,13 +34,16 @@ export class User {
   role: number;
 
   @Column()
-  dept: string;
+  department: string;
 
   @Column()
-  job: string;
+  position: string;
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 
   @DeleteDateColumn()
   deletedAt: Date;
