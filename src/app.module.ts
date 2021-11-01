@@ -1,9 +1,7 @@
 import { Module } from '@nestjs/common';
-import { APP_FILTER } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AuthModule } from './auth/auth.module';
-import CatchException from './common/filters/http-exception.filter';
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
 import { FacilityModule } from './facility/facility.module';

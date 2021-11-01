@@ -4,7 +4,7 @@ import { FloorRepository } from 'src/floor/floor.repository';
 
 import { HttpStatus, Injectable } from '@nestjs/common';
 
-import { CreateSeatDto } from './seat.dto';
+import { CreateSeatDto } from './dtos/create-seat.dto';
 import { Seat } from './seat.entity';
 import { SeatRepository } from './seat.repository';
 

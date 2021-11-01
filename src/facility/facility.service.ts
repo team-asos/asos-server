@@ -4,7 +4,7 @@ import { FloorRepository } from 'src/floor/floor.repository';
 
 import { HttpStatus, Injectable } from '@nestjs/common';
 
-import { CreateFacilityDto } from './facility.dto';
+import { CreateFacilityDto } from './dtos/create-facility.dto';
 import { Facility } from './facility.entity';
 import { FacilityRepository } from './facility.repository';
 
