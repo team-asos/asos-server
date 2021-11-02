@@ -13,10 +13,10 @@ export class Inquire {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ default: 0 })
   status: number;
 
-  @Column()
+  @Column({ length: 500 })
   message: string;
 
   @CreateDateColumn()
