@@ -1,9 +1,11 @@
+import { Notification } from 'src/notification/notification.entity';
 import { User } from 'src/user/user.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -27,4 +29,8 @@ export class Inquire {
 
   @OneToOne(() => User, user => user.inquire)
   user: User;
+
+  @OneToOne(() => Notification, notification => notification.inquire)
+  @JoinColumn()
+  notification: Notification;
 }
