@@ -21,10 +21,16 @@ export class ReservationService {
     private readonly connection: Connection,
   ) {}
 
-  async findAll(): Promise<Reservation[] | undefined> {
+  async findAll(): Promise<Reservation[]> {
     const reservations = await this.reservationRepository.find();
 
     return reservations;
+  }
+
+  async findOne(reservationId: number): Promise<Reservation> {
+    const reservation = await this.reservationRepository.findOne(reservationId);
+
+    return reservation;
   }
 
   async createRoomOne(

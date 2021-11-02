@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { CreateRoomReservationDto } from './dtos/create-room-reservation.dto';
@@ -19,6 +19,18 @@ export class ReservationController {
     const reservations = await this.reservationService.findAll();
 
     return reservations;
+  }
+
+  @Get(':reservationId')
+  @HttpCode(200)
+  @ApiOperation({ summary: '특정 예약 조회' })
+  @ApiResponse({ status: 200, description: 'Success' })
+  async findOne(
+    @Param('reservationId') reservationId: number,
+  ): Promise<Reservation> {
+    const reservation = await this.reservationService.findOne(reservationId);
+
+    return reservation;
   }
 
   @Post('room')
