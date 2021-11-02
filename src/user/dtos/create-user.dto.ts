@@ -14,6 +14,9 @@ export class CreateUserDto {
   tel: string;
 
   @IsString()
+  employee_id: string;
+
+  @IsString()
   department: string;
 
   @IsString()
