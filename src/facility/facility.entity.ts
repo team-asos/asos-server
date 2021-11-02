@@ -13,7 +13,7 @@ export class Facility {
   id: number;
 
   @Column()
-  type: number;
+  type: string;
 
   @Column()
   x: number;

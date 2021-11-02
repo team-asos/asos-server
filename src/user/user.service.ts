@@ -1,10 +1,11 @@
 import * as bcrypt from 'bcrypt';
+import HttpError from 'src/common/exceptions/http.exception';
 import { ErrorMessage } from 'src/common/utils/errors/ErrorMessage';
-import HttpError from 'src/common/utils/errors/HttpError';
 
 import { HttpStatus, Injectable } from '@nestjs/common';
 
-import { CreateUserDto } from './user.dto';
+import { CreateUserDto } from './dtos/create-user.dto';
+import { UpdateUserDto } from './dtos/update-user.dto';
 import { User } from './user.entity';
 import { UserRepository } from './user.repository';
 
@@ -39,6 +40,17 @@ export class UserService {
     await this.userRepository.save(user);
 
     return;
+  }
+
+  async updateOne(userId: number, updateUserDto: UpdateUserDto): Promise<void> {
+    let user = await this.userRepository.findOne(userId);
+
+    if (user === undefined)
+      throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_USER);
+
+    user = { ...user, ...updateUserDto };
+
+    await this.userRepository.save(user);
   }
 
   async deleteOne(userId: number): Promise<void> {

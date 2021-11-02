@@ -1,3 +1,4 @@
+import { ParticipantRepository } from 'src/participant/participant.repository';
 import { UserRepository } from 'src/user/user.repository';
 
 import { Module } from '@nestjs/common';
@@ -8,7 +9,13 @@ import { ReservationRepository } from './reservation.repository';
 import { ReservationService } from './reservation.service';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([UserRepository, ReservationRepository])],
+  imports: [
+    TypeOrmModule.forFeature([
+      UserRepository,
+      ParticipantRepository,
+      ReservationRepository,
+    ]),
+  ],
   controllers: [ReservationController],
   providers: [ReservationService],
 })

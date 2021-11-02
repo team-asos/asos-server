@@ -1,4 +1,5 @@
 import { Inquire } from 'src/inquire/inquire.entity';
+import { Participant } from 'src/participant/participant.entity';
 import { Reservation } from 'src/reservation/reservation.entity';
 import {
   Column,
@@ -9,6 +10,7 @@ import {
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -16,7 +18,7 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   email: string;
 
   @Column()
@@ -32,13 +34,19 @@ export class User {
   role: number;
 
   @Column()
-  dept: string;
+  employeeNumber: string;
 
   @Column()
-  job: string;
+  department: string;
+
+  @Column()
+  position: string;
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 
   @DeleteDateColumn()
   deletedAt: Date;
@@ -49,4 +57,7 @@ export class User {
 
   @OneToMany(() => Reservation, reservation => reservation.user)
   reservations: Reservation[];
+
+  @OneToMany(() => Participant, participant => participant.user)
+  participants: Participant[];
 }

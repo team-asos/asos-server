@@ -5,11 +5,13 @@ import {
   Get,
   HttpCode,
   Param,
+  Patch,
   Post,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { CreateUserDto } from './user.dto';
+import { CreateUserDto } from './dtos/create-user.dto';
+import { UpdateUserDto } from './dtos/update-user.dto';
 import { User } from './user.entity';
 import { UserService } from './user.service';
 
@@ -45,6 +47,19 @@ export class UserController {
   @ApiResponse({ status: 201, description: 'Success' })
   async createOne(@Body() createUserDto: CreateUserDto): Promise<string> {
     await this.userService.createOne(createUserDto);
+
+    return 'success';
+  }
+
+  @Patch(':userId')
+  @HttpCode(200)
+  @ApiOperation({ summary: '특정 유저 수정' })
+  @ApiResponse({ status: 200, description: 'Success' })
+  async updateOne(
+    @Param('userId') userId: number,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<string> {
+    await this.userService.updateOne(userId, updateUserDto);
 
     return 'success';
   }
