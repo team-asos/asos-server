@@ -1,7 +1,7 @@
 ---
 name: Fix request
 about: 요청할 새로운 기능 수정이 있어요.
-title: "[Fix]"
+title: "[FIX]"
 labels: fix
 assignees: doputer, uiurihappy
 
