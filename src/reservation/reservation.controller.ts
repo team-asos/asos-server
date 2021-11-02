@@ -1,4 +1,12 @@
-import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { CreateRoomReservationDto } from './dtos/create-room-reservation.dto';
@@ -58,6 +66,19 @@ export class ReservationController {
     @Body() createSeatReservationDto: CreateSeatReservationDto,
   ): Promise<string> {
     await this.reservationService.createSeatOne(createSeatReservationDto);
+
+    return 'success';
+  }
+
+  @Delete(':reservationId')
+  @HttpCode(200)
+  @ApiOperation({ summary: '특정 예약 삭제' })
+  @ApiResponse({ status: 201, description: 'Success' })
+  @ApiResponse({ status: 404, description: 'Wrong userId' })
+  async deleteOne(
+    @Param('reservationId') reservationId: number,
+  ): Promise<string> {
+    await this.reservationService.deleteOne(reservationId);
 
     return 'success';
   }

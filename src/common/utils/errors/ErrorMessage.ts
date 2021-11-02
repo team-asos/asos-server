@@ -1,5 +1,6 @@
 export enum ErrorMessage {
   NOT_FOUND_USER = '존재하지 않는 사용자입니다.',
+  NOT_FOUND_RESERVATION = '존재하지 않는 예약입니다.',
   NOT_FOUND_SEAT = '존재하지 않는 좌석입니다.',
   NOT_FOUND_FLOOR = '존재하지 않는 층입니다.',
   NOT_FOUND_PARTICIPANT = '존재하지 않는 참가자입니다.',

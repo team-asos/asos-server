@@ -101,4 +101,16 @@ export class ReservationService {
 
     return;
   }
+
+  async deleteOne(reservationId: number): Promise<void> {
+    const reservation = await this.reservationRepository.findOne(reservationId);
+
+    if (reservation === undefined)
+      throw new HttpError(
+        HttpStatus.NOT_FOUND,
+        ErrorMessage.NOT_FOUND_RESERVATION,
+      );
+
+    await this.reservationRepository.deleteOneById(reservationId);
+  }
 }
