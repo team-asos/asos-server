@@ -1,9 +1,10 @@
 ---
 name: Bug report
 about: 예기치 않은 문제 또는 의도하지 않은 동작이 있어요.
-title: '[BUG]'
+title: "[BUG]"
 labels: bug
 assignees: doputer, uiurihappy
+
 ---
 
 ## 버그 설명
