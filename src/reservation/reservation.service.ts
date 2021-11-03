@@ -21,10 +21,16 @@ export class ReservationService {
     private readonly connection: Connection,
   ) {}
 
-  async findAll(): Promise<Reservation[] | undefined> {
+  async findAll(): Promise<Reservation[]> {
     const reservations = await this.reservationRepository.find();
 
     return reservations;
+  }
+
+  async findOne(reservationId: number): Promise<Reservation> {
+    const reservation = await this.reservationRepository.findOne(reservationId);
+
+    return reservation;
   }
 
   async createRoomOne(
@@ -94,5 +100,17 @@ export class ReservationService {
     await this.reservationRepository.save(reservation);
 
     return;
+  }
+
+  async deleteOne(reservationId: number): Promise<void> {
+    const reservation = await this.reservationRepository.findOne(reservationId);
+
+    if (reservation === undefined)
+      throw new HttpError(
+        HttpStatus.NOT_FOUND,
+        ErrorMessage.NOT_FOUND_RESERVATION,
+      );
+
+    await this.reservationRepository.deleteOneById(reservationId);
   }
 }
