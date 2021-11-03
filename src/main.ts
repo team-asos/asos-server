@@ -17,8 +17,10 @@ import { setupSwagger } from './config/swagger/setup';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  const configService = app.select(ConfigModule).get(ConfigService);
+
   // CORS
-  app.enableCors();
+  app.enableCors(configService.corsConfig);
 
   // Validation
   app.useGlobalPipes(
@@ -59,7 +61,6 @@ async function bootstrap() {
   );
 
   // Swagger
-  const configService = app.select(ConfigModule).get(ConfigService);
   if (['development'].includes(configService.env)) {
     setupSwagger(app, configService.swaggerConfig);
   }

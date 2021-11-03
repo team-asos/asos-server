@@ -1,8 +1,12 @@
 import * as dotenv from 'dotenv';
 import * as moment from 'moment';
+import HttpError from 'src/common/exceptions/http.exception';
+import { ErrorMessage } from 'src/common/utils/errors/ErrorMessage';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import * as winston from 'winston';
 
+import { HttpStatus } from '@nestjs/common';
+import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 import { ISwaggerConfig } from './swagger/interface';
@@ -104,6 +108,26 @@ export class ConfigService {
         }),
       ],
       exitOnError: false,
+    };
+  }
+
+  get corsConfig(): CorsOptions {
+    const whitelist = this.get('CORS_WHITELIST');
+
+    return {
+      origin: (origin, callback) => {
+        if (whitelist.indexOf(origin) !== -1) callback(null, true);
+        else
+          callback(
+            new HttpError(
+              HttpStatus.INTERNAL_SERVER_ERROR,
+              ErrorMessage.NOT_ALLOW_CORS,
+            ),
+          );
+      },
+      allowedHeaders: ['Content-Type', 'Authorization'],
+      methods: ['GET', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+      credentials: true,
     };
   }
 }

@@ -12,4 +12,5 @@ export enum ErrorMessage {
   FAIL_SAVE_FACILITY = '시설 저장에 실패했습니다.',
   WRONG_PASSWORD = '비밀번호가 잘못되었습니다.',
   WRONG_ID = '잘못된 아이디 입니다.',
+  NOT_ALLOW_CORS = 'CORS로 허용되지 않습니다.',
 }
