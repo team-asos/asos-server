@@ -1,3 +1,4 @@
+import { Answer } from 'src/answer/answer.entity';
 import { Notification } from 'src/notification/notification.entity';
 import { User } from 'src/user/user.entity';
 import {
@@ -19,6 +20,9 @@ export class Question {
   @Column({ default: 0 })
   status: number;
 
+  @Column()
+  title: string;
+
   @Column({ length: 500 })
   message: string;
 
@@ -28,10 +32,13 @@ export class Question {
   @DeleteDateColumn()
   deletedAt: Date;
 
-  @ManyToOne(() => User, user => user.questions)
-  user: User;
-
   @OneToOne(() => Notification, notification => notification.question)
   @JoinColumn()
   notification: Notification;
+
+  @OneToOne(() => Answer, answer => answer.question)
+  answer: Answer;
+
+  @ManyToOne(() => User, user => user.questions)
+  user: User;
 }

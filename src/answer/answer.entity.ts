@@ -1,10 +1,13 @@
+import { Question } from 'src/question/question.entity';
 import { User } from 'src/user/user.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -21,6 +24,10 @@ export class Answer {
 
   @DeleteDateColumn()
   deletedAt: Date;
+
+  @OneToOne(() => Question, question => question.answer)
+  @JoinColumn()
+  question: Question;
 
   @ManyToOne(() => User, user => user.answers)
   user: User;
