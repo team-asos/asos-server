@@ -2,6 +2,7 @@ import { Facility } from 'src/facility/facility.entity';
 import { Room } from 'src/room/room.entity';
 import { Seat } from 'src/seat/seat.entity';
 import {
+  Column,
   CreateDateColumn,
   Entity,
   OneToMany,
@@ -12,6 +13,9 @@ import {
 export class Floor {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column()
+  name: string;
 
   @CreateDateColumn()
   createdAt: Date;

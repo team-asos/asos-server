@@ -15,6 +15,9 @@ export class Room {
   id: number;
 
   @Column()
+  name: string;
+
+  @Column()
   maxUser: number;
 
   @Column()
