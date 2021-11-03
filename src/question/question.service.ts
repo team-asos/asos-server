@@ -5,6 +5,7 @@ import { UserRepository } from 'src/user/user.repository';
 import { HttpStatus, Injectable } from '@nestjs/common';
 
 import { CreateQuestionDto } from './dtos/create-question.dto';
+import { SearchQuestionDto } from './dtos/search-question.dto';
 import { Question } from './question.entity';
 import { QuestionRepository } from './question.repository';
 
@@ -14,6 +15,18 @@ export class QuestionService {
     private readonly questionRepository: QuestionRepository,
     private readonly userRepository: UserRepository,
   ) {}
+
+  async findAll(): Promise<Question[]> {
+    const questions = await this.questionRepository.find();
+
+    return questions;
+  }
+
+  async searchAll(search: SearchQuestionDto): Promise<Question[]> {
+    const questions = await this.questionRepository.search(search);
+
+    return questions;
+  }
 
   async createOne(createQuestionDto: CreateQuestionDto): Promise<void> {
     const { userId } = createQuestionDto;
