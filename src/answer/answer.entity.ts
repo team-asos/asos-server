@@ -1,22 +1,17 @@
-import { Notification } from 'src/notification/notification.entity';
 import { User } from 'src/user/user.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  JoinColumn,
-  OneToOne,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
 @Entity()
-export class Inquire {
+export class Answer {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Column({ default: 0 })
-  status: number;
 
   @Column({ length: 500 })
   message: string;
@@ -27,10 +22,6 @@ export class Inquire {
   @DeleteDateColumn()
   deletedAt: Date;
 
-  @OneToOne(() => User, user => user.inquire)
+  @ManyToOne(() => User, user => user.answers)
   user: User;
-
-  @OneToOne(() => Notification, notification => notification.inquire)
-  @JoinColumn()
-  notification: Notification;
 }
