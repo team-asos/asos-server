@@ -1,11 +1,13 @@
 import * as dotenv from 'dotenv';
 import * as moment from 'moment';
-import HttpError from 'src/common/exceptions/http.exception';
-import { ErrorMessage } from 'src/common/utils/errors/ErrorMessage';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import * as winston from 'winston';
 
-import { HttpStatus } from '@nestjs/common';
+import {
+  BadRequestException,
+  ValidationError,
+  ValidationPipeOptions,
+} from '@nestjs/common';
 import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
@@ -116,18 +118,36 @@ export class ConfigService {
 
     return {
       origin: (origin, callback) => {
-        if (whitelist.indexOf(origin) !== -1) callback(null, true);
-        else
-          callback(
-            new HttpError(
-              HttpStatus.INTERNAL_SERVER_ERROR,
-              ErrorMessage.NOT_ALLOW_CORS,
-            ),
-          );
+        if (!origin || whitelist.indexOf(origin) !== -1) callback(null, true);
+        else callback(new Error('Not allowed by CORS'));
       },
-      allowedHeaders: ['Content-Type', 'Authorization'],
+      allowedHeaders: [
+        'Access-Control-Allow-Headers',
+        'Content-Type',
+        'Accept',
+        'Authorization',
+        'api_key',
+      ],
       methods: ['GET', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
       credentials: true,
+    };
+  }
+
+  get validationConfig(): ValidationPipeOptions {
+    return {
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+      exceptionFactory: (errors: ValidationError[]) => {
+        const messages = errors.map(error => {
+          return {
+            error: `${error.property} has wrong value ${error.value}.`,
+            message: Object.values(error.constraints).join(''),
+          };
+        });
+
+        return new BadRequestException({ validation: messages });
+      },
     };
   }
 }

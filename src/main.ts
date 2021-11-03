@@ -1,10 +1,6 @@
 import * as morgan from 'morgan';
 
-import {
-  BadRequestException,
-  ValidationError,
-  ValidationPipe,
-} from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from './app.module';
@@ -18,34 +14,18 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const configService = app.select(ConfigModule).get(ConfigService);
+  const loggerService = app.select(ConfigModule).get(LoggerService);
 
   // CORS
   app.enableCors(configService.corsConfig);
 
   // Validation
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-      exceptionFactory: (errors: ValidationError[]) => {
-        const messages = errors.map(error => {
-          return {
-            error: `${error.property} has wrong value ${error.value}.`,
-            message: Object.values(error.constraints).join(''),
-          };
-        });
-
-        return new BadRequestException({ validation: messages });
-      },
-    }),
-  );
+  app.useGlobalPipes(new ValidationPipe(configService.validationConfig));
 
   // Filter
   app.useGlobalFilters(new CatchException());
 
   // Logger
-  const loggerService = app.select(ConfigModule).get(LoggerService);
   app.useLogger(loggerService);
   app.use(
     morgan(
