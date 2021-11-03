@@ -5,6 +5,7 @@ import { FloorRepository } from 'src/floor/floor.repository';
 import { HttpStatus, Injectable } from '@nestjs/common';
 
 import { CreateRoomDto } from './dtos/create-room.dto';
+import { UpdateRoomDto } from './dtos/update-room.dto';
 import { Room } from './room.entity';
 import { RoomRepository } from './room.repository';
 
@@ -43,5 +44,25 @@ export class RoomService {
     await this.roomRepository.save(room);
 
     return;
+  }
+
+  async updateOne(roomId: number, updateRoomDto: UpdateRoomDto): Promise<void> {
+    let room = await this.roomRepository.findOne(roomId);
+
+    if (room === undefined)
+      throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_ROOM);
+
+    room = { ...room, ...updateRoomDto };
+
+    await this.roomRepository.save(room);
+  }
+
+  async deleteOne(roomId: number): Promise<void> {
+    const room = await this.roomRepository.findOne(roomId);
+
+    if (room === undefined)
+      throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_ROOM);
+
+    await this.roomRepository.deleteOneById(roomId);
   }
 }
