@@ -34,7 +34,7 @@ export class User {
   role: number;
 
   @Column()
-  employeeNumber: string;
+  employeeId: string;
 
   @Column()
   department: string;

@@ -1,5 +1,13 @@
-import { Controller, HttpCode, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { LoginUserDto } from 'src/user/dtos/login-user.dto';
 
 import { LocalAuthGuard } from '../common/guards/local-auth.guard';
 import { AuthService } from './auth.service';
@@ -16,7 +24,10 @@ export class AuthController {
   @ApiResponse({ status: 200, description: 'Success' })
   @ApiResponse({ status: 401, description: 'Wrong Password' })
   @ApiResponse({ status: 404, description: 'Wrong Email' })
-  async login(@Request() req): Promise<{ access_token: string }> {
+  async login(
+    @Request() req,
+    @Body() loginUserDto: LoginUserDto,
+  ): Promise<{ access_token: string }> {
     return this.authService.login(req.user);
   }
 }
