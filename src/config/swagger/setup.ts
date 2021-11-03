@@ -26,6 +26,7 @@ export function setupSwagger(app: INestApplication, config: ISwaggerConfig) {
 
         return result;
       },
+      defaultModelsExpandDepth: -1,
     },
   });
 }
