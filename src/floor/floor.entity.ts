@@ -2,6 +2,7 @@ import { Facility } from 'src/facility/facility.entity';
 import { Room } from 'src/room/room.entity';
 import { Seat } from 'src/seat/seat.entity';
 import {
+  Column,
   CreateDateColumn,
   Entity,
   OneToMany,
@@ -15,6 +16,9 @@ export class Floor {
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @Column()
+  name: string;
 
   @OneToMany(() => Seat, seat => seat.floor)
   seats: Seat[];
