@@ -28,23 +28,35 @@ export class FloorService {
   //층 생성
   async createOne(createFloorDto: CreateFloorDto): Promise<void> {
     const { floorId } = createFloorDto;
+    try {
+      if (floorId === undefined)
+        throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_FLOOR);
 
-    if (floorId === undefined)
-      throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_FLOOR);
+      let floor = new Floor();
+      floor = { ...floor, ...createFloorDto };
 
-    let floor = new Floor();
-    floor = { ...floor, ...createFloorDto };
-
-    await this.floorRepository.save(floor);
+      await this.floorRepository.save(floor);
+    } catch (err) {
+      throw new HttpError(
+        HttpStatus.BAD_REQUEST,
+        ErrorMessage.FAIL_CREATE_FLOOR,
+      );
+    }
   }
 
   //층 삭제
   async deleteOne(floorId: number): Promise<void> {
     const floor = await this.floorRepository.findOne();
-
-    if (floor === undefined)
-      throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_FLOOR);
-    await this.floorRepository.deleteOneById(floorId);
+    try {
+      if (floor === undefined)
+        throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_FLOOR);
+      await this.floorRepository.deleteOneById(floorId);
+    } catch (err) {
+      throw new HttpError(
+        HttpStatus.BAD_REQUEST,
+        ErrorMessage.FAIL_DELETE_FLOOR,
+      );
+    }
   }
 
   //층 수정
