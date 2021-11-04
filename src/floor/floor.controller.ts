@@ -26,6 +26,7 @@ export class FloorController {
   @ApiResponse({ status: 200, description: 'Success' })
   async findAll(): Promise<Floor[]> {
     const floors = await this.floorService.findAll();
+
     return floors;
   }
 
@@ -47,6 +48,7 @@ export class FloorController {
   @ApiResponse({ status: 400, description: 'Fail to Save floorId' })
   async createOne(@Body() createFloorDto: CreateFloorDto): Promise<string> {
     await this.floorService.createOne(createFloorDto);
+
     return 'success';
   }
 

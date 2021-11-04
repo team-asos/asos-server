@@ -5,11 +5,13 @@ import {
   Get,
   HttpCode,
   Param,
+  Patch,
   Post,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { CreateFacilityDto } from './dtos/create-facility.dto';
+import { UpdateFacilityDto } from './dtos/update-facility.dto';
 import { Facility } from './facility.entity';
 import { FacilityService } from './facility.service';
 
@@ -38,12 +40,26 @@ export class FacilityController {
     @Body() createFacilityDto: CreateFacilityDto,
   ): Promise<string> {
     await this.facilityService.createOne(createFacilityDto);
+
+    return 'success';
+  }
+
+  @Patch(':facilityId')
+  @HttpCode(200)
+  @ApiOperation({ summary: '특정 시설 수정' })
+  @ApiResponse({ status: 200, description: 'Success' })
+  async updateOne(
+    @Param('facilityId') facilityId: number,
+    @Body() updatefacilityDto: UpdateFacilityDto,
+  ): Promise<string> {
+    await this.facilityService.updateOne(facilityId, updatefacilityDto);
+
     return 'success';
   }
 
   @Delete(':facilityId')
   @HttpCode(200)
-  @ApiOperation({ summary: '시설 삭제' })
+  @ApiOperation({ summary: '특정 시설 삭제' })
   @ApiResponse({ status: 200, description: 'Success' })
   async deleteOne(@Param('facilityId') facilityId: number): Promise<string> {
     await this.facilityService.deleteOne(facilityId);

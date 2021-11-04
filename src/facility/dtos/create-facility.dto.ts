@@ -4,6 +4,9 @@ export class CreateFacilityDto {
   @IsString()
   type: string;
 
+  @IsString()
+  name: string;
+
   @IsNumber()
   x: number;
 
