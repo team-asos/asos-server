@@ -8,9 +8,6 @@ import { CreateFloorDto } from './dtos/create-floor.dto';
 import { UpdateFloorDto } from './dtos/update-floor.dto';
 import { Floor } from './floor.entity';
 
-import { FloorRepository } from 'src/floor/floor.repository';
-
-
 @Injectable()
 export class FloorService {
   constructor(private floorRepository: FloorRepository) {}
