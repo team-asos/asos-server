@@ -20,6 +20,9 @@ export class Floor {
   @CreateDateColumn()
   createdAt: Date;
 
+  @Column()
+  name: string;
+
   @OneToMany(() => Seat, seat => seat.floor)
   seats: Seat[];
 
