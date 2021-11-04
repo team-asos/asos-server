@@ -10,6 +10,8 @@ export enum ErrorMessage {
   NOT_FOUND_ANSWER = '존재하지 않는 답변입니다.',
   FAIL_SAVE_RESERVATION = '예약에 실패했습니다.',
   FAIL_CREATE_SEAT = '좌석 생성에 실패했습니다',
+  FAIL_SAVE_FACILITY = '시설 저장에 실패했습니다.',
+  FAIL_DELETE_FACILITY = '특정 시설 삭제에 실패했습니다',
   FAIL_CREATE_FACILITY = '시설 생성에 실패했습니다.',
   FAIL_CREATE_FLOOR = '층 생성에 실패했습니다',
   FAIL_DELETE_FLOOR = '특정 층 삭제에 실패했습니다',
