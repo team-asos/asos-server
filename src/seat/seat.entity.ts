@@ -15,6 +15,9 @@ export class Seat {
   id: number;
 
   @Column()
+  name: string;
+
+  @Column()
   x: number;
 
   @Column()

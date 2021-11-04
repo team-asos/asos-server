@@ -5,6 +5,7 @@ import { FloorRepository } from 'src/floor/floor.repository';
 import { HttpStatus, Injectable } from '@nestjs/common';
 
 import { CreateSeatDto } from './dtos/create-seat.dto';
+import { UpdateSeatDto } from './dtos/update-seat.dto';
 import { Seat } from './seat.entity';
 import { SeatRepository } from './seat.repository';
 
@@ -43,5 +44,25 @@ export class SeatService {
     await this.seatRepository.save(seat);
 
     return;
+  }
+
+  async updateOne(seatId: number, updateSeatDto: UpdateSeatDto): Promise<void> {
+    let seat = await this.seatRepository.findOne(seatId);
+
+    if (seat === undefined)
+      throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_SEAT);
+
+    seat = { ...seat, ...updateSeatDto };
+
+    await this.seatRepository.save(seat);
+  }
+
+  async deleteOne(seatId: number): Promise<void> {
+    const seat = await this.seatRepository.findOne(seatId);
+
+    if (seat === undefined)
+      throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_SEAT);
+
+    await this.seatRepository.deleteOneById(seatId);
   }
 }

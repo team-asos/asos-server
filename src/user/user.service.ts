@@ -8,6 +8,7 @@ import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { User } from './user.entity';
 import { UserRepository } from './user.repository';
+import { SearchUserDto } from './dtos/search-user.dto';
 
 @Injectable()
 export class UserService {
@@ -15,6 +16,12 @@ export class UserService {
 
   async findAll(): Promise<User[]> {
     const users = await this.userRepository.find();
+
+    return users;
+  }
+
+  async searchAll(search: SearchUserDto): Promise<User[]> {
+    const users = await this.userRepository.search(search);
 
     return users;
   }

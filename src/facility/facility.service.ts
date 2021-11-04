@@ -38,7 +38,7 @@ export class FacilityService {
     } catch (err) {
       throw new HttpError(
         HttpStatus.BAD_REQUEST,
-        ErrorMessage.FAIL_SAVE_FACILITY,
+        ErrorMessage.FAIL_CREATE_FACILITY,
       );
     }
     return;
