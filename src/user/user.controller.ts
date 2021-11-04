@@ -7,8 +7,9 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
@@ -26,6 +27,41 @@ export class UserController {
   @ApiResponse({ status: 200, description: 'Success' })
   async findAll(): Promise<User[]> {
     const users = await this.userService.findAll();
+
+    return users;
+  }
+
+  @Get('search')
+  @HttpCode(200)
+  @ApiOperation({ summary: '검색한 유저 조회' })
+  @ApiQuery({
+    name: 'email',
+    required: false,
+    type: String,
+  })
+  @ApiQuery({
+    name: 'name',
+    required: false,
+    type: String,
+  })
+  @ApiQuery({
+    name: 'employeeId',
+    required: false,
+    type: String,
+  })
+  @ApiQuery({
+    name: 'department',
+    required: false,
+    type: String,
+  })
+  @ApiQuery({
+    name: 'position',
+    required: false,
+    type: String,
+  })
+  @ApiResponse({ status: 200, description: 'Success' })
+  async searchAll(@Query() search): Promise<User[]> {
+    const users = await this.userService.searchAll(search);
 
     return users;
   }
