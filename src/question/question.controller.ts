@@ -1,7 +1,18 @@
-import { Body, Controller, Get, HttpCode, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { CreateQuestionDto } from './dtos/create-question.dto';
+import { UpdateQuestionDto } from './dtos/update-question.dto';
 import { Question } from './question.entity';
 import { QuestionService } from './question.service';
 
@@ -43,6 +54,29 @@ export class QuestionController {
     @Body() createQuestionDto: CreateQuestionDto,
   ): Promise<string> {
     await this.questionService.createOne(createQuestionDto);
+
+    return 'success';
+  }
+
+  @Patch(':questionId')
+  @HttpCode(200)
+  @ApiOperation({ summary: '특정 질문 수정' })
+  @ApiResponse({ status: 200, description: 'Success' })
+  async updateOne(
+    @Param('questionId') questionId: number,
+    @Body() updateQuestionDto: UpdateQuestionDto,
+  ): Promise<string> {
+    await this.questionService.updateOne(questionId, updateQuestionDto);
+
+    return 'success';
+  }
+
+  @Delete(':questionId')
+  @HttpCode(200)
+  @ApiOperation({ summary: '특정 질문 삭제' })
+  @ApiResponse({ status: 200, description: 'Success' })
+  async deleteOne(@Param('questionId') questionId: number): Promise<string> {
+    await this.questionService.deleteOne(questionId);
 
     return 'success';
   }

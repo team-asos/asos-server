@@ -8,6 +8,7 @@ import { CreateQuestionDto } from './dtos/create-question.dto';
 import { SearchQuestionDto } from './dtos/search-question.dto';
 import { Question } from './question.entity';
 import { QuestionRepository } from './question.repository';
+import { UpdateQuestionDto } from './dtos/update-question.dto';
 
 @Injectable()
 export class QuestionService {
@@ -46,5 +47,34 @@ export class QuestionService {
     await this.questionRepository.save(question);
 
     return;
+  }
+
+  async updateOne(
+    questionId: number,
+    updateQuestionDto: UpdateQuestionDto,
+  ): Promise<void> {
+    let question = await this.questionRepository.findOne(questionId);
+
+    if (question === undefined)
+      throw new HttpError(
+        HttpStatus.NOT_FOUND,
+        ErrorMessage.NOT_FOUND_QUESTION,
+      );
+
+    question = { ...question, ...updateQuestionDto };
+
+    await this.questionRepository.save(question);
+  }
+
+  async deleteOne(questionId: number): Promise<void> {
+    const question = await this.questionRepository.findOne(questionId);
+
+    if (question === undefined)
+      throw new HttpError(
+        HttpStatus.NOT_FOUND,
+        ErrorMessage.NOT_FOUND_QUESTION,
+      );
+
+    await this.questionRepository.deleteOneById(questionId);
   }
 }
