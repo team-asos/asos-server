@@ -1,3 +1,8 @@
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { Role } from 'src/common/roles/role.enum';
+import { Roles } from 'src/common/roles/roles.decorator';
+
 import {
   Body,
   Controller,
@@ -8,8 +13,15 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
@@ -21,9 +33,12 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @Get()
   @HttpCode(200)
-  @ApiOperation({ summary: '모든 유저 조회' })
+  @ApiOperation({ summary: '모든 유저 조회', description: '관리자' })
   @ApiResponse({ status: 200, description: 'Success' })
   async findAll(): Promise<User[]> {
     const users = await this.userService.findAll();
@@ -31,9 +46,12 @@ export class UserController {
     return users;
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.User, Role.Admin)
   @Get('search')
   @HttpCode(200)
-  @ApiOperation({ summary: '검색한 유저 조회' })
+  @ApiOperation({ summary: '검색한 유저 조회', description: '사용자, 관리자' })
   @ApiQuery({
     name: 'email',
     required: false,
@@ -66,9 +84,12 @@ export class UserController {
     return users;
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.User, Role.Admin)
   @Get(':userId')
   @HttpCode(200)
-  @ApiOperation({ summary: '특정 유저 조회' })
+  @ApiOperation({ summary: '특정 유저 조회', description: '사용자, 관리자' })
   @ApiResponse({ status: 200, description: 'Success' })
   @ApiResponse({ status: 404, description: 'Wrong userId' })
   async findOne(@Param('userId') userId: number): Promise<User> {
@@ -87,9 +108,12 @@ export class UserController {
     return 'success';
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.User, Role.Admin)
   @Patch(':userId')
   @HttpCode(200)
-  @ApiOperation({ summary: '특정 유저 수정' })
+  @ApiOperation({ summary: '특정 유저 수정', description: '사용자, 관리자' })
   @ApiResponse({ status: 200, description: 'Success' })
   async updateOne(
     @Param('userId') userId: number,
@@ -100,9 +124,12 @@ export class UserController {
     return 'success';
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.User, Role.Admin)
   @Delete(':userId')
   @HttpCode(200)
-  @ApiOperation({ summary: '특정 유저 삭제' })
+  @ApiOperation({ summary: '특정 유저 삭제', description: '사용자, 관리자' })
   @ApiResponse({ status: 200, description: 'Success' })
   async deleteOne(@Param('userId') userId: number): Promise<string> {
     await this.userService.deleteOne(userId);
