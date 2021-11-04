@@ -16,6 +16,9 @@ export class Facility {
   type: string;
 
   @Column()
+  name: string;
+
+  @Column()
   x: number;
 
   @Column()
