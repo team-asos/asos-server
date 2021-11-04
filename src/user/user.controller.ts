@@ -1,3 +1,8 @@
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { Role } from 'src/common/roles/role.enum';
+import { Roles } from 'src/common/roles/roles.decorator';
+
 import {
   Body,
   Controller,
@@ -8,8 +13,15 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
@@ -21,6 +33,9 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.Admin)
   @Get()
   @HttpCode(200)
   @ApiOperation({ summary: '모든 유저 조회' })
@@ -31,6 +46,9 @@ export class UserController {
     return users;
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.User, Role.Admin)
   @Get('search')
   @HttpCode(200)
   @ApiOperation({ summary: '검색한 유저 조회' })
@@ -66,6 +84,9 @@ export class UserController {
     return users;
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.User, Role.Admin)
   @Get(':userId')
   @HttpCode(200)
   @ApiOperation({ summary: '특정 유저 조회' })
@@ -87,6 +108,9 @@ export class UserController {
     return 'success';
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.User, Role.Admin)
   @Patch(':userId')
   @HttpCode(200)
   @ApiOperation({ summary: '특정 유저 수정' })
@@ -100,6 +124,9 @@ export class UserController {
     return 'success';
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.User, Role.Admin)
   @Delete(':userId')
   @HttpCode(200)
   @ApiOperation({ summary: '특정 유저 삭제' })
