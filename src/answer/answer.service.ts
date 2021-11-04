@@ -9,6 +9,7 @@ import { Answer } from './answer.entity';
 import { AnswerRepository } from './answer.repository';
 import { CreateAnswerDto } from './dtos/create-answer.dto';
 import { SearchAnswerDto } from './dtos/search-answer.dto';
+import { UpdateAnswerDto } from './dtos/update-answer.dto';
 
 @Injectable()
 export class AnswerService {
@@ -57,5 +58,28 @@ export class AnswerService {
     await this.answerRepository.save(answer);
 
     return;
+  }
+
+  async updateOne(
+    answerId: number,
+    updateAnswerDto: UpdateAnswerDto,
+  ): Promise<void> {
+    let answer = await this.answerRepository.findOne(answerId);
+
+    if (answer === undefined)
+      throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_ANSWER);
+
+    answer = { ...answer, ...updateAnswerDto };
+
+    await this.answerRepository.save(answer);
+  }
+
+  async deleteOne(answerId: number): Promise<void> {
+    const answer = await this.answerRepository.findOne(answerId);
+
+    if (answer === undefined)
+      throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_ANSWER);
+
+    await this.answerRepository.deleteOneById(answerId);
   }
 }

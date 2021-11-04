@@ -17,4 +17,11 @@ export class AnswerRepository extends Repository<Answer> {
 
     return answers;
   }
+
+  async deleteOneById(answerId: number) {
+    await this.createQueryBuilder('answer')
+      .softDelete()
+      .where('id = (:answerId)', { answerId })
+      .execute();
+  }
 }
