@@ -5,9 +5,9 @@ import { Floor } from './floor.entity';
 @EntityRepository(Floor)
 export class FloorRepository extends Repository<Floor> {
   async deleteOneById(floorId: number): Promise<void> {
-    await this.createQueryBuilder('floor')
+    await this.createQueryBuilder()
       .delete()
-      .where('floor.id = (:floorId)', { floorId })
+      .where('id = (:floorId)', { floorId })
       .execute();
   }
 }
