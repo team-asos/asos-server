@@ -16,21 +16,21 @@ export class FacilityService {
     private floorRepository: FloorRepository,
   ) {}
 
-  //모든 시설 조회
   async findAll(): Promise<Facility[]> {
     const facilities = await this.facilityRepository.find();
 
     return facilities;
   }
 
-  //시설 생성
   async createOne(createFacilityDto: CreateFacilityDto): Promise<void> {
     try {
       const { floorId } = createFacilityDto;
       const floor = await this.floorRepository.findOne(floorId);
+
       if (floor == undefined) {
         throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_FLOOR);
       }
+
       let facility = new Facility();
       facility = { ...facility, ...createFacilityDto, floor };
 
@@ -44,26 +44,6 @@ export class FacilityService {
     return;
   }
 
-  //시설 삭제
-  async deleteOne(facilityId: number): Promise<void> {
-    const facility = await this.facilityRepository.findOne();
-    try {
-      if (facility === undefined)
-        throw new HttpError(
-          HttpStatus.NOT_FOUND,
-          ErrorMessage.NOT_FOUND_FACILITY,
-        );
-
-      await this.facilityRepository.deleteOneById(facilityId);
-    } catch {
-      throw new HttpError(
-        HttpStatus.BAD_REQUEST,
-        ErrorMessage.FAIL_DELETE_FACILITY,
-      );
-    }
-  }
-
-  //시설 수정
   async updateOne(
     facilityId: number,
     updatefacilityDto: UpdateFacilityDto,
@@ -78,5 +58,24 @@ export class FacilityService {
     facility = { ...facility, ...updatefacilityDto };
 
     await this.floorRepository.save(facility);
+  }
+
+  async deleteOne(facilityId: number): Promise<void> {
+    const facility = await this.facilityRepository.findOne();
+
+    if (facility === undefined)
+      throw new HttpError(
+        HttpStatus.NOT_FOUND,
+        ErrorMessage.NOT_FOUND_FACILITY,
+      );
+
+    try {
+      await this.facilityRepository.deleteOneById(facilityId);
+    } catch {
+      throw new HttpError(
+        HttpStatus.BAD_REQUEST,
+        ErrorMessage.FAIL_DELETE_FACILITY,
+      );
+    }
   }
 }

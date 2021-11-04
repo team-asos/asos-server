@@ -20,7 +20,6 @@ import { FacilityService } from './facility.service';
 export class FacilityController {
   constructor(private readonly facilityService: FacilityService) {}
 
-  //시설 조회
   @Get()
   @HttpCode(200)
   @ApiOperation({ summary: '모든 시설 조회' })
@@ -31,7 +30,6 @@ export class FacilityController {
     return facilities;
   }
 
-  //시설 생성
   @Post()
   @HttpCode(201)
   @ApiOperation({ summary: '시설 생성' })
@@ -42,10 +40,10 @@ export class FacilityController {
     @Body() createFacilityDto: CreateFacilityDto,
   ): Promise<string> {
     await this.facilityService.createOne(createFacilityDto);
+
     return 'success';
   }
 
-  //시설 수정
   @Patch(':facilityId')
   @HttpCode(200)
   @ApiOperation({ summary: '특정 시설 수정' })
@@ -55,10 +53,10 @@ export class FacilityController {
     @Body() updatefacilityDto: UpdateFacilityDto,
   ): Promise<string> {
     await this.facilityService.updateOne(facilityId, updatefacilityDto);
+
     return 'success';
   }
 
-  //시설 삭제
   @Delete(':facilityId')
   @HttpCode(200)
   @ApiOperation({ summary: '특정 시설 삭제' })
