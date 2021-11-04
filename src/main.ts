@@ -35,7 +35,7 @@ async function bootstrap() {
     morgan(
       'HTTP/:http-version :method :remote-addr :url :remote-user :status :res[content-length] :referrer :user-agent :response-time ms',
       {
-        skip: req => req.url === '/favicon.ico',
+        skip: req => req.url === '/favicon.ico' || req.url === '/',
         stream: {
           write: message => {
             loggerService.http(message);
