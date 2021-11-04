@@ -8,6 +8,7 @@ export function setupSwagger(app: INestApplication, config: ISwaggerConfig) {
     .setTitle(config.title)
     .setDescription(config.description)
     .setVersion(config.version)
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
