@@ -118,7 +118,12 @@ export class ConfigService {
 
     return {
       origin: (origin, callback) => {
-        if (!origin || whitelist.indexOf(origin) !== -1) callback(null, true);
+        if (
+          !origin ||
+          whitelist.indexOf(origin) !== -1 ||
+          origin === `http://localhost:${this.get('PORT')}`
+        )
+          callback(null, true);
         else callback(new Error('Not allowed by CORS'));
       },
       allowedHeaders: [
@@ -126,7 +131,6 @@ export class ConfigService {
         'Content-Type',
         'Accept',
         'Authorization',
-        'api_key',
       ],
       methods: ['GET', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
       credentials: true,
