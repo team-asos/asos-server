@@ -8,6 +8,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 import { Answer } from './answer.entity';
 import { AnswerRepository } from './answer.repository';
 import { CreateAnswerDto } from './dtos/create-answer.dto';
+import { SearchAnswerDto } from './dtos/search-answer.dto';
 
 @Injectable()
 export class AnswerService {
@@ -16,6 +17,18 @@ export class AnswerService {
     private readonly questionRepository: QuestionRepository,
     private readonly userRepository: UserRepository,
   ) {}
+
+  async findAll(): Promise<Answer[]> {
+    const answers = await this.answerRepository.find();
+
+    return answers;
+  }
+
+  async searchAll(search: SearchAnswerDto): Promise<Answer[]> {
+    const answers = await this.answerRepository.search(search);
+
+    return answers;
+  }
 
   async createOne(createAnswerDto: CreateAnswerDto): Promise<void> {
     const { userId, questionId } = createAnswerDto;

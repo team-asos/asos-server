@@ -30,8 +30,6 @@ export class QuestionController {
   })
   @ApiResponse({ status: 200, description: 'Success' })
   async searchAll(@Query() search): Promise<Question[]> {
-    console.log(search);
-
     const questions = await this.questionService.searchAll(search);
 
     return questions;
