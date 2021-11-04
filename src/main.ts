@@ -2,6 +2,7 @@ import * as morgan from 'morgan';
 
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 import { AppModule } from './app.module';
 import CatchException from './common/filters/http-exception.filter';
@@ -11,13 +12,16 @@ import { ConfigService } from './config/config.service';
 import { setupSwagger } from './config/swagger/setup';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   const configService = app.select(ConfigModule).get(ConfigService);
   const loggerService = app.select(ConfigModule).get(LoggerService);
 
   // CORS
   app.enableCors(configService.corsConfig);
+
+  // Proxy
+  app.enable('trust proxy');
 
   // Validation
   app.useGlobalPipes(new ValidationPipe(configService.validationConfig));
