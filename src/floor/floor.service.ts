@@ -27,11 +27,7 @@ export class FloorService {
 
   //층 생성
   async createOne(createFloorDto: CreateFloorDto): Promise<void> {
-    const { floorId } = createFloorDto;
     try {
-      if (floorId === undefined)
-        throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_FLOOR);
-
       let floor = new Floor();
       floor = { ...floor, ...createFloorDto };
 
