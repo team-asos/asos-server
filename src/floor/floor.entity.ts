@@ -20,6 +20,18 @@ export class Floor {
   @Column()
   name: string;
 
+  @Column()
+  x: number;
+
+  @Column()
+  y: number;
+
+  @Column()
+  width: number;
+
+  @Column()
+  height: number;
+
   @OneToMany(() => Seat, seat => seat.floor)
   seats: Seat[];
 
