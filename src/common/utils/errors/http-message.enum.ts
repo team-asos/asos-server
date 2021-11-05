@@ -1,4 +1,4 @@
-export enum ErrorMessage {
+export enum HttpMessage {
   NOT_FOUND_USER = '존재하지 않는 사용자입니다.',
   NOT_FOUND_RESERVATION = '존재하지 않는 예약입니다.',
   NOT_FOUND_SEAT = '존재하지 않는 좌석입니다.',
@@ -8,13 +8,12 @@ export enum ErrorMessage {
   NOT_FOUND_FACILITY = '존재하지 않는 시설입니다.',
   NOT_FOUND_QUESTION = '존재하지 않는 질문입니다.',
   NOT_FOUND_ANSWER = '존재하지 않는 답변입니다.',
-  FAIL_SAVE_RESERVATION = '예약에 실패했습니다.',
-  FAIL_CREATE_SEAT = '좌석 생성에 실패했습니다',
-  FAIL_SAVE_FACILITY = '시설 저장에 실패했습니다.',
-  FAIL_DELETE_FACILITY = '특정 시설 삭제에 실패했습니다',
-  FAIL_CREATE_FACILITY = '시설 생성에 실패했습니다.',
-  FAIL_CREATE_FLOOR = '층 생성에 실패했습니다',
-  FAIL_DELETE_FLOOR = '특정 층 삭제에 실패했습니다',
+  FAIL_SAVE_RESERVATION = '예약을 생성할 수 없습니다.',
+  FAIL_SAVE_SEAT = '좌석을 생성할 수 없습니다.',
+  FAIL_SAVE_FACILITY = '시설을 생성할 수 없습니다.',
+  FAIL_SAVE_FLOOR = '층을 생성할 수 없습니다.',
+  FAIL_DELETE_FACILITY = '시설 삭제에 실패했습니다',
+  FAIL_DELETE_FLOOR = '층 삭제에 실패했습니다',
+  WRONG_ID = '아이디가 잘못되었습니다.',
   WRONG_PASSWORD = '비밀번호가 잘못되었습니다.',
-  WRONG_ID = '잘못된 아이디 입니다.',
 }

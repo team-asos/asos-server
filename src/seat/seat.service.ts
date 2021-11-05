@@ -1,5 +1,5 @@
 import HttpError from 'src/common/exceptions/http.exception';
-import { ErrorMessage } from 'src/common/utils/errors/ErrorMessage';
+import { HttpMessage } from 'src/common/utils/errors/http-message.enum';
 import { FloorRepository } from 'src/floor/floor.repository';
 
 import { HttpStatus, Injectable } from '@nestjs/common';
@@ -26,7 +26,7 @@ export class SeatService {
     const seat = await this.seatRepository.findOne(seatId);
 
     if (seat === undefined)
-      throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_SEAT);
+      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_SEAT);
 
     return seat;
   }
@@ -36,7 +36,7 @@ export class SeatService {
 
     const floor = await this.floorRepository.findOne(floorId);
     if (floor === undefined)
-      throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_FLOOR);
+      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_FLOOR);
 
     let seat = new Seat();
     seat = { ...seat, ...createSeatDto, floor };
@@ -50,7 +50,7 @@ export class SeatService {
     let seat = await this.seatRepository.findOne(seatId);
 
     if (seat === undefined)
-      throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_SEAT);
+      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_SEAT);
 
     seat = { ...seat, ...updateSeatDto };
 
@@ -61,7 +61,7 @@ export class SeatService {
     const seat = await this.seatRepository.findOne(seatId);
 
     if (seat === undefined)
-      throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_SEAT);
+      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_SEAT);
 
     await this.seatRepository.deleteOneById(seatId);
   }

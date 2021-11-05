@@ -1,15 +1,39 @@
-import { LoginUserDto } from 'src/user/dtos/login-user.dto';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 
-import { Controller, HttpCode, Post, Request, UseGuards } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  Controller,
+  Get,
+  HttpCode,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { LocalAuthGuard } from '../common/guards/local-auth.guard';
 import { AuthService } from './auth.service';
+import { LoginUserDto } from './dtos/login-user.dto';
 
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  @HttpCode(200)
+  @ApiOperation({ summary: '본인 정보 조회' })
+  @ApiResponse({ status: 200, description: 'Success' })
+  async check(@Request() req): Promise<any> {
+    return req.user;
+  }
 
   @UseGuards(LocalAuthGuard)
   @Post()

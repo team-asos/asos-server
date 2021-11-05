@@ -1,14 +1,14 @@
 import * as bcrypt from 'bcrypt';
 import HttpError from 'src/common/exceptions/http.exception';
-import { ErrorMessage } from 'src/common/utils/errors/ErrorMessage';
+import { HttpMessage } from 'src/common/utils/errors/http-message.enum';
 
 import { HttpStatus, Injectable } from '@nestjs/common';
 
 import { CreateUserDto } from './dtos/create-user.dto';
+import { SearchUserDto } from './dtos/search-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import { User } from './user.entity';
 import { UserRepository } from './user.repository';
-import { SearchUserDto } from './dtos/search-user.dto';
 
 @Injectable()
 export class UserService {
@@ -30,7 +30,7 @@ export class UserService {
     const user = await this.userRepository.findOne(userId);
 
     if (user === undefined)
-      throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_USER);
+      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_USER);
 
     return user;
   }
@@ -57,7 +57,7 @@ export class UserService {
     let user = await this.userRepository.findOne(userId);
 
     if (user === undefined)
-      throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_USER);
+      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_USER);
 
     user = { ...user, ...updateUserDto };
 
@@ -68,7 +68,7 @@ export class UserService {
     const user = await this.userRepository.findOne(userId);
 
     if (user === undefined)
-      throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_USER);
+      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_USER);
 
     await this.userRepository.deleteOneById(userId);
   }

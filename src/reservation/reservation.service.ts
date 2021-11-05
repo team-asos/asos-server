@@ -1,5 +1,5 @@
 import HttpError from 'src/common/exceptions/http.exception';
-import { ErrorMessage } from 'src/common/utils/errors/ErrorMessage';
+import { HttpMessage } from 'src/common/utils/errors/http-message.enum';
 import { Participant } from 'src/participant/participant.entity';
 import { ParticipantRepository } from 'src/participant/participant.repository';
 import { UserRepository } from 'src/user/user.repository';
@@ -28,7 +28,9 @@ export class ReservationService {
   }
 
   async findOne(reservationId: number): Promise<Reservation> {
-    const reservation = await this.reservationRepository.findOne(reservationId);
+    const reservation = await this.reservationRepository.getOneById(
+      reservationId,
+    );
 
     return reservation;
   }
@@ -46,7 +48,7 @@ export class ReservationService {
 
       const user = await this.userRepository.findOne(userId);
       if (user === undefined)
-        throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_USER);
+        throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_USER);
 
       let reservation = new Reservation();
       reservation = { ...reservation, ...createRoomReservationDto, user };
@@ -61,7 +63,7 @@ export class ReservationService {
           if (user === undefined)
             throw new HttpError(
               HttpStatus.NOT_FOUND,
-              ErrorMessage.NOT_FOUND_PARTICIPANT,
+              HttpMessage.NOT_FOUND_PARTICIPANT,
             );
 
           const participant = new Participant();
@@ -76,7 +78,7 @@ export class ReservationService {
 
       throw new HttpError(
         HttpStatus.BAD_REQUEST,
-        ErrorMessage.FAIL_SAVE_RESERVATION,
+        HttpMessage.FAIL_SAVE_RESERVATION,
       );
     } finally {
       await queryRunner.release();
@@ -92,7 +94,7 @@ export class ReservationService {
 
     const user = await this.userRepository.findOne(userId);
     if (user === undefined)
-      throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_USER);
+      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_USER);
 
     let reservation = new Reservation();
     reservation = { ...reservation, ...createSeatReservationDto, user };
@@ -108,7 +110,7 @@ export class ReservationService {
     if (reservation === undefined)
       throw new HttpError(
         HttpStatus.NOT_FOUND,
-        ErrorMessage.NOT_FOUND_RESERVATION,
+        HttpMessage.NOT_FOUND_RESERVATION,
       );
 
     await this.reservationRepository.deleteOneById(reservationId);

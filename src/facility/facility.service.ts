@@ -1,5 +1,5 @@
 import HttpError from 'src/common/exceptions/http.exception';
-import { ErrorMessage } from 'src/common/utils/errors/ErrorMessage';
+import { HttpMessage } from 'src/common/utils/errors/http-message.enum';
 import { FloorRepository } from 'src/floor/floor.repository';
 
 import { HttpStatus, Injectable } from '@nestjs/common';
@@ -28,7 +28,7 @@ export class FacilityService {
       const floor = await this.floorRepository.findOne(floorId);
 
       if (floor == undefined) {
-        throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_FLOOR);
+        throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_FLOOR);
       }
 
       let facility = new Facility();
@@ -38,7 +38,7 @@ export class FacilityService {
     } catch (err) {
       throw new HttpError(
         HttpStatus.BAD_REQUEST,
-        ErrorMessage.FAIL_CREATE_FACILITY,
+        HttpMessage.FAIL_SAVE_FACILITY,
       );
     }
     return;
@@ -50,10 +50,7 @@ export class FacilityService {
   ): Promise<void> {
     let facility = await this.facilityRepository.findOne(facilityId);
     if (facility === undefined)
-      throw new HttpError(
-        HttpStatus.NOT_FOUND,
-        ErrorMessage.NOT_FOUND_FACILITY,
-      );
+      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_FACILITY);
 
     facility = { ...facility, ...updatefacilityDto };
 
@@ -64,17 +61,14 @@ export class FacilityService {
     const facility = await this.facilityRepository.findOne();
 
     if (facility === undefined)
-      throw new HttpError(
-        HttpStatus.NOT_FOUND,
-        ErrorMessage.NOT_FOUND_FACILITY,
-      );
+      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_FACILITY);
 
     try {
       await this.facilityRepository.deleteOneById(facilityId);
     } catch {
       throw new HttpError(
         HttpStatus.BAD_REQUEST,
-        ErrorMessage.FAIL_DELETE_FACILITY,
+        HttpMessage.FAIL_DELETE_FACILITY,
       );
     }
   }
