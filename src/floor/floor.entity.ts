@@ -17,7 +17,7 @@ export class Floor {
   @Column()
   name: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ select: false })
   createdAt: Date;
 
   @OneToMany(() => Seat, seat => seat.floor)

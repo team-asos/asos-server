@@ -28,7 +28,9 @@ export class ReservationService {
   }
 
   async findOne(reservationId: number): Promise<Reservation> {
-    const reservation = await this.reservationRepository.findOne(reservationId);
+    const reservation = await this.reservationRepository.getOneById(
+      reservationId,
+    );
 
     return reservation;
   }
