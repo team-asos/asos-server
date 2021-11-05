@@ -1,14 +1,14 @@
 import HttpError from 'src/common/exceptions/http.exception';
-import { ErrorMessage } from 'src/common/utils/errors/ErrorMessage';
+import { HttpMessage } from 'src/common/utils/errors/http-message.enum';
 import { UserRepository } from 'src/user/user.repository';
 
 import { HttpStatus, Injectable } from '@nestjs/common';
 
 import { CreateQuestionDto } from './dtos/create-question.dto';
 import { SearchQuestionDto } from './dtos/search-question.dto';
+import { UpdateQuestionDto } from './dtos/update-question.dto';
 import { Question } from './question.entity';
 import { QuestionRepository } from './question.repository';
-import { UpdateQuestionDto } from './dtos/update-question.dto';
 
 @Injectable()
 export class QuestionService {
@@ -35,7 +35,7 @@ export class QuestionService {
     const user = await this.userRepository.findOne(userId);
 
     if (user === undefined)
-      throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_USER);
+      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_USER);
 
     let question = new Question();
     question = {
@@ -56,10 +56,7 @@ export class QuestionService {
     let question = await this.questionRepository.findOne(questionId);
 
     if (question === undefined)
-      throw new HttpError(
-        HttpStatus.NOT_FOUND,
-        ErrorMessage.NOT_FOUND_QUESTION,
-      );
+      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_QUESTION);
 
     question = { ...question, ...updateQuestionDto };
 
@@ -70,10 +67,7 @@ export class QuestionService {
     const question = await this.questionRepository.findOne(questionId);
 
     if (question === undefined)
-      throw new HttpError(
-        HttpStatus.NOT_FOUND,
-        ErrorMessage.NOT_FOUND_QUESTION,
-      );
+      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_QUESTION);
 
     await this.questionRepository.deleteOneById(questionId);
   }

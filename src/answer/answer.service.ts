@@ -1,5 +1,5 @@
 import HttpError from 'src/common/exceptions/http.exception';
-import { ErrorMessage } from 'src/common/utils/errors/ErrorMessage';
+import { HttpMessage } from 'src/common/utils/errors/http-message.enum';
 import { QuestionRepository } from 'src/question/question.repository';
 import { UserRepository } from 'src/user/user.repository';
 
@@ -37,15 +37,12 @@ export class AnswerService {
     const user = await this.userRepository.findOne(userId);
 
     if (user === undefined)
-      throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_USER);
+      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_USER);
 
     const question = await this.questionRepository.findOne(questionId);
 
     if (question === undefined)
-      throw new HttpError(
-        HttpStatus.NOT_FOUND,
-        ErrorMessage.NOT_FOUND_QUESTION,
-      );
+      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_QUESTION);
 
     let answer = new Answer();
     answer = {
@@ -67,7 +64,7 @@ export class AnswerService {
     let answer = await this.answerRepository.findOne(answerId);
 
     if (answer === undefined)
-      throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_ANSWER);
+      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_ANSWER);
 
     answer = { ...answer, ...updateAnswerDto };
 
@@ -78,7 +75,7 @@ export class AnswerService {
     const answer = await this.answerRepository.findOne(answerId);
 
     if (answer === undefined)
-      throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_ANSWER);
+      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_ANSWER);
 
     await this.answerRepository.deleteOneById(answerId);
   }

@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcrypt';
 import HttpError from 'src/common/exceptions/http.exception';
-import { ErrorMessage } from 'src/common/utils/errors/ErrorMessage';
+import { HttpMessage } from 'src/common/utils/errors/http-message.enum';
 import { User } from 'src/user/user.entity';
 import { UserRepository } from 'src/user/user.repository';
 
@@ -22,12 +22,12 @@ export class AuthService {
     const user = await this.userRepository.getOneByEmail(email);
 
     if (user === undefined)
-      throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_USER);
+      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_USER);
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch)
-      throw new HttpError(HttpStatus.UNAUTHORIZED, ErrorMessage.WRONG_PASSWORD);
+      throw new HttpError(HttpStatus.UNAUTHORIZED, HttpMessage.WRONG_PASSWORD);
 
     return user;
   }

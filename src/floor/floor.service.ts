@@ -1,5 +1,5 @@
 import HttpError from 'src/common/exceptions/http.exception';
-import { ErrorMessage } from 'src/common/utils/errors/ErrorMessage';
+import { HttpMessage } from 'src/common/utils/errors/http-message.enum';
 import { FloorRepository } from 'src/floor/floor.repository';
 
 import { HttpStatus, Injectable } from '@nestjs/common';
@@ -22,7 +22,7 @@ export class FloorService {
     const floor = await this.floorRepository.findOne(floorId);
 
     if (floor === undefined)
-      throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_FLOOR);
+      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_FLOOR);
 
     return floor;
   }
@@ -35,10 +35,7 @@ export class FloorService {
 
       await this.floorRepository.save(floor);
     } catch (err) {
-      throw new HttpError(
-        HttpStatus.BAD_REQUEST,
-        ErrorMessage.FAIL_CREATE_FLOOR,
-      );
+      throw new HttpError(HttpStatus.BAD_REQUEST, HttpMessage.FAIL_SAVE_FLOOR);
     }
   }
 
@@ -49,7 +46,7 @@ export class FloorService {
     let floor = await this.floorRepository.findOne(floorId);
 
     if (floor === undefined)
-      throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_FLOOR);
+      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_FLOOR);
 
     floor = { ...floor, ...updatefloorDto };
 
@@ -60,14 +57,14 @@ export class FloorService {
     const floor = await this.floorRepository.findOne(floorId);
 
     if (floor === undefined)
-      throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_FLOOR);
+      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_FLOOR);
 
     try {
       await this.floorRepository.deleteOneById(floorId);
     } catch (err) {
       throw new HttpError(
         HttpStatus.BAD_REQUEST,
-        ErrorMessage.FAIL_DELETE_FLOOR,
+        HttpMessage.FAIL_DELETE_FLOOR,
       );
     }
   }
