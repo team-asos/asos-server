@@ -21,12 +21,6 @@ export class Floor {
   name: string;
 
   @Column()
-  x: number;
-
-  @Column()
-  y: number;
-
-  @Column()
   width: number;
 
   @Column()
