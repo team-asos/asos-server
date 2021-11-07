@@ -1,11 +1,8 @@
 import * as morgan from 'morgan';
 
-import {
-  BadRequestException,
-  ValidationError,
-  ValidationPipe,
-} from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
 
 import { AppModule } from './app.module';
 import CatchException from './common/filters/http-exception.filter';
@@ -15,37 +12,30 @@ import { ConfigService } from './config/config.service';
 import { setupSwagger } from './config/swagger/setup';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  const configService = app.select(ConfigModule).get(ConfigService);
+  const loggerService = app.select(ConfigModule).get(LoggerService);
+
+  // CORS
+  app.enableCors(configService.corsConfig);
+
+  // Proxy
+  app.enable('trust proxy');
 
   // Validation
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      forbidNonWhitelisted: true,
-      transform: true,
-      exceptionFactory: (errors: ValidationError[]) => {
-        const messages = errors.map(error => {
-          return {
-            error: `${error.property} has wrong value ${error.value}.`,
-            message: Object.values(error.constraints).join(''),
-          };
-        });
-
-        return new BadRequestException({ validation: messages });
-      },
-    }),
-  );
+  app.useGlobalPipes(new ValidationPipe(configService.validationConfig));
 
   // Filter
   app.useGlobalFilters(new CatchException());
 
   // Logger
-  const loggerService = app.select(ConfigModule).get(LoggerService);
   app.useLogger(loggerService);
   app.use(
     morgan(
       'HTTP/:http-version :method :remote-addr :url :remote-user :status :res[content-length] :referrer :user-agent :response-time ms',
       {
+        skip: req => req.url === '/favicon.ico' || req.url === '/',
         stream: {
           write: message => {
             loggerService.http(message);
@@ -56,7 +46,6 @@ async function bootstrap() {
   );
 
   // Swagger
-  const configService = app.select(ConfigModule).get(ConfigService);
   if (['development'].includes(configService.env)) {
     setupSwagger(app, configService.swaggerConfig);
   }

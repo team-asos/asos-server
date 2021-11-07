@@ -1,7 +1,17 @@
-import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { CreateRoomDto } from './dtos/create-room.dto';
+import { UpdateRoomDto } from './dtos/update-room.dto';
 import { Room } from './room.entity';
 import { RoomService } from './room.service';
 
@@ -37,6 +47,29 @@ export class RoomController {
   @ApiResponse({ status: 201, description: 'Success' })
   async createOne(@Body() createRoomDto: CreateRoomDto): Promise<string> {
     await this.roomService.createOne(createRoomDto);
+
+    return 'success';
+  }
+
+  @Patch(':roomId')
+  @HttpCode(200)
+  @ApiOperation({ summary: '특정 회의실 수정' })
+  @ApiResponse({ status: 200, description: 'Success' })
+  async updateOne(
+    @Param('roomId') roomId: number,
+    @Body() updateRoomDto: UpdateRoomDto,
+  ): Promise<string> {
+    await this.roomService.updateOne(roomId, updateRoomDto);
+
+    return 'success';
+  }
+
+  @Delete(':roomId')
+  @HttpCode(200)
+  @ApiOperation({ summary: '특정 회의실 삭제' })
+  @ApiResponse({ status: 200, description: 'Success' })
+  async deleteOne(@Param('roomId') roomId: number): Promise<string> {
+    await this.roomService.deleteOne(roomId);
 
     return 'success';
   }
