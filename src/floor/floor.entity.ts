@@ -17,6 +17,12 @@ export class Floor {
   @Column()
   name: string;
 
+  @Column()
+  width: number;
+
+  @Column()
+  height: number;
+
   @CreateDateColumn({ select: false })
   createdAt: Date;
 

@@ -1,9 +1,11 @@
-import { IsNumber, IsString } from 'class-validator';
-
+import { IsString, IsNumber } from 'class-validator';
 export class CreateFloorDto {
-  @IsNumber()
-  floorId: number;
-
   @IsString()
   name: string;
+
+  @IsNumber()
+  width: number;
+
+  @IsNumber()
+  height: number;
 }
