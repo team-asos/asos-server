@@ -3,6 +3,12 @@ import * as moment from 'moment';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import * as winston from 'winston';
 
+import {
+  BadRequestException,
+  ValidationError,
+  ValidationPipeOptions,
+} from '@nestjs/common';
+import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 import { ISwaggerConfig } from './swagger/interface';
@@ -104,6 +110,48 @@ export class ConfigService {
         }),
       ],
       exitOnError: false,
+    };
+  }
+
+  get corsConfig(): CorsOptions {
+    const whitelist = this.get('CORS_WHITELIST');
+
+    return {
+      origin: (origin, callback) => {
+        if (
+          !origin ||
+          whitelist.indexOf(origin) !== -1 ||
+          origin === `http://localhost:${this.get('PORT')}`
+        )
+          callback(null, true);
+        else callback(new Error('Not allowed by CORS'));
+      },
+      allowedHeaders: [
+        'Access-Control-Allow-Headers',
+        'Content-Type',
+        'Accept',
+        'Authorization',
+      ],
+      methods: ['GET', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+      credentials: true,
+    };
+  }
+
+  get validationConfig(): ValidationPipeOptions {
+    return {
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transform: true,
+      exceptionFactory: (errors: ValidationError[]) => {
+        const messages = errors.map(error => {
+          return {
+            error: `${error.property} has wrong value ${error.value}.`,
+            message: Object.values(error.constraints).join(''),
+          };
+        });
+
+        return new BadRequestException({ validation: messages });
+      },
     };
   }
 }

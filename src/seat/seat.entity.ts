@@ -15,6 +15,9 @@ export class Seat {
   id: number;
 
   @Column()
+  name: string;
+
+  @Column()
   x: number;
 
   @Column()
@@ -26,7 +29,7 @@ export class Seat {
   @Column()
   height: number;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ select: false })
   createdAt: Date;
 
   @OneToOne(() => Reservation, reservation => reservation.seat)

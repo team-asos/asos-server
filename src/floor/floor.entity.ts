@@ -14,9 +14,6 @@ export class Floor {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @CreateDateColumn()
-  createdAt: Date;
-
   @Column()
   name: string;
 
@@ -25,6 +22,9 @@ export class Floor {
 
   @Column()
   height: number;
+
+  @CreateDateColumn({ select: false })
+  createdAt: Date;
 
   @OneToMany(() => Seat, seat => seat.floor)
   seats: Seat[];

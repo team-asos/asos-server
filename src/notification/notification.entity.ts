@@ -1,4 +1,4 @@
-import { Inquire } from 'src/inquire/inquire.entity';
+import { Question } from 'src/question/question.entity';
 import {
   Column,
   CreateDateColumn,
@@ -21,6 +21,6 @@ export class Notification {
   @CreateDateColumn()
   createdAt: Date;
 
-  @OneToOne(() => Inquire, inquire => inquire.notification)
-  inquire: Inquire;
+  @OneToOne(() => Question, question => question.notification)
+  question: Question;
 }

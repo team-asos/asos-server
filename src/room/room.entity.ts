@@ -15,6 +15,9 @@ export class Room {
   id: number;
 
   @Column()
+  name: string;
+
+  @Column()
   maxUser: number;
 
   @Column()
@@ -29,7 +32,7 @@ export class Room {
   @Column()
   height: number;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ select: false })
   createdAt: Date;
 
   @OneToOne(() => Reservation, reservation => reservation.room)

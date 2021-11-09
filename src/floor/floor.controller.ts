@@ -1,12 +1,12 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   Param,
-  Post,
   Patch,
-  Delete,
+  Post,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -26,6 +26,7 @@ export class FloorController {
   @ApiResponse({ status: 200, description: 'Success' })
   async findAll(): Promise<Floor[]> {
     const floors = await this.floorService.findAll();
+
     return floors;
   }
 
@@ -47,16 +48,6 @@ export class FloorController {
   @ApiResponse({ status: 400, description: 'Fail to Save floorId' })
   async createOne(@Body() createFloorDto: CreateFloorDto): Promise<string> {
     await this.floorService.createOne(createFloorDto);
-    return 'success';
-  }
-
-  @Delete('floorId')
-  @HttpCode(201)
-  @ApiOperation({ summary: '특정 층 삭제' })
-  @ApiResponse({ status: 201, description: 'Success' })
-  @ApiResponse({ status: 400, description: 'Fail to Delete floorId' })
-  async deleteOne(@Param('floorId') floorId: number): Promise<string> {
-    await this.floorService.deleteOne(floorId);
 
     return 'success';
   }
@@ -70,6 +61,17 @@ export class FloorController {
     @Body() updatefloorDto: UpdateFloorDto,
   ): Promise<string> {
     await this.floorService.updateOne(floorId, updatefloorDto);
+
+    return 'success';
+  }
+
+  @Delete(':floorId')
+  @HttpCode(200)
+  @ApiOperation({ summary: '특정 층 삭제' })
+  @ApiResponse({ status: 200, description: 'Success' })
+  @ApiResponse({ status: 400, description: 'Fail to Delete floorId' })
+  async deleteOne(@Param('floorId') floorId: number): Promise<string> {
+    await this.floorService.deleteOne(floorId);
 
     return 'success';
   }

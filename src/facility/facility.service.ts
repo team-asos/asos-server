@@ -1,10 +1,11 @@
 import HttpError from 'src/common/exceptions/http.exception';
-import { ErrorMessage } from 'src/common/utils/errors/ErrorMessage';
+import { HttpMessage } from 'src/common/utils/errors/http-message.enum';
 import { FloorRepository } from 'src/floor/floor.repository';
 
 import { HttpStatus, Injectable } from '@nestjs/common';
 
 import { CreateFacilityDto } from './dtos/create-facility.dto';
+import { UpdateFacilityDto } from './dtos/update-facility.dto';
 import { Facility } from './facility.entity';
 import { FacilityRepository } from './facility.repository';
 
@@ -15,21 +16,21 @@ export class FacilityService {
     private floorRepository: FloorRepository,
   ) {}
 
-  //모든 시설 조회
   async findAll(): Promise<Facility[]> {
     const facilities = await this.facilityRepository.find();
 
     return facilities;
   }
 
-  //시설 생성
   async createOne(createFacilityDto: CreateFacilityDto): Promise<void> {
     try {
       const { floorId } = createFacilityDto;
       const floor = await this.floorRepository.findOne(floorId);
+
       if (floor == undefined) {
-        throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_FLOOR);
+        throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_FLOOR);
       }
+
       let facility = new Facility();
       facility = { ...facility, ...createFacilityDto, floor };
 
@@ -37,22 +38,38 @@ export class FacilityService {
     } catch (err) {
       throw new HttpError(
         HttpStatus.BAD_REQUEST,
-        ErrorMessage.FAIL_CREATE_FACILITY,
+        HttpMessage.FAIL_SAVE_FACILITY,
       );
     }
     return;
   }
 
-  //시설 삭제
+  async updateOne(
+    facilityId: number,
+    updatefacilityDto: UpdateFacilityDto,
+  ): Promise<void> {
+    let facility = await this.facilityRepository.findOne(facilityId);
+    if (facility === undefined)
+      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_FACILITY);
+
+    facility = { ...facility, ...updatefacilityDto };
+
+    await this.floorRepository.save(facility);
+  }
+
   async deleteOne(facilityId: number): Promise<void> {
     const facility = await this.facilityRepository.findOne();
 
     if (facility === undefined)
-      throw new HttpError(
-        HttpStatus.NOT_FOUND,
-        ErrorMessage.NOT_FOUND_FACILITY,
-      );
+      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_FACILITY);
 
-    await this.facilityRepository.deleteOneById(facilityId);
+    try {
+      await this.facilityRepository.deleteOneById(facilityId);
+    } catch {
+      throw new HttpError(
+        HttpStatus.BAD_REQUEST,
+        HttpMessage.FAIL_DELETE_FACILITY,
+      );
+    }
   }
 }
