@@ -63,7 +63,7 @@ export class FloorController {
 
   @Patch(':floorId')
   @HttpCode(200)
-  @ApiOperation({ summary: '특정 회의실 수정' })
+  @ApiOperation({ summary: '특정 층 수정' })
   @ApiResponse({ status: 200, description: 'Success' })
   async updateOne(
     @Param('floorId') floorId: number,
