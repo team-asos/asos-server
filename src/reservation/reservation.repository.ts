@@ -1,3 +1,4 @@
+import { Floor } from 'src/floor/floor.entity';
 import { EntityRepository, Repository } from 'typeorm';
 
 import { Reservation } from './reservation.entity';
