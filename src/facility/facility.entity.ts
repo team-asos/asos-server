@@ -27,7 +27,7 @@ export class Facility {
   @Column()
   height: number;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ select: false })
   createdAt: Date;
 
   @ManyToOne(() => Floor, floor => floor.facilities)
