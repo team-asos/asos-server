@@ -7,10 +7,8 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -34,16 +32,14 @@ export class Reservation {
   @DeleteDateColumn()
   deletedAt: Date;
 
-  @OneToOne(() => Seat, seat => seat.reservation)
-  @JoinColumn()
-  seat: Seat;
-
-  @OneToOne(() => Room, room => room.reservation)
-  @JoinColumn()
-  room: Room;
-
   @OneToMany(() => Participant, participant => participant.reservation)
   participants: Participant[];
+
+  @ManyToOne(() => Seat, seat => seat.reservations)
+  seat: Seat;
+
+  @ManyToOne(() => Room, room => room.reservations)
+  room: Room;
 
   @ManyToOne(() => User, user => user.reservations)
   user: User;

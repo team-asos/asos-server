@@ -2,6 +2,8 @@ import HttpError from 'src/common/exceptions/http.exception';
 import { HttpMessage } from 'src/common/utils/errors/http-message.enum';
 import { Participant } from 'src/participant/participant.entity';
 import { ParticipantRepository } from 'src/participant/participant.repository';
+import { RoomRepository } from 'src/room/room.repository';
+import { SeatRepository } from 'src/seat/seat.repository';
 import { UserRepository } from 'src/user/user.repository';
 import { Connection } from 'typeorm';
 
@@ -18,6 +20,8 @@ export class ReservationService {
     private readonly userRepository: UserRepository,
     private readonly participantRepository: ParticipantRepository,
     private readonly reservationRepository: ReservationRepository,
+    private readonly seatRepository: SeatRepository,
+    private readonly roomRepository: RoomRepository,
     private readonly connection: Connection,
   ) {}
 
@@ -44,14 +48,18 @@ export class ReservationService {
     await queryRunner.startTransaction();
 
     try {
-      const { userId, participantIds } = createRoomReservationDto;
+      const { userId, participantIds, roomId } = createRoomReservationDto;
 
       const user = await this.userRepository.findOne(userId);
       if (user === undefined)
         throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_USER);
 
+      const room = await this.roomRepository.findOne(roomId);
+      if (room === undefined)
+        throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_ROOM);
+
       let reservation = new Reservation();
-      reservation = { ...reservation, ...createRoomReservationDto, user };
+      reservation = { ...reservation, ...createRoomReservationDto, user, room };
 
       const savedReservation = await this.reservationRepository.save(
         reservation,
@@ -90,14 +98,18 @@ export class ReservationService {
   async createSeatOne(
     createSeatReservationDto: CreateSeatReservationDto,
   ): Promise<void> {
-    const { userId } = createSeatReservationDto;
+    const { userId, seatId } = createSeatReservationDto;
 
     const user = await this.userRepository.findOne(userId);
     if (user === undefined)
       throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_USER);
 
+    const seat = await this.seatRepository.findOne(seatId);
+    if (seat === undefined)
+      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_SEAT);
+
     let reservation = new Reservation();
-    reservation = { ...reservation, ...createSeatReservationDto, user };
+    reservation = { ...reservation, ...createSeatReservationDto, user, seat };
 
     await this.reservationRepository.save(reservation);
 

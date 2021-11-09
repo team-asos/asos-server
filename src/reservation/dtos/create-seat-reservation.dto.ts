@@ -1,23 +1,8 @@
-import { IsDateString, IsNumber, IsOptional } from 'class-validator';
+import { OmitType } from '@nestjs/swagger';
 
-export class CreateSeatReservationDto {
-  @IsDateString()
-  startTime: Date;
+import { CreateReservationDto } from './create-reservation.dto';
 
-  @IsDateString()
-  endTime: Date;
-
-  @IsNumber()
-  status: number;
-
-  @IsNumber()
-  @IsOptional()
-  seatId?: number;
-
-  @IsNumber()
-  @IsOptional()
-  roomId?: number;
-
-  @IsNumber()
-  userId: number;
-}
+export class CreateSeatReservationDto extends OmitType(CreateReservationDto, [
+  'roomId',
+  'participantIds',
+] as const) {}
