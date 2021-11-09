@@ -1,4 +1,5 @@
-import { ParticipantRepository } from 'src/participant/participant.repository';
+import { RoomRepository } from 'src/room/room.repository';
+import { SeatRepository } from 'src/seat/seat.repository';
 import { UserRepository } from 'src/user/user.repository';
 
 import { Module } from '@nestjs/common';
@@ -12,8 +13,9 @@ import { ReservationService } from './reservation.service';
   imports: [
     TypeOrmModule.forFeature([
       UserRepository,
-      ParticipantRepository,
       ReservationRepository,
+      SeatRepository,
+      RoomRepository,
     ]),
   ],
   controllers: [ReservationController],

@@ -5,7 +5,7 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
-  OneToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -35,8 +35,8 @@ export class Room {
   @CreateDateColumn({ select: false })
   createdAt: Date;
 
-  @OneToOne(() => Reservation, reservation => reservation.room)
-  reservation: Reservation;
+  @OneToMany(() => Reservation, reservation => reservation.room)
+  reservations: Reservation[];
 
   @ManyToOne(() => Floor, floor => floor.rooms)
   floor: Floor;

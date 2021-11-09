@@ -52,26 +52,26 @@ export class FloorController {
     return 'success';
   }
 
-  @Delete('floorId')
-  @HttpCode(201)
-  @ApiOperation({ summary: '특정 층 삭제' })
-  @ApiResponse({ status: 201, description: 'Success' })
-  @ApiResponse({ status: 400, description: 'Fail to Delete floorId' })
-  async deleteOne(@Param('floorId') floorId: number): Promise<string> {
-    await this.floorService.deleteOne(floorId);
-
-    return 'success';
-  }
-
   @Patch(':floorId')
   @HttpCode(200)
-  @ApiOperation({ summary: '특정 회의실 수정' })
+  @ApiOperation({ summary: '특정 층 수정' })
   @ApiResponse({ status: 200, description: 'Success' })
   async updateOne(
     @Param('floorId') floorId: number,
     @Body() updatefloorDto: UpdateFloorDto,
   ): Promise<string> {
     await this.floorService.updateOne(floorId, updatefloorDto);
+
+    return 'success';
+  }
+
+  @Delete(':floorId')
+  @HttpCode(200)
+  @ApiOperation({ summary: '특정 층 삭제' })
+  @ApiResponse({ status: 200, description: 'Success' })
+  @ApiResponse({ status: 400, description: 'Fail to Delete floorId' })
+  async deleteOne(@Param('floorId') floorId: number): Promise<string> {
+    await this.floorService.deleteOne(floorId);
 
     return 'success';
   }
