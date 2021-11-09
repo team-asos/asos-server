@@ -9,6 +9,8 @@ export class AnswerRepository extends Repository<Answer> {
     const { userId, questionId } = search;
 
     const answers = await this.createQueryBuilder('answer')
+      .leftJoin('answer.question', 'question')
+      .addSelect('question.id')
       .where(userId ? 'answer.user_id = (:userId)' : '1=1', { userId })
       .andWhere(questionId ? 'answer.question_id = (:questionId)' : '1=1', {
         questionId,

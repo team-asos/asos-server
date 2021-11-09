@@ -29,7 +29,7 @@ export class Question {
   @CreateDateColumn()
   createdAt: Date;
 
-  @DeleteDateColumn()
+  @DeleteDateColumn({ select: false })
   deletedAt: Date;
 
   @OneToOne(() => Notification, notification => notification.question)

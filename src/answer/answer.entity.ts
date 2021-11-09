@@ -22,7 +22,7 @@ export class Answer {
   @CreateDateColumn()
   createdAt: Date;
 
-  @DeleteDateColumn()
+  @DeleteDateColumn({ select: false })
   deletedAt: Date;
 
   @OneToOne(() => Question, question => question.answer)
