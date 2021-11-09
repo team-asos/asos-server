@@ -17,7 +17,7 @@ export class FloorService {
     return floors;
   }
   async findOne(floorId: number): Promise<Floor> {
-    const floor = await this.floorRepository.getOneById(floorId);
+    const floor = await this.floorRepository.findOne(floorId);
 
     if (floor === undefined)
       throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_FLOOR);
