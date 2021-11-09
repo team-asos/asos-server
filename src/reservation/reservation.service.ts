@@ -1,11 +1,10 @@
 import HttpError from 'src/common/exceptions/http.exception';
 import { HttpMessage } from 'src/common/utils/errors/http-message.enum';
 import { Participant } from 'src/participant/participant.entity';
-import { ParticipantRepository } from 'src/participant/participant.repository';
 import { RoomRepository } from 'src/room/room.repository';
 import { SeatRepository } from 'src/seat/seat.repository';
 import { UserRepository } from 'src/user/user.repository';
-import { Connection } from 'typeorm';
+import { getConnection } from 'typeorm';
 
 import { HttpStatus, Injectable } from '@nestjs/common';
 
@@ -18,11 +17,9 @@ import { ReservationRepository } from './reservation.repository';
 export class ReservationService {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly participantRepository: ParticipantRepository,
     private readonly reservationRepository: ReservationRepository,
     private readonly seatRepository: SeatRepository,
     private readonly roomRepository: RoomRepository,
-    private readonly connection: Connection,
   ) {}
 
   async findAll(): Promise<Reservation[]> {
@@ -42,9 +39,8 @@ export class ReservationService {
   async createRoomOne(
     createRoomReservationDto: CreateRoomReservationDto,
   ): Promise<void> {
-    const queryRunner = this.connection.createQueryRunner();
+    const queryRunner = getConnection().createQueryRunner();
 
-    await queryRunner.connect();
     await queryRunner.startTransaction();
 
     try {
@@ -61,7 +57,8 @@ export class ReservationService {
       let reservation = new Reservation();
       reservation = { ...reservation, ...createRoomReservationDto, user, room };
 
-      const savedReservation = await this.reservationRepository.save(
+      const savedReservation = await queryRunner.manager.save(
+        Reservation,
         reservation,
       );
 
@@ -78,9 +75,11 @@ export class ReservationService {
           participant.user = user;
           participant.reservation = savedReservation;
 
-          await this.participantRepository.save(participant);
+          await queryRunner.manager.save(Participant, participant);
         }),
       );
+
+      await queryRunner.commitTransaction();
     } catch (err) {
       await queryRunner.rollbackTransaction();
 
