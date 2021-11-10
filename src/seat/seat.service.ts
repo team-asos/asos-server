@@ -33,14 +33,15 @@ export class SeatService {
 
   async createOne(createSeatDto: CreateSeatDto): Promise<void> {
     const { floorId } = createSeatDto;
+
+    const floor = await this.floorRepository.findOne(floorId);
+    if (floor === undefined)
+      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_SEAT);
+
+    let seat = new Seat();
+    seat = { ...seat, ...createSeatDto, floor };
+
     try {
-      const floor = await this.floorRepository.findOne(floorId);
-      if (floor === undefined)
-        throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_SEAT);
-
-      let seat = new Seat();
-      seat = { ...seat, ...createSeatDto, floor };
-
       await this.seatRepository.save(seat);
     } catch (err) {
       throw new HttpError(HttpStatus.BAD_REQUEST, HttpMessage.FAIL_SAVE_SEAT);
@@ -51,12 +52,12 @@ export class SeatService {
   async updateOne(seatId: number, updateSeatDto: UpdateSeatDto): Promise<void> {
     let seat = await this.seatRepository.findOne(seatId);
 
+    if (seat === undefined)
+      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_SEAT);
+
+    seat = { ...seat, ...updateSeatDto };
+
     try {
-      if (seat === undefined)
-        throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_SEAT);
-
-      seat = { ...seat, ...updateSeatDto };
-
       await this.seatRepository.save(seat);
     } catch (err) {
       throw new HttpError(HttpStatus.BAD_REQUEST, HttpMessage.FAIL_UPDATE_SEAT);
@@ -65,10 +66,11 @@ export class SeatService {
 
   async deleteOne(seatId: number): Promise<void> {
     const seat = await this.seatRepository.findOne(seatId);
-    try {
-      if (seat === undefined)
-        throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_SEAT);
 
+    if (seat === undefined)
+      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_SEAT);
+
+    try {
       await this.seatRepository.deleteOneById(seatId);
     } catch (err) {
       throw new HttpError(HttpStatus.BAD_REQUEST, HttpMessage.FAIL_DELETE_SEAT);
