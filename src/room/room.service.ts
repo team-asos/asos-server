@@ -17,13 +17,13 @@ export class RoomService {
   ) {}
 
   async findAll(): Promise<Room[]> {
-    const rooms = await this.roomRepository.find();
+    const rooms = await this.roomRepository.getMany();
 
     return rooms;
   }
 
   async findOne(roomId: number): Promise<Room> {
-    const room = await this.roomRepository.findOne(roomId);
+    const room = await this.roomRepository.getOneById(roomId);
 
     if (room === undefined)
       throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_ROOM);

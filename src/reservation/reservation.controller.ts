@@ -6,8 +6,9 @@ import {
   HttpCode,
   Param,
   Post,
+  Query,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { CreateRoomReservationDto } from './dtos/create-room-reservation.dto';
 import { CreateSeatReservationDto } from './dtos/create-seat-reservation.dto';
@@ -25,6 +26,20 @@ export class ReservationController {
   @ApiResponse({ status: 200, description: 'Success' })
   async findAll(): Promise<Reservation[]> {
     const reservations = await this.reservationService.findAll();
+
+    return reservations;
+  }
+
+  @Get('search')
+  @HttpCode(200)
+  @ApiQuery({
+    name: 'userId',
+    required: false,
+    type: Number,
+  })
+  @ApiResponse({ status: 200, description: 'Success' })
+  async searchAll(@Query() search): Promise<Reservation[]> {
+    const reservations = await this.reservationService.searchAll(search);
 
     return reservations;
   }

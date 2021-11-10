@@ -1,6 +1,6 @@
-import { Floor } from 'src/floor/floor.entity';
 import { EntityRepository, Repository } from 'typeorm';
 
+import { SearchReservationDto } from './dtos/search-reservation.dto';
 import { Reservation } from './reservation.entity';
 
 @EntityRepository(Reservation)
@@ -15,6 +15,16 @@ export class ReservationRepository extends Repository<Reservation> {
       .getOne();
 
     return reservation;
+  }
+
+  async search(search: SearchReservationDto): Promise<Reservation[]> {
+    const { userId } = search;
+
+    const reservations = await this.createQueryBuilder('reservation')
+      .where(userId ? 'reservation.user_id = (:userId)' : '1=1', { userId })
+      .getMany();
+
+    return reservations;
   }
 
   async deleteOneById(reservationId: number): Promise<void> {
