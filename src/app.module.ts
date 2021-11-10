@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ScheduleModule } from '@nestjs/schedule';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { AnswerModule } from './answer/answer.module';
@@ -12,6 +13,7 @@ import { QuestionModule } from './question/question.module';
 import { ReservationModule } from './reservation/reservation.module';
 import { RoomModule } from './room/room.module';
 import { SeatModule } from './seat/seat.module';
+import { TaskModule } from './task/task.module';
 import { UserModule } from './user/user.module';
 
 @Module({
@@ -30,6 +32,8 @@ import { UserModule } from './user/user.module';
     FacilityModule,
     QuestionModule,
     AnswerModule,
+    ScheduleModule.forRoot(),
+    TaskModule,
   ],
   controllers: [AppController],
   providers: [],

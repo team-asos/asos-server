@@ -1,3 +1,4 @@
+import * as moment from 'moment';
 import { EntityRepository, Repository } from 'typeorm';
 
 import { SearchReservationDto } from './dtos/search-reservation.dto';
@@ -32,5 +33,40 @@ export class ReservationRepository extends Repository<Reservation> {
       .softDelete()
       .where('id = (:reservationId)', { reservationId })
       .execute();
+  }
+
+  async handleReservationStatus(): Promise<void> {
+    const nowTime = moment(new Date());
+
+    const reservations = await this.createQueryBuilder('reservation')
+      .select([
+        'reservation.id',
+        'reservation.startTime',
+        'reservation.endTime',
+      ])
+      .getMany();
+
+    reservations.map(async reservation => {
+      const startTime = moment(reservation.startTime);
+      const endTime = moment(reservation.endTime);
+
+      const isStart = startTime <= nowTime && endTime >= nowTime;
+      const isEnd = endTime < nowTime;
+
+      if (isStart || isEnd) {
+        const target = await this.createQueryBuilder('reservation')
+          .where('reservation.id = (:reservationId)', {
+            reservationId: reservation.id,
+          })
+          .getOne();
+
+        if (isStart) target.status = 1;
+        else if (isEnd) target.status = 2;
+
+        await this.save(target);
+      }
+    });
+
+    return;
   }
 }
