@@ -12,8 +12,11 @@ export enum HttpMessage {
   FAIL_SAVE_SEAT = '좌석을 생성할 수 없습니다.',
   FAIL_SAVE_FACILITY = '시설을 생성할 수 없습니다.',
   FAIL_SAVE_FLOOR = '층을 생성할 수 없습니다.',
+  FAIL_SAVE_ROOM = '회의실을 생성할 수 없습니다.',
   FAIL_DELETE_FACILITY = '시설 삭제에 실패했습니다',
   FAIL_DELETE_FLOOR = '층 삭제에 실패했습니다',
+  FAIL_DELETE_ROOM = '회의실 삭제에 실패했습니다.',
+  FAIL_UPDATE_ROOM = '회의실 수정에 실패했습니다.',
   WRONG_ID = '아이디가 잘못되었습니다.',
   WRONG_PASSWORD = '비밀번호가 잘못되었습니다.',
 }
