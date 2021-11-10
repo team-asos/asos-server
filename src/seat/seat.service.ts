@@ -17,13 +17,13 @@ export class SeatService {
   ) {}
 
   async findAll(): Promise<Seat[]> {
-    const seats = await this.seatRepository.find();
+    const seats = await this.seatRepository.getMany();
 
     return seats;
   }
 
   async findOne(seatId: number): Promise<Seat> {
-    const seat = await this.seatRepository.findOne(seatId);
+    const seat = await this.seatRepository.getOneById(seatId);
 
     if (seat === undefined)
       throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_SEAT);
