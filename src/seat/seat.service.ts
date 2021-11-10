@@ -17,13 +17,13 @@ export class SeatService {
   ) {}
 
   async findAll(): Promise<Seat[]> {
-    const seats = await this.seatRepository.find();
+    const seats = await this.seatRepository.getMany();
 
     return seats;
   }
 
   async findOne(seatId: number): Promise<Seat> {
-    const seat = await this.seatRepository.findOne(seatId);
+    const seat = await this.seatRepository.getOneById(seatId);
 
     if (seat === undefined)
       throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_SEAT);
@@ -35,13 +35,18 @@ export class SeatService {
     const { floorId } = createSeatDto;
 
     const floor = await this.floorRepository.findOne(floorId);
+
     if (floor === undefined)
-      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_FLOOR);
+      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_SEAT);
 
     let seat = new Seat();
     seat = { ...seat, ...createSeatDto, floor };
 
-    await this.seatRepository.save(seat);
+    try {
+      await this.seatRepository.save(seat);
+    } catch (err) {
+      throw new HttpError(HttpStatus.BAD_REQUEST, HttpMessage.FAIL_SAVE_SEAT);
+    }
 
     return;
   }
@@ -54,7 +59,13 @@ export class SeatService {
 
     seat = { ...seat, ...updateSeatDto };
 
-    await this.seatRepository.save(seat);
+    try {
+      await this.seatRepository.save(seat);
+    } catch (err) {
+      throw new HttpError(HttpStatus.BAD_REQUEST, HttpMessage.FAIL_UPDATE_SEAT);
+    }
+
+    return;
   }
 
   async deleteOne(seatId: number): Promise<void> {
@@ -63,6 +74,12 @@ export class SeatService {
     if (seat === undefined)
       throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_SEAT);
 
-    await this.seatRepository.deleteOneById(seatId);
+    try {
+      await this.seatRepository.deleteOneById(seatId);
+    } catch (err) {
+      throw new HttpError(HttpStatus.BAD_REQUEST, HttpMessage.FAIL_DELETE_SEAT);
+    }
+
+    return;
   }
 }

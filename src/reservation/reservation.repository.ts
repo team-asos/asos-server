@@ -1,6 +1,7 @@
-import { Floor } from 'src/floor/floor.entity';
+import * as moment from 'moment';
 import { EntityRepository, Repository } from 'typeorm';
 
+import { SearchReservationDto } from './dtos/search-reservation.dto';
 import { Reservation } from './reservation.entity';
 
 @EntityRepository(Reservation)
@@ -17,10 +18,59 @@ export class ReservationRepository extends Repository<Reservation> {
     return reservation;
   }
 
+  async search(search: SearchReservationDto): Promise<Reservation[]> {
+    const { userId } = search;
+
+    const reservations = await this.createQueryBuilder('reservation')
+      .leftJoinAndSelect('reservation.seat', 'seat')
+      .leftJoinAndSelect('reservation.room', 'room')
+      .leftJoinAndSelect('seat.floor', 'seat.floor')
+      .leftJoinAndSelect('room.floor', 'room.floor')
+      .where(userId ? 'reservation.user_id = (:userId)' : '1=1', { userId })
+      .getMany();
+
+    return reservations;
+  }
+
   async deleteOneById(reservationId: number): Promise<void> {
     await this.createQueryBuilder()
       .softDelete()
       .where('id = (:reservationId)', { reservationId })
       .execute();
+  }
+
+  async handleReservationStatus(): Promise<void> {
+    const nowTime = moment(new Date());
+
+    const reservations = await this.createQueryBuilder('reservation')
+      .select([
+        'reservation.id',
+        'reservation.startTime',
+        'reservation.endTime',
+      ])
+      .getMany();
+
+    reservations.map(async reservation => {
+      const startTime = moment(reservation.startTime);
+      const endTime = moment(reservation.endTime);
+
+      const isStart = startTime <= nowTime && endTime >= nowTime;
+      const isEnd = endTime < nowTime;
+
+      if (isStart || isEnd) {
+        const target = await this.createQueryBuilder('reservation')
+          .where('reservation.id = (:reservationId)', {
+            reservationId: reservation.id,
+          })
+          .getOne();
+
+        if (isStart) target.status = 1;
+        else if (isEnd) target.status = 2;
+
+        await this.save(target);
+      }
+    });
+
+    return;
   }
 }

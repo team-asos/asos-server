@@ -28,15 +28,17 @@ export class FloorService {
   }
 
   async createOne(createFloorDto: CreateFloorDto): Promise<void> {
+    let floor = new Floor();
+
+    floor = { ...floor, ...createFloorDto };
+
     try {
-      let floor = new Floor();
-
-      floor = { ...floor, ...createFloorDto };
-
       await this.floorRepository.save(floor);
     } catch (err) {
       throw new HttpError(HttpStatus.BAD_REQUEST, HttpMessage.FAIL_SAVE_FLOOR);
     }
+
+    return;
   }
 
   async updateOne(
@@ -50,7 +52,16 @@ export class FloorService {
 
     floor = { ...floor, ...updatefloorDto };
 
-    await this.floorRepository.save(floor);
+    try {
+      await this.floorRepository.save(floor);
+    } catch (err) {
+      throw new HttpError(
+        HttpStatus.BAD_REQUEST,
+        HttpMessage.FAIL_UPDATE_FLOOR,
+      );
+    }
+
+    return;
   }
 
   async deleteOne(floorId: number): Promise<void> {
@@ -67,5 +78,7 @@ export class FloorService {
         HttpMessage.FAIL_DELETE_FLOOR,
       );
     }
+
+    return;
   }
 }
