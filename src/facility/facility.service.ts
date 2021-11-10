@@ -23,17 +23,17 @@ export class FacilityService {
   }
 
   async createOne(createFacilityDto: CreateFacilityDto): Promise<void> {
+    const { floorId } = createFacilityDto;
+    const floor = await this.floorRepository.findOne(floorId);
+
+    if (floor == undefined) {
+      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_FLOOR);
+    }
+
+    let facility = new Facility();
+    facility = { ...facility, ...createFacilityDto, floor };
+
     try {
-      const { floorId } = createFacilityDto;
-      const floor = await this.floorRepository.findOne(floorId);
-
-      if (floor == undefined) {
-        throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_FLOOR);
-      }
-
-      let facility = new Facility();
-      facility = { ...facility, ...createFacilityDto, floor };
-
       await this.facilityRepository.save(facility);
     } catch (err) {
       throw new HttpError(
@@ -41,6 +41,7 @@ export class FacilityService {
         HttpMessage.FAIL_SAVE_FACILITY,
       );
     }
+
     return;
   }
 
@@ -49,12 +50,15 @@ export class FacilityService {
     updatefacilityDto: UpdateFacilityDto,
   ): Promise<void> {
     let facility = await this.facilityRepository.findOne(facilityId);
+
     if (facility === undefined)
       throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_FACILITY);
 
     facility = { ...facility, ...updatefacilityDto };
 
     await this.floorRepository.save(facility);
+
+    return;
   }
 
   async deleteOne(facilityId: number): Promise<void> {
@@ -71,5 +75,7 @@ export class FacilityService {
         HttpMessage.FAIL_DELETE_FACILITY,
       );
     }
+
+    return;
   }
 }

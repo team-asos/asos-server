@@ -62,6 +62,8 @@ export class UserService {
     user = { ...user, ...updateUserDto };
 
     await this.userRepository.save(user);
+
+    return;
   }
 
   async deleteOne(userId: number): Promise<void> {
@@ -71,5 +73,7 @@ export class UserService {
       throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_USER);
 
     await this.userRepository.deleteOneById(userId);
+
+    return;
   }
 }

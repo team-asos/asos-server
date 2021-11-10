@@ -2,7 +2,7 @@ import HttpError from 'src/common/exceptions/http.exception';
 import { HttpMessage } from 'src/common/utils/errors/http-message.enum';
 import { FloorRepository } from 'src/floor/floor.repository';
 
-import { HttpCode, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 
 import { CreateSeatDto } from './dtos/create-seat.dto';
 import { UpdateSeatDto } from './dtos/update-seat.dto';
@@ -35,6 +35,7 @@ export class SeatService {
     const { floorId } = createSeatDto;
 
     const floor = await this.floorRepository.findOne(floorId);
+
     if (floor === undefined)
       throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_SEAT);
 
@@ -46,6 +47,7 @@ export class SeatService {
     } catch (err) {
       throw new HttpError(HttpStatus.BAD_REQUEST, HttpMessage.FAIL_SAVE_SEAT);
     }
+
     return;
   }
 
@@ -62,6 +64,8 @@ export class SeatService {
     } catch (err) {
       throw new HttpError(HttpStatus.BAD_REQUEST, HttpMessage.FAIL_UPDATE_SEAT);
     }
+
+    return;
   }
 
   async deleteOne(seatId: number): Promise<void> {
@@ -75,5 +79,7 @@ export class SeatService {
     } catch (err) {
       throw new HttpError(HttpStatus.BAD_REQUEST, HttpMessage.FAIL_DELETE_SEAT);
     }
+
+    return;
   }
 }

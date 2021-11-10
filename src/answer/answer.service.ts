@@ -69,6 +69,8 @@ export class AnswerService {
     answer = { ...answer, ...updateAnswerDto };
 
     await this.answerRepository.save(answer);
+
+    return;
   }
 
   async deleteOne(answerId: number): Promise<void> {
@@ -78,5 +80,7 @@ export class AnswerService {
       throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_ANSWER);
 
     await this.answerRepository.deleteOneById(answerId);
+
+    return;
   }
 }

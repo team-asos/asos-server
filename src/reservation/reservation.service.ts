@@ -132,5 +132,7 @@ export class ReservationService {
       );
 
     await this.reservationRepository.deleteOneById(reservationId);
+
+    return;
   }
 }
