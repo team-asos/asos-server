@@ -32,6 +32,7 @@ export class FacilityService {
 
     let facility = new Facility();
     facility = { ...facility, ...createFacilityDto, floor };
+
     try {
       await this.facilityRepository.save(facility);
     } catch (err) {
@@ -40,6 +41,7 @@ export class FacilityService {
         HttpMessage.FAIL_SAVE_FACILITY,
       );
     }
+
     return;
   }
 
@@ -48,10 +50,12 @@ export class FacilityService {
     updatefacilityDto: UpdateFacilityDto,
   ): Promise<void> {
     let facility = await this.facilityRepository.findOne(facilityId);
+
     if (facility === undefined)
       throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_FACILITY);
 
     facility = { ...facility, ...updatefacilityDto };
+
     try {
       await this.floorRepository.save(facility);
     } catch (err) {
@@ -60,6 +64,9 @@ export class FacilityService {
         HttpMessage.FAIL_UPDATE_FACILITY,
       );
     }
+
+    return;
+
   }
 
   async deleteOne(facilityId: number): Promise<void> {
@@ -76,5 +83,7 @@ export class FacilityService {
         HttpMessage.FAIL_DELETE_FACILITY,
       );
     }
+
+    return;
   }
 }

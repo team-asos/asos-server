@@ -67,6 +67,9 @@ export class UserService {
     } catch (err) {
       throw new HttpError(HttpStatus.BAD_REQUEST, HttpMessage.FAIL_UPDATE_USER);
     }
+
+
+    return;
   }
 
   async deleteOne(userId: number): Promise<void> {
@@ -79,5 +82,8 @@ export class UserService {
     } catch (err) {
       throw new HttpError(HttpStatus.BAD_REQUEST, HttpMessage.FAIL_DELETE_USER);
     }
+
+
+    return;
   }
 }

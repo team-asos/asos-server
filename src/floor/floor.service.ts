@@ -37,6 +37,8 @@ export class FloorService {
     } catch (err) {
       throw new HttpError(HttpStatus.BAD_REQUEST, HttpMessage.FAIL_SAVE_FLOOR);
     }
+
+    return;
   }
 
   async updateOne(
@@ -58,6 +60,8 @@ export class FloorService {
         HttpMessage.FAIL_UPDATE_FLOOR,
       );
     }
+
+    return;
   }
 
   async deleteOne(floorId: number): Promise<void> {
@@ -74,5 +78,7 @@ export class FloorService {
         HttpMessage.FAIL_DELETE_FLOOR,
       );
     }
+
+    return;
   }
 }

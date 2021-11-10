@@ -72,6 +72,9 @@ export class QuestionService {
         HttpMessage.FAIL_UPDATE_QUESTION,
       );
     }
+
+
+    return;
   }
 
   async deleteOne(questionId: number): Promise<void> {
@@ -87,5 +90,8 @@ export class QuestionService {
         HttpMessage.FAIL_DELETE_QUESTION,
       );
     }
+
+
+    return;
   }
 }

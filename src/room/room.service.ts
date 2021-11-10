@@ -35,13 +35,18 @@ export class RoomService {
     const { floorId } = createRoomDto;
 
     const floor = await this.floorRepository.findOne(floorId);
+
     if (floor === undefined)
       throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_FLOOR);
 
     let room = new Room();
     room = { ...room, ...createRoomDto, floor };
 
-    await this.roomRepository.save(room);
+    try {
+      await this.roomRepository.save(room);
+    } catch (err) {
+      throw new HttpError(HttpStatus.BAD_REQUEST, HttpMessage.FAIL_SAVE_ROOM);
+    }
 
     return;
   }
@@ -54,7 +59,13 @@ export class RoomService {
 
     room = { ...room, ...updateRoomDto };
 
-    await this.roomRepository.save(room);
+    try {
+      await this.roomRepository.save(room);
+    } catch (err) {
+      throw new HttpError(HttpStatus.BAD_REQUEST, HttpMessage.FAIL_UPDATE_ROOM);
+    }
+
+    return;
   }
 
   async deleteOne(roomId: number): Promise<void> {
@@ -63,6 +74,12 @@ export class RoomService {
     if (room === undefined)
       throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_ROOM);
 
-    await this.roomRepository.deleteOneById(roomId);
+    try {
+      await this.roomRepository.deleteOneById(roomId);
+    } catch (err) {
+      throw new HttpError(HttpStatus.BAD_REQUEST, HttpMessage.FAIL_DELETE_ROOM);
+    }
+
+    return;
   }
 }
