@@ -14,7 +14,26 @@ export function setupSwagger(app: INestApplication, config: ISwaggerConfig) {
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup(config.path, app, document, {
     swaggerOptions: {
-      tagsSorter: 'alpha',
+      tagsSorter: (a: any, b: any) => {
+        const tagsOrder = [
+          'auth',
+          'users',
+          'reservations',
+          'floors',
+          'seats',
+          'rooms',
+          'facilities',
+          'questions',
+          'answers',
+        ];
+        let result = tagsOrder.indexOf(a) - tagsOrder.indexOf(b);
+
+        if (result === 0) {
+          result = a.localeCompare(b);
+        }
+
+        return result;
+      },
       operationsSorter: (a: any, b: any) => {
         const methodsOrder = ['get', 'post', 'put', 'patch', 'delete'];
         let result =
