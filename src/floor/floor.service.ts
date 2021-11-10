@@ -52,7 +52,14 @@ export class FloorService {
 
     floor = { ...floor, ...updatefloorDto };
 
-    await this.floorRepository.save(floor);
+    try {
+      await this.floorRepository.save(floor);
+    } catch (err) {
+      throw new HttpError(
+        HttpStatus.BAD_REQUEST,
+        HttpMessage.FAIL_UPDATE_FLOOR,
+      );
+    }
 
     return;
   }

@@ -56,9 +56,17 @@ export class FacilityService {
 
     facility = { ...facility, ...updatefacilityDto };
 
-    await this.floorRepository.save(facility);
+    try {
+      await this.floorRepository.save(facility);
+    } catch (err) {
+      throw new HttpError(
+        HttpStatus.BAD_REQUEST,
+        HttpMessage.FAIL_UPDATE_FACILITY,
+      );
+    }
 
     return;
+
   }
 
   async deleteOne(facilityId: number): Promise<void> {

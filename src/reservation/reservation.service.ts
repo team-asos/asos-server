@@ -130,8 +130,15 @@ export class ReservationService {
         HttpStatus.NOT_FOUND,
         HttpMessage.NOT_FOUND_RESERVATION,
       );
+    try {
+      await this.reservationRepository.deleteOneById(reservationId);
+    } catch (err) {
+      throw new HttpError(
+        HttpStatus.BAD_REQUEST,
+        HttpMessage.FAIL_DELETE_RESERVATION,
+      );
+    }
 
-    await this.reservationRepository.deleteOneById(reservationId);
 
     return;
   }

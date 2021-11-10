@@ -43,9 +43,14 @@ export class QuestionService {
       ...createQuestionDto,
       user,
     };
-
-    await this.questionRepository.save(question);
-
+    try {
+      await this.questionRepository.save(question);
+    } catch (err) {
+      throw new HttpError(
+        HttpStatus.BAD_REQUEST,
+        HttpMessage.FAIL_SAVE_QUESTION,
+      );
+    }
     return;
   }
 
@@ -59,8 +64,15 @@ export class QuestionService {
       throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_QUESTION);
 
     question = { ...question, ...updateQuestionDto };
+    try {
+      await this.questionRepository.save(question);
+    } catch (err) {
+      throw new HttpError(
+        HttpStatus.BAD_REQUEST,
+        HttpMessage.FAIL_UPDATE_QUESTION,
+      );
+    }
 
-    await this.questionRepository.save(question);
 
     return;
   }
@@ -70,8 +82,15 @@ export class QuestionService {
 
     if (question === undefined)
       throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_QUESTION);
+    try {
+      await this.questionRepository.deleteOneById(questionId);
+    } catch (err) {
+      throw new HttpError(
+        HttpStatus.BAD_REQUEST,
+        HttpMessage.FAIL_DELETE_QUESTION,
+      );
+    }
 
-    await this.questionRepository.deleteOneById(questionId);
 
     return;
   }

@@ -47,9 +47,11 @@ export class UserService {
       ...createUserDto,
       password: hash,
     };
-
-    await this.userRepository.save(user);
-
+    try {
+      await this.userRepository.save(user);
+    } catch (err) {
+      throw new HttpError(HttpStatus.BAD_REQUEST, HttpMessage.FAIL_SAVE_USER);
+    }
     return;
   }
 
@@ -60,8 +62,12 @@ export class UserService {
       throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_USER);
 
     user = { ...user, ...updateUserDto };
+    try {
+      await this.userRepository.save(user);
+    } catch (err) {
+      throw new HttpError(HttpStatus.BAD_REQUEST, HttpMessage.FAIL_UPDATE_USER);
+    }
 
-    await this.userRepository.save(user);
 
     return;
   }
@@ -71,8 +77,12 @@ export class UserService {
 
     if (user === undefined)
       throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_USER);
+    try {
+      await this.userRepository.deleteOneById(userId);
+    } catch (err) {
+      throw new HttpError(HttpStatus.BAD_REQUEST, HttpMessage.FAIL_DELETE_USER);
+    }
 
-    await this.userRepository.deleteOneById(userId);
 
     return;
   }
