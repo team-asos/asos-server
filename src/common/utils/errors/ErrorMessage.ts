@@ -11,6 +11,7 @@ export enum ErrorMessage {
   FAIL_CREATE_FACILITY = '시설 생성에 실패했습니다.',
   FAIL_CREATE_FLOOR = '층 생성에 실패했습니다',
   FAIL_DELETE_FLOOR = '특정 층 삭제에 실패했습니다',
+  FAIL_UPDATE_FLOOR = '층 수정에 실패했습니다.',
   WRONG_PASSWORD = '비밀번호가 잘못되었습니다.',
   WRONG_ID = '잘못된 아이디 입니다.',
 }

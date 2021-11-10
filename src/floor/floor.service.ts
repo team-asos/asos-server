@@ -27,10 +27,10 @@ export class FloorService {
 
   //층 생성
   async createOne(createFloorDto: CreateFloorDto): Promise<void> {
-    try {
-      let floor = new Floor();
-      floor = { ...floor, ...createFloorDto };
+    let floor = new Floor();
+    floor = { ...floor, ...createFloorDto };
 
+    try {
       await this.floorRepository.save(floor);
     } catch (err) {
       throw new HttpError(
@@ -43,9 +43,10 @@ export class FloorService {
   //층 삭제
   async deleteOne(floorId: number): Promise<void> {
     const floor = await this.floorRepository.findOne();
+    if (floor === undefined)
+      throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_FLOOR);
+
     try {
-      if (floor === undefined)
-        throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_FLOOR);
       await this.floorRepository.deleteOneById(floorId);
     } catch (err) {
       throw new HttpError(
@@ -66,7 +67,13 @@ export class FloorService {
       throw new HttpError(HttpStatus.NOT_FOUND, ErrorMessage.NOT_FOUND_FLOOR);
 
     floor = { ...floor, ...updatefloorDto };
-
-    await this.floorRepository.save(floor);
+    try {
+      await this.floorRepository.save(floor);
+    } catch (err) {
+      throw new HttpError(
+        HttpStatus.BAD_REQUEST,
+        ErrorMessage.FAIL_UPDATE_FLOOR,
+      );
+    }
   }
 }
