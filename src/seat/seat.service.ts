@@ -2,7 +2,7 @@ import HttpError from 'src/common/exceptions/http.exception';
 import { HttpMessage } from 'src/common/utils/errors/http-message.enum';
 import { FloorRepository } from 'src/floor/floor.repository';
 
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { HttpCode, HttpStatus, Injectable } from '@nestjs/common';
 
 import { CreateSeatDto } from './dtos/create-seat.dto';
 import { UpdateSeatDto } from './dtos/update-seat.dto';
@@ -33,36 +33,45 @@ export class SeatService {
 
   async createOne(createSeatDto: CreateSeatDto): Promise<void> {
     const { floorId } = createSeatDto;
+    try {
+      const floor = await this.floorRepository.findOne(floorId);
+      if (floor === undefined)
+        throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_SEAT);
 
-    const floor = await this.floorRepository.findOne(floorId);
-    if (floor === undefined)
-      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_FLOOR);
+      let seat = new Seat();
+      seat = { ...seat, ...createSeatDto, floor };
 
-    let seat = new Seat();
-    seat = { ...seat, ...createSeatDto, floor };
-
-    await this.seatRepository.save(seat);
-
+      await this.seatRepository.save(seat);
+    } catch (err) {
+      throw new HttpError(HttpStatus.BAD_REQUEST, HttpMessage.FAIL_SAVE_SEAT);
+    }
     return;
   }
 
   async updateOne(seatId: number, updateSeatDto: UpdateSeatDto): Promise<void> {
     let seat = await this.seatRepository.findOne(seatId);
 
-    if (seat === undefined)
-      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_SEAT);
+    try {
+      if (seat === undefined)
+        throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_SEAT);
 
-    seat = { ...seat, ...updateSeatDto };
+      seat = { ...seat, ...updateSeatDto };
 
-    await this.seatRepository.save(seat);
+      await this.seatRepository.save(seat);
+    } catch (err) {
+      throw new HttpError(HttpStatus.BAD_REQUEST, HttpMessage.FAIL_UPDATE_SEAT);
+    }
   }
 
   async deleteOne(seatId: number): Promise<void> {
     const seat = await this.seatRepository.findOne(seatId);
+    try {
+      if (seat === undefined)
+        throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_SEAT);
 
-    if (seat === undefined)
-      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_SEAT);
-
-    await this.seatRepository.deleteOneById(seatId);
+      await this.seatRepository.deleteOneById(seatId);
+    } catch (err) {
+      throw new HttpError(HttpStatus.BAD_REQUEST, HttpMessage.FAIL_DELETE_SEAT);
+    }
   }
 }
