@@ -22,6 +22,10 @@ export class ReservationRepository extends Repository<Reservation> {
     const { userId } = search;
 
     const reservations = await this.createQueryBuilder('reservation')
+      .leftJoinAndSelect('reservation.seat', 'seat')
+      .leftJoinAndSelect('reservation.room', 'room')
+      .leftJoinAndSelect('seat.floor', 'seat.floor')
+      .leftJoinAndSelect('room.floor', 'room.floor')
       .where(userId ? 'reservation.user_id = (:userId)' : '1=1', { userId })
       .getMany();
 
