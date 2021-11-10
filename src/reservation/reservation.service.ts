@@ -10,6 +10,7 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 
 import { CreateRoomReservationDto } from './dtos/create-room-reservation.dto';
 import { CreateSeatReservationDto } from './dtos/create-seat-reservation.dto';
+import { SearchReservationDto } from './dtos/search-reservation.dto';
 import { Reservation } from './reservation.entity';
 import { ReservationRepository } from './reservation.repository';
 
@@ -24,6 +25,12 @@ export class ReservationService {
 
   async findAll(): Promise<Reservation[]> {
     const reservations = await this.reservationRepository.find();
+
+    return reservations;
+  }
+
+  async searchAll(search: SearchReservationDto): Promise<Reservation[]> {
+    const reservations = await this.reservationRepository.search(search);
 
     return reservations;
   }
