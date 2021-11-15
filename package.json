@@ -33,6 +33,7 @@
     "bcrypt": "^5.0.1",
     "class-transformer": "^0.4.0",
     "class-validator": "^0.13.1",
+    "csv-writer": "^1.6.0",
     "dotenv": "^10.0.0",
     "moment": "^2.29.1",
     "morgan": "^1.10.0",
