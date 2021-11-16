@@ -39,7 +39,7 @@ export class ReservationRepository extends Repository<Reservation> {
       .execute();
   }
 
-  async handleReservationStatus(): Promise<void> {
+  async updateReservationStatus(): Promise<void> {
     const nowTime = moment(new Date());
 
     const reservations = await this.createQueryBuilder('reservation')
@@ -72,5 +72,11 @@ export class ReservationRepository extends Repository<Reservation> {
     });
 
     return;
+  }
+
+  async getReservationInformation(): Promise<any> {
+    const reservations = await this.createQueryBuilder('reservation').getMany();
+
+    return reservations;
   }
 }

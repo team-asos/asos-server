@@ -139,7 +139,6 @@ export class ReservationService {
       );
     }
 
-
     return;
   }
 }

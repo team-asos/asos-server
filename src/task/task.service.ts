@@ -10,14 +10,14 @@ export class TaskService {
   constructor(private readonly reservationRepository: ReservationRepository) {}
 
   @Cron(CronExpression.EVERY_5_MINUTES)
-  async handleReservation(): Promise<void> {
-    await this.reservationRepository.handleReservationStatus();
+  async updateReservationStatus(): Promise<void> {
+    await this.reservationRepository.updateReservationStatus();
 
     return;
   }
 
-  @Cron(CronExpression.EVERY_SECOND)
-  async test(): Promise<void> {
+  @Cron(CronExpression.EVERY_30_SECONDS)
+  async handleReservationParse(): Promise<void> {
     const path = './file/';
     const fileName = `import_${moment().format('YYYYMMDDHHMMss')}`;
     const extension = '.csv';
