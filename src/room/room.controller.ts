@@ -7,8 +7,9 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { CreateRoomDto } from './dtos/create-room.dto';
 import { UpdateRoomDto } from './dtos/update-room.dto';
@@ -26,6 +27,21 @@ export class RoomController {
   @ApiResponse({ status: 200, description: 'Success' })
   async findAll(): Promise<Room[]> {
     const rooms = await this.roomService.findAll();
+
+    return rooms;
+  }
+
+  @Get('search')
+  @HttpCode(200)
+  @ApiOperation({ summary: '검색한 회의실 조회' })
+  @ApiQuery({
+    name: 'floorId',
+    required: false,
+    type: Number,
+  })
+  @ApiResponse({ status: 200, description: 'Success' })
+  async searchAll(@Query() search): Promise<Room[]> {
+    const rooms = await this.roomService.searchAll(search);
 
     return rooms;
   }

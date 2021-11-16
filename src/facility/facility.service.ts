@@ -5,6 +5,7 @@ import { FloorRepository } from 'src/floor/floor.repository';
 import { HttpStatus, Injectable } from '@nestjs/common';
 
 import { CreateFacilityDto } from './dtos/create-facility.dto';
+import { SearchFacilityDto } from './dtos/search-facility.dto';
 import { UpdateFacilityDto } from './dtos/update-facility.dto';
 import { Facility } from './facility.entity';
 import { FacilityRepository } from './facility.repository';
@@ -18,6 +19,12 @@ export class FacilityService {
 
   async findAll(): Promise<Facility[]> {
     const facilities = await this.facilityRepository.find();
+
+    return facilities;
+  }
+
+  async searchAll(search: SearchFacilityDto): Promise<Facility[]> {
+    const facilities = await this.facilityRepository.search(search);
 
     return facilities;
   }
@@ -66,7 +73,6 @@ export class FacilityService {
     }
 
     return;
-
   }
 
   async deleteOne(facilityId: number): Promise<void> {

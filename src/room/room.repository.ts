@@ -1,5 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 
+import { SearchRoomDto } from './dtos/search-room.dto';
 import { Room } from './room.entity';
 
 @EntityRepository(Room)
@@ -7,6 +8,16 @@ export class RoomRepository extends Repository<Room> {
   async getMany(): Promise<Room[]> {
     const rooms = await this.createQueryBuilder('room')
       .leftJoinAndSelect('room.floor', 'floor')
+      .getMany();
+
+    return rooms;
+  }
+
+  async search(search: SearchRoomDto): Promise<Room[]> {
+    const { floorId } = search;
+
+    const rooms = await this.createQueryBuilder('room')
+      .where(floorId ? 'room.floor_id = (:floorId)' : '1=1', { floorId })
       .getMany();
 
     return rooms;
