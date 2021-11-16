@@ -1,15 +1,16 @@
-import { IsNumber, IsString, IsEnum, NotEquals } from 'class-validator';
-import { FacilityType } from '../facility.entity';
-export class CreateFacilityDto {
-  @IsEnum(FacilityType)
-  @NotEquals(FacilityType)
-  type: FacilityType;
+import { IsEnum, IsNumber } from 'class-validator';
 
+import { FacilityType } from '../enums/facility-type.enum';
+
+export class CreateFacilityDto {
   @IsNumber()
   x: number;
 
   @IsNumber()
   y: number;
+
+  @IsEnum(FacilityType, { each: true })
+  type: FacilityType;
 
   @IsNumber()
   width: number;

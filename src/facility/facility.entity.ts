@@ -7,36 +7,25 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-export enum FacilityType {
-  AIR = 'air',
-  PAN = 'pan',
-  TOLIET = 'toliet',
-  DOOR = 'door',
-  ELEVATOR = 'elevator',
-  STAIR = 'stair',
-}
+import { FacilityType } from './enums/facility-type.enum';
+
 @Entity()
 export class Facility {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({
-    type: 'enum',
-    enum: FacilityType,
-    default: [
-      FacilityType.AIR,
-      FacilityType.PAN,
-      FacilityType.ELEVATOR,
-      FacilityType.DOOR,
-      FacilityType.STAIR,
-      FacilityType.TOLIET,
-    ],
-  })
   @Column()
   x: number;
 
   @Column()
   y: number;
+
+  @Column({
+    type: 'enum',
+    enum: FacilityType,
+    default: FacilityType.AIRCONDITIONAL,
+  })
+  type: FacilityType;
 
   @Column()
   width: number;
