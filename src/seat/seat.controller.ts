@@ -7,8 +7,9 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { CreateSeatDto } from './dtos/create-seat.dto';
 import { UpdateSeatDto } from './dtos/update-seat.dto';
@@ -26,6 +27,21 @@ export class SeatController {
   @ApiResponse({ status: 200, description: 'Success' })
   async findAll(): Promise<Seat[]> {
     const seats = await this.seatService.findAll();
+
+    return seats;
+  }
+
+  @Get('search')
+  @HttpCode(200)
+  @ApiOperation({ summary: '검색한 좌석 조회' })
+  @ApiQuery({
+    name: 'floorId',
+    required: false,
+    type: Number,
+  })
+  @ApiResponse({ status: 200, description: 'Success' })
+  async searchAll(@Query() search): Promise<Seat[]> {
+    const seats = await this.seatService.searchAll(search);
 
     return seats;
   }

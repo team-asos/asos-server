@@ -7,8 +7,9 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { CreateFacilityDto } from './dtos/create-facility.dto';
 import { UpdateFacilityDto } from './dtos/update-facility.dto';
@@ -26,6 +27,21 @@ export class FacilityController {
   @ApiResponse({ status: 200, description: 'Success' })
   async findAll(): Promise<Facility[]> {
     const facilities = await this.facilityService.findAll();
+
+    return facilities;
+  }
+
+  @Get('search')
+  @HttpCode(200)
+  @ApiOperation({ summary: '검색한 시설 조회' })
+  @ApiQuery({
+    name: 'floorId',
+    required: false,
+    type: Number,
+  })
+  @ApiResponse({ status: 200, description: 'Success' })
+  async searchAll(@Query() search): Promise<Facility[]> {
+    const facilities = await this.facilityService.searchAll(search);
 
     return facilities;
   }

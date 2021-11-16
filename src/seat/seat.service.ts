@@ -5,6 +5,7 @@ import { FloorRepository } from 'src/floor/floor.repository';
 import { HttpStatus, Injectable } from '@nestjs/common';
 
 import { CreateSeatDto } from './dtos/create-seat.dto';
+import { SearchSeatDto } from './dtos/search-seat.dto';
 import { UpdateSeatDto } from './dtos/update-seat.dto';
 import { Seat } from './seat.entity';
 import { SeatRepository } from './seat.repository';
@@ -18,6 +19,12 @@ export class SeatService {
 
   async findAll(): Promise<Seat[]> {
     const seats = await this.seatRepository.getMany();
+
+    return seats;
+  }
+
+  async searchAll(search: SearchSeatDto): Promise<Seat[]> {
+    const seats = await this.seatRepository.search(search);
 
     return seats;
   }
