@@ -39,7 +39,7 @@ export class ReservationRepository extends Repository<Reservation> {
       .execute();
   }
 
-  async handleReservationStatus(): Promise<void> {
+  async updateReservationStatus(): Promise<void> {
     const nowTime = moment(new Date());
 
     const reservations = await this.createQueryBuilder('reservation')
@@ -72,5 +72,30 @@ export class ReservationRepository extends Repository<Reservation> {
     });
 
     return;
+  }
+
+  async parseReservation(): Promise<any> {
+    const reservations = await this.createQueryBuilder('reservation')
+      .leftJoinAndSelect('reservation.user', 'user')
+      .leftJoinAndSelect('reservation.seat', 'seat')
+      .leftJoinAndSelect('reservation.room', 'room')
+      .leftJoinAndSelect('seat.floor', 'seat.floor')
+      .leftJoinAndSelect('room.floor', 'room.floor')
+      .select([
+        'reservation.startTime',
+        'reservation.endTime',
+        'reservation.status',
+        'user.name',
+        'user.tel',
+        'user.department',
+        'seat.name',
+        'seat.floor.name',
+        'room.name',
+        'room.floor.name',
+      ])
+      .where('reservation.status = 1')
+      .getMany();
+
+    return reservations;
   }
 }
