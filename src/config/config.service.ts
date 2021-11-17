@@ -63,7 +63,7 @@ export class ConfigService {
       namingStrategy: new SnakeNamingStrategy(),
       keepConnectionAlive: true,
       logging: ['error'],
-      timezone: 'z',
+      timezone: 'Z',
     };
   }
 
