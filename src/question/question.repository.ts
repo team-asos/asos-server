@@ -5,6 +5,15 @@ import { Question } from './question.entity';
 
 @EntityRepository(Question)
 export class QuestionRepository extends Repository<Question> {
+  async getOneById(questionId: number) {
+    const question = await this.createQueryBuilder('question')
+      .leftJoinAndSelect('question.answer', 'answer')
+      .where('question.id = (:questionId)', { questionId })
+      .getOne();
+
+    return question;
+  }
+
   async search(search: SearchQuestionDto): Promise<Question[]> {
     const { userId } = search;
 
