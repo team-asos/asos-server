@@ -36,6 +36,8 @@ export class Facility {
   @CreateDateColumn({ select: false })
   createdAt: Date;
 
-  @ManyToOne(() => Floor, floor => floor.facilities)
+  @ManyToOne(() => Floor, floor => floor.facilities, {
+    onDelete: 'CASCADE',
+  })
   floor: Floor;
 }

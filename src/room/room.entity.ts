@@ -35,9 +35,13 @@ export class Room {
   @CreateDateColumn({ select: false })
   createdAt: Date;
 
-  @OneToMany(() => Reservation, reservation => reservation.room)
+  @OneToMany(() => Reservation, reservation => reservation.room, {
+    cascade: true,
+  })
   reservations: Reservation[];
 
-  @ManyToOne(() => Floor, floor => floor.rooms)
+  @ManyToOne(() => Floor, floor => floor.rooms, {
+    onDelete: 'CASCADE',
+  })
   floor: Floor;
 }

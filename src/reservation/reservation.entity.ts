@@ -32,13 +32,19 @@ export class Reservation {
   @DeleteDateColumn()
   deletedAt: Date;
 
-  @OneToMany(() => Participant, participant => participant.reservation)
+  @OneToMany(() => Participant, participant => participant.reservation, {
+    cascade: true,
+  })
   participants: Participant[];
 
-  @ManyToOne(() => Seat, seat => seat.reservations)
+  @ManyToOne(() => Seat, seat => seat.reservations, {
+    onDelete: 'CASCADE',
+  })
   seat: Seat;
 
-  @ManyToOne(() => Room, room => room.reservations)
+  @ManyToOne(() => Room, room => room.reservations, {
+    onDelete: 'CASCADE',
+  })
   room: Room;
 
   @ManyToOne(() => User, user => user.reservations)
