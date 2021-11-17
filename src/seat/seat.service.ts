@@ -44,7 +44,7 @@ export class SeatService {
     const floor = await this.floorRepository.findOne(floorId);
 
     if (floor === undefined)
-      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_SEAT);
+      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_FLOOR);
 
     let seat = new Seat();
     seat = { ...seat, ...createSeatDto, floor };
