@@ -13,13 +13,32 @@ export class TaskService {
   async updateReservationStatus(): Promise<void> {
     await this.reservationRepository.updateReservationStatus();
 
+    await this.parseReservation();
+
     return;
   }
 
-  @Cron(CronExpression.EVERY_30_SECONDS)
-  async handleReservationParse(): Promise<void> {
+  private async parseReservation(): Promise<void> {
+    const reservations = await this.reservationRepository.parseReservation();
+
+    const parse = reservation => {
+      return {
+        location: reservation.seat
+          ? `${reservation.seat.floor.name}-${reservation.seat.name}`
+          : `${reservation.room.floor.name}-${reservation.room.name}`,
+        start_time: moment(reservation.startTime).format('HH : MM'),
+        end_time: moment(reservation.endTime).format('HH : MM'),
+        department: reservation.user.department,
+        phone: reservation.user.tel,
+        name: reservation.user.name,
+        status: reservation.status,
+      };
+    };
+
+    const records = reservations.map(reservation => parse(reservation));
+
     const path = './file/';
-    const fileName = `import_${moment().format('YYYYMMDDHHMMss')}`;
+    const fileName = `import_${moment().format('YYYYMMDDHHmmss')}`;
     const extension = '.csv';
 
     const csvWriter = createObjectCsvWriter({
@@ -34,18 +53,6 @@ export class TaskService {
         { id: 'status', title: 'status' },
       ],
     });
-
-    const records = [
-      {
-        location: '7F-17',
-        start_time: '09 : 30',
-        end_time: '10 : 30',
-        department: '개발1팀',
-        phone: '010-0000-0000',
-        name: '홍길동',
-        status: '회의중',
-      },
-    ];
 
     await csvWriter.writeRecords(records);
 
