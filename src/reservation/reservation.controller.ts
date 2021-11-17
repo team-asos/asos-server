@@ -37,6 +37,16 @@ export class ReservationController {
     required: false,
     type: Number,
   })
+  @ApiQuery({
+    name: 'floorId',
+    required: false,
+    type: Number,
+  })
+  @ApiQuery({
+    name: 'status',
+    required: false,
+    type: Number,
+  })
   @ApiResponse({ status: 200, description: 'Success' })
   async searchAll(@Query() search): Promise<Reservation[]> {
     const reservations = await this.reservationService.searchAll(search);
