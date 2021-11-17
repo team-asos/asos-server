@@ -32,6 +32,9 @@ export class Room {
   @Column()
   height: number;
 
+  @Column({ nullable: true })
+  tagId: number;
+
   @CreateDateColumn({ select: false })
   createdAt: Date;
 
