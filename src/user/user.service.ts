@@ -63,7 +63,16 @@ export class UserService {
     if (user === undefined)
       throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_USER);
 
-    user = { ...user, ...updateUserDto };
+    const { password } = updateUserDto;
+
+    if (password) {
+      const saltOrRounds = 10;
+      const hash = await bcrypt.hash(password, saltOrRounds);
+
+      user = { ...user, ...updateUserDto, password: hash };
+    } else {
+      user = { ...user, ...updateUserDto };
+    }
 
     try {
       await this.userRepository.save(user);
