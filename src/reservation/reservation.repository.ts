@@ -89,8 +89,10 @@ export class ReservationRepository extends Repository<Reservation> {
         'user.tel',
         'user.department',
         'seat.name',
+        'seat.tagId',
         'seat.floor.name',
         'room.name',
+        'room.tagId',
         'room.floor.name',
       ])
       .where('reservation.status = 1')

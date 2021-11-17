@@ -32,6 +32,9 @@ export class TaskService {
         phone: reservation.user.tel,
         name: reservation.user.name,
         status: reservation.status,
+        tag_id: reservation.seat
+          ? reservation.seat.tagId
+          : reservation.room.tagId,
       };
     };
 
@@ -51,6 +54,7 @@ export class TaskService {
         { id: 'phone', title: 'phone' },
         { id: 'name', title: 'name' },
         { id: 'status', title: 'status' },
+        { id: 'tag_id', title: 'tag_id' },
       ],
     });
 
