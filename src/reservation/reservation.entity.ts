@@ -23,7 +23,7 @@ export class Reservation {
   @Column()
   endTime: Date;
 
-  @Column()
+  @Column({ default: 0 })
   status: number;
 
   @CreateDateColumn()

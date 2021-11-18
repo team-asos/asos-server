@@ -19,6 +19,9 @@ export class CreateReservationDto {
   @IsNumber()
   roomId: number;
 
+  @IsNumber()
+  floorId: number;
+
   @IsArray()
   @IsNumber({}, { each: true })
   participantIds: number[];
