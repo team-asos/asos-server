@@ -28,7 +28,10 @@ export class ReservationRepository extends Repository<Reservation> {
       .leftJoinAndSelect('room.floor', 'room.floor')
       .where(userId ? 'reservation.user_id = (:userId)' : '1=1', { userId })
       .andWhere(floorId ? 'seat.floor.id = (:floorId)' : '1=1', { floorId })
-      .andWhere(status ? 'reservation.status = (:status)' : '1=1', { status })
+      .andWhere(
+        status !== undefined ? 'reservation.status = (:status)' : '1=1',
+        { status },
+      )
       .getMany();
 
     return reservations;
@@ -42,7 +45,7 @@ export class ReservationRepository extends Repository<Reservation> {
   }
 
   async updateReservationStatus(): Promise<void> {
-    const nowTime = moment(new Date());
+    const nowTime = moment(moment.now());
 
     const reservations = await this.createQueryBuilder('reservation')
       .select([

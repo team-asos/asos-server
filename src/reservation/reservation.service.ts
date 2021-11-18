@@ -1,3 +1,4 @@
+import * as moment from 'moment';
 import HttpError from 'src/common/exceptions/http.exception';
 import { HttpMessage } from 'src/common/utils/errors/http-message.enum';
 import { Participant } from 'src/participant/participant.entity';
@@ -114,8 +115,45 @@ export class ReservationService {
     if (seat === undefined)
       throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_SEAT);
 
+    const prevReservations = await this.reservationRepository.search({
+      userId: user.id,
+      status: 1,
+    });
+
+    if (prevReservations.length !== 0)
+      throw new HttpError(
+        HttpStatus.BAD_REQUEST,
+        HttpMessage.FAIL_SAVE_RESERVATION,
+      );
+
     let reservation = new Reservation();
-    reservation = { ...reservation, ...createSeatReservationDto, user, seat };
+    reservation = {
+      ...reservation,
+      ...createSeatReservationDto,
+      user,
+      seat,
+      status: 1,
+    };
+
+    await this.reservationRepository.save(reservation);
+
+    return;
+  }
+
+  async updateSeatOne(reservationId: number): Promise<void> {
+    let reservation = await this.reservationRepository.findOne(reservationId);
+
+    if (reservation === undefined)
+      throw new HttpError(
+        HttpStatus.NOT_FOUND,
+        HttpMessage.NOT_FOUND_RESERVATION,
+      );
+
+    reservation = {
+      ...reservation,
+      endTime: moment(moment.now()).toDate(),
+      status: 2,
+    };
 
     await this.reservationRepository.save(reservation);
 
