@@ -20,7 +20,7 @@ export class Reservation {
   @Column()
   startTime: Date;
 
-  @Column()
+  @Column({ nullable: true })
   endTime: Date;
 
   @Column({ default: 0 })

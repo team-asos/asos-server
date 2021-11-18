@@ -50,6 +50,10 @@ export class ReservationRepository extends Repository<Reservation> {
         'reservation.startTime',
         'reservation.endTime',
       ])
+      .leftJoin('reservation.seat', 'seat')
+      .where(
+        'reservation.seat IS NULL AND (reservation.status = 0 OR reservation.status = 1)',
+      )
       .getMany();
 
     reservations.map(async reservation => {
