@@ -1,12 +1,6 @@
-import { IsArray, IsDateString, IsNumber } from 'class-validator';
+import { IsArray, IsNumber } from 'class-validator';
 
 export class CreateReservationDto {
-  @IsDateString()
-  startTime: Date;
-
-  @IsDateString()
-  endTime: Date;
-
   @IsNumber()
   status: number;
 
