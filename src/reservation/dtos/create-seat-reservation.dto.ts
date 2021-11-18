@@ -1,4 +1,4 @@
-import { IsDateString, IsOptional } from 'class-validator';
+import { IsDateString } from 'class-validator';
 
 import { OmitType } from '@nestjs/swagger';
 
@@ -11,10 +11,5 @@ export class CreateSeatReservationDto extends OmitType(CreateReservationDto, [
   'participantIds',
 ] as const) {
   @IsDateString()
-  @IsOptional()
-  startTime?: Date;
-
-  @IsDateString()
-  @IsOptional()
-  endTime?: Date;
+  startTime: Date;
 }

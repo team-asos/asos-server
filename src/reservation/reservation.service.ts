@@ -115,16 +115,32 @@ export class ReservationService {
     if (seat === undefined)
       throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_SEAT);
 
-    const prevReservations = await this.reservationRepository.search({
-      userId: user.id,
+    // 예약자가 기존 예약한 좌석이 있는지 확인
+    const prevReservations = await this.reservationRepository.find({
+      user,
+      room: null,
       status: 1,
     });
 
-    if (prevReservations.length !== 0)
+    if (prevReservations.length !== 0) {
       throw new HttpError(
         HttpStatus.BAD_REQUEST,
         HttpMessage.FAIL_SAVE_RESERVATION,
       );
+    }
+
+    // 예약하려는 좌석이 이미 예약 되어 있는지 확인
+    const duplicatedReservations = await this.reservationRepository.find({
+      seat,
+      status: 1,
+    });
+
+    if (duplicatedReservations.length !== 0) {
+      throw new HttpError(
+        HttpStatus.BAD_REQUEST,
+        HttpMessage.FAIL_SAVE_RESERVATION,
+      );
+    }
 
     let reservation = new Reservation();
     reservation = {
