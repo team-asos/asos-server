@@ -1,7 +1,7 @@
 export enum HttpMessage {
   FAIL_DELETE_FACILITY = '시설 삭제에 실패했습니다',
   FAIL_DELETE_FLOOR = '층 삭제에 실패했습니다',
-  FAIL_DELETE_QUESTION = '질문 수정에 실패했습니다.',
+  FAIL_DELETE_QUESTION = '질문 삭제에 실패했습니다.',
   FAIL_DELETE_RESERVATION = '예약 삭제에 실패했습니다.',
   FAIL_DELETE_ROOM = '회의실 삭제에 실패했습니다.',
   FAIL_DELETE_SEAT = '좌석 삭제에 실패했습니다.',
