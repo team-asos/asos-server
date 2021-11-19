@@ -19,13 +19,11 @@ export class TaskService {
 
     const file = await this.parseReservation();
 
-    try {
-      await this.ftpService.upload(`./file/${file}`, `Import/${file}`);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      console.log('FTP SUCCESS!');
-    }
+    // try {
+    //   await this.ftpService.upload(`./file/${file}`, `Import/${file}`);
+    // } catch (error) {
+    //   console.log(error);
+    // }
 
     return;
   }

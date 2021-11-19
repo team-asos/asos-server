@@ -1,21 +1,23 @@
+import { FtpModule } from 'nestjs-ftp';
+import { ConfigService } from 'src/config/config.service';
 import { ReservationRepository } from 'src/reservation/reservation.repository';
 
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { TaskService } from './task.service';
-import { FtpModule } from 'nestjs-ftp';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([ReservationRepository]),
     FtpModule.forRootFtpAsync({
-      useFactory: async () => {
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => {
         return {
-          host: '192.168.0.200',
-          port: 2121,
-          user: 'cgESLUser',
-          password: 'cgESLPassword',
+          host: configService.get('FTP_HOST'),
+          port: configService.getNumber('FTP_PORT'),
+          user: configService.get('FTP_USER'),
+          password: configService.get('FTP_PASSWORD'),
           secure: false,
         };
       },
