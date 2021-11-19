@@ -20,7 +20,7 @@ export class QuestionService {
   ) {}
 
   async findAll(): Promise<Question[]> {
-    const questions = await this.questionRepository.find();
+    const questions = await this.questionRepository.getMany();
 
     return questions;
   }

@@ -5,7 +5,16 @@ import { Question } from './question.entity';
 
 @EntityRepository(Question)
 export class QuestionRepository extends Repository<Question> {
-  async getOneById(questionId: number) {
+  async getMany(): Promise<Question[]> {
+    const questions = await this.createQueryBuilder('question')
+      .addSelect('user.id')
+      .leftJoin('question.user', 'user')
+      .getMany();
+
+    return questions;
+  }
+
+  async getOneById(questionId: number): Promise<Question> {
     const question = await this.createQueryBuilder('question')
       .leftJoinAndSelect('question.answer', 'answer')
       .where('question.id = (:questionId)', { questionId })
