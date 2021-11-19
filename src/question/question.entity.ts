@@ -17,9 +17,6 @@ export class Question {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  userId: number;
-
   @Column({ default: 0 })
   status: number;
 
