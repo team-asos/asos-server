@@ -1,5 +1,6 @@
 import { createObjectCsvWriter } from 'csv-writer';
 import * as moment from 'moment';
+import { FtpService } from 'nestjs-ftp';
 import { ReservationRepository } from 'src/reservation/reservation.repository';
 
 import { Injectable } from '@nestjs/common';
@@ -7,18 +8,29 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 
 @Injectable()
 export class TaskService {
-  constructor(private readonly reservationRepository: ReservationRepository) {}
+  constructor(
+    private readonly reservationRepository: ReservationRepository,
+    private readonly ftpService: FtpService,
+  ) {}
 
   @Cron(CronExpression.EVERY_5_MINUTES)
   async updateReservationStatus(): Promise<void> {
     await this.reservationRepository.updateReservationStatus();
 
-    await this.parseReservation();
+    const file = await this.parseReservation();
+
+    try {
+      await this.ftpService.upload(`./file/${file}`, `Import/${file}`);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      console.log('FTP SUCCESS!');
+    }
 
     return;
   }
 
-  private async parseReservation(): Promise<void> {
+  private async parseReservation(): Promise<string> {
     const reservations = await this.reservationRepository.parseReservation();
 
     const parse = reservation => {
@@ -60,6 +72,6 @@ export class TaskService {
 
     await csvWriter.writeRecords(records);
 
-    return;
+    return fileName + extension;
   }
 }
