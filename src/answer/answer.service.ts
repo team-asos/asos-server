@@ -40,7 +40,6 @@ export class AnswerService {
       throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_USER);
 
     const question = await this.questionRepository.findOne(questionId);
-
     if (question === undefined)
       throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_QUESTION);
 
@@ -51,7 +50,9 @@ export class AnswerService {
       user,
       question,
     };
-
+    await this.questionRepository.update(question.id, {
+      status: 1,
+    });
     await this.answerRepository.save(answer);
 
     return;
