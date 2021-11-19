@@ -5,6 +5,7 @@ import {
   Get,
   HttpCode,
   Param,
+  Patch,
   Post,
   Query,
 } from '@nestjs/common';
@@ -84,13 +85,26 @@ export class ReservationController {
 
   @Post('seat')
   @HttpCode(201)
-  @ApiOperation({ summary: '좌석 예약 생성' })
+  @ApiOperation({ summary: '좌석 사용 시작' })
   @ApiResponse({ status: 201, description: 'Success' })
-  @ApiResponse({ status: 404, description: 'Wrong userId' })
+  @ApiResponse({ status: 404, description: 'Wrong userId OR Wrong seatId' })
   async createSeatOne(
     @Body() createSeatReservationDto: CreateSeatReservationDto,
   ): Promise<string> {
     await this.reservationService.createSeatOne(createSeatReservationDto);
+
+    return 'success';
+  }
+
+  @Patch(':reservationId/seat')
+  @HttpCode(200)
+  @ApiOperation({ summary: '좌석 사용 종료' })
+  @ApiResponse({ status: 201, description: 'Success' })
+  @ApiResponse({ status: 404, description: 'Wrong reservationId' })
+  async updateSeatOne(
+    @Param('reservationId') reservationId: number,
+  ): Promise<string> {
+    await this.reservationService.updateSeatOne(reservationId);
 
     return 'success';
   }
