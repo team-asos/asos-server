@@ -95,7 +95,8 @@ export class QuestionService {
         HttpMessage.FAIL_DELETE_QUESTION,
       );
     } finally {
-      await this.answerRepository.deleteOneById(question.answer.id);
+      if (question.answer)
+        await this.answerRepository.deleteOneById(question.answer.id);
     }
 
     return;
