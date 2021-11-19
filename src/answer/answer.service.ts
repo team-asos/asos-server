@@ -50,11 +50,9 @@ export class AnswerService {
       user,
       question,
     };
-
     await this.questionRepository.update(question.id, {
       status: 1,
     });
-
     await this.answerRepository.save(answer);
 
     return;
