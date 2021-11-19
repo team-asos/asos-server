@@ -17,10 +17,10 @@ export class Reservation {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ type: 'timestamp' })
   startTime: Date;
 
-  @Column({ nullable: true })
+  @Column({ type: 'timestamp', nullable: true })
   endTime: Date;
 
   @Column({ default: 0 })
