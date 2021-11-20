@@ -61,10 +61,10 @@ export class RoomController {
   @HttpCode(201)
   @ApiOperation({ summary: '회의실 생성' })
   @ApiResponse({ status: 201, description: 'Success' })
-  async createOne(@Body() createRoomDto: CreateRoomDto): Promise<string> {
-    await this.roomService.createOne(createRoomDto);
+  async createOne(@Body() createRoomDto: CreateRoomDto): Promise<Room> {
+    const room = await this.roomService.createOne(createRoomDto);
 
-    return 'success';
+    return room;
   }
 
   @Patch(':roomId')
@@ -84,9 +84,9 @@ export class RoomController {
   @HttpCode(200)
   @ApiOperation({ summary: '특정 회의실 삭제' })
   @ApiResponse({ status: 200, description: 'Success' })
-  async deleteOne(@Param('roomId') roomId: number): Promise<string> {
-    await this.roomService.deleteOne(roomId);
+  async deleteOne(@Param('roomId') roomId: number): Promise<Room> {
+    const room = await this.roomService.deleteOne(roomId);
 
-    return 'success';
+    return room;
   }
 }

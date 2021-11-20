@@ -38,7 +38,7 @@ export class RoomService {
     return room;
   }
 
-  async createOne(createRoomDto: CreateRoomDto): Promise<void> {
+  async createOne(createRoomDto: CreateRoomDto): Promise<Room> {
     const { floorId } = createRoomDto;
 
     const floor = await this.floorRepository.findOne(floorId);
@@ -50,12 +50,12 @@ export class RoomService {
     room = { ...room, ...createRoomDto, floor };
 
     try {
-      await this.roomRepository.save(room);
+      room = await this.roomRepository.save(room);
     } catch (err) {
       throw new HttpError(HttpStatus.BAD_REQUEST, HttpMessage.FAIL_SAVE_ROOM);
     }
 
-    return;
+    return room;
   }
 
   async updateOne(roomId: number, updateRoomDto: UpdateRoomDto): Promise<void> {
@@ -75,7 +75,7 @@ export class RoomService {
     return;
   }
 
-  async deleteOne(roomId: number): Promise<void> {
+  async deleteOne(roomId: number): Promise<Room> {
     const room = await this.roomRepository.findOne(roomId);
 
     if (room === undefined)
@@ -87,6 +87,6 @@ export class RoomService {
       throw new HttpError(HttpStatus.BAD_REQUEST, HttpMessage.FAIL_DELETE_ROOM);
     }
 
-    return;
+    return room;
   }
 }
