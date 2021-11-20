@@ -5,6 +5,7 @@ import { FloorRepository } from 'src/floor/floor.repository';
 import { HttpStatus, Injectable } from '@nestjs/common';
 
 import { CreateFacilityDto } from './dtos/create-facility.dto';
+import { SearchFacilityDto } from './dtos/search-facility.dto';
 import { UpdateFacilityDto } from './dtos/update-facility.dto';
 import { Facility } from './facility.entity';
 import { FacilityRepository } from './facility.repository';
@@ -22,7 +23,13 @@ export class FacilityService {
     return facilities;
   }
 
-  async createOne(createFacilityDto: CreateFacilityDto): Promise<void> {
+  async searchAll(search: SearchFacilityDto): Promise<Facility[]> {
+    const facilities = await this.facilityRepository.search(search);
+
+    return facilities;
+  }
+
+  async createOne(createFacilityDto: CreateFacilityDto): Promise<Facility> {
     const { floorId } = createFacilityDto;
     const floor = await this.floorRepository.findOne(floorId);
 
@@ -34,7 +41,7 @@ export class FacilityService {
     facility = { ...facility, ...createFacilityDto, floor };
 
     try {
-      await this.facilityRepository.save(facility);
+      facility = await this.facilityRepository.save(facility);
     } catch (err) {
       throw new HttpError(
         HttpStatus.BAD_REQUEST,
@@ -42,7 +49,7 @@ export class FacilityService {
       );
     }
 
-    return;
+    return facility;
   }
 
   async updateOne(
@@ -66,10 +73,9 @@ export class FacilityService {
     }
 
     return;
-
   }
 
-  async deleteOne(facilityId: number): Promise<void> {
+  async deleteOne(facilityId: number): Promise<Facility> {
     const facility = await this.facilityRepository.findOne();
 
     if (facility === undefined)
@@ -84,6 +90,6 @@ export class FacilityService {
       );
     }
 
-    return;
+    return facility;
   }
 }

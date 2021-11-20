@@ -7,8 +7,9 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { CreateSeatDto } from './dtos/create-seat.dto';
 import { UpdateSeatDto } from './dtos/update-seat.dto';
@@ -30,6 +31,21 @@ export class SeatController {
     return seats;
   }
 
+  @Get('search')
+  @HttpCode(200)
+  @ApiOperation({ summary: '검색한 좌석 조회' })
+  @ApiQuery({
+    name: 'floorId',
+    required: false,
+    type: Number,
+  })
+  @ApiResponse({ status: 200, description: 'Success' })
+  async searchAll(@Query() search): Promise<Seat[]> {
+    const seats = await this.seatService.searchAll(search);
+
+    return seats;
+  }
+
   @Get(':seatId')
   @HttpCode(200)
   @ApiOperation({ summary: '특정 좌석 조회' })
@@ -46,10 +62,10 @@ export class SeatController {
   @ApiOperation({ summary: '좌석 생성' })
   @ApiResponse({ status: 201, description: 'Success' })
   @ApiResponse({ status: 404, description: 'Wrong seatId' })
-  async createOne(@Body() createSeatDto: CreateSeatDto): Promise<string> {
-    await this.seatService.createOne(createSeatDto);
+  async createOne(@Body() createSeatDto: CreateSeatDto): Promise<Seat> {
+    const seat = await this.seatService.createOne(createSeatDto);
 
-    return 'success';
+    return seat;
   }
 
   @Patch(':seatId')
@@ -69,9 +85,9 @@ export class SeatController {
   @HttpCode(200)
   @ApiOperation({ summary: '특정 좌석 삭제' })
   @ApiResponse({ status: 200, description: 'Success' })
-  async deleteOne(@Param('seatId') seatId: number): Promise<string> {
-    await this.seatService.deleteOne(seatId);
+  async deleteOne(@Param('seatId') seatId: number): Promise<Seat> {
+    const seat = await this.seatService.deleteOne(seatId);
 
-    return 'success';
+    return seat;
   }
 }

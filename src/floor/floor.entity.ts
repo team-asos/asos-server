@@ -26,12 +26,18 @@ export class Floor {
   @CreateDateColumn({ select: false })
   createdAt: Date;
 
-  @OneToMany(() => Seat, seat => seat.floor)
+  @OneToMany(() => Seat, seat => seat.floor, {
+    cascade: true,
+  })
   seats: Seat[];
 
-  @OneToMany(() => Room, room => room.floor)
+  @OneToMany(() => Room, room => room.floor, {
+    cascade: true,
+  })
   rooms: Room[];
 
-  @OneToMany(() => Facility, facility => facility.floor)
+  @OneToMany(() => Facility, facility => facility.floor, {
+    cascade: true,
+  })
   facilities: Facility[];
 }

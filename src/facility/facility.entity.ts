@@ -7,22 +7,25 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+import { FacilityType } from './enums/facility-type.enum';
+
 @Entity()
 export class Facility {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  type: string;
-
-  @Column()
-  name: string;
-
-  @Column()
   x: number;
 
   @Column()
   y: number;
+
+  @Column({
+    type: 'enum',
+    enum: FacilityType,
+    default: FacilityType.AIRCONDITIONAL,
+  })
+  type: FacilityType;
 
   @Column()
   width: number;
@@ -33,6 +36,8 @@ export class Facility {
   @CreateDateColumn({ select: false })
   createdAt: Date;
 
-  @ManyToOne(() => Floor, floor => floor.facilities)
+  @ManyToOne(() => Floor, floor => floor.facilities, {
+    onDelete: 'CASCADE',
+  })
   floor: Floor;
 }

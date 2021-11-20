@@ -1,3 +1,4 @@
+import * as moment from 'moment';
 import HttpError from 'src/common/exceptions/http.exception';
 import { HttpMessage } from 'src/common/utils/errors/http-message.enum';
 import { Participant } from 'src/participant/participant.entity';
@@ -114,8 +115,61 @@ export class ReservationService {
     if (seat === undefined)
       throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_SEAT);
 
+    // 예약자가 기존 예약한 좌석이 있는지 확인
+    const prevReservations = await this.reservationRepository.find({
+      user,
+      room: null,
+      status: 1,
+    });
+
+    if (prevReservations.length !== 0) {
+      throw new HttpError(
+        HttpStatus.BAD_REQUEST,
+        HttpMessage.FAIL_SAVE_RESERVATION,
+      );
+    }
+
+    // 예약하려는 좌석이 이미 예약 되어 있는지 확인
+    const duplicatedReservations = await this.reservationRepository.find({
+      seat,
+      status: 1,
+    });
+
+    if (duplicatedReservations.length !== 0) {
+      throw new HttpError(
+        HttpStatus.BAD_REQUEST,
+        HttpMessage.FAIL_SAVE_RESERVATION,
+      );
+    }
+
     let reservation = new Reservation();
-    reservation = { ...reservation, ...createSeatReservationDto, user, seat };
+    reservation = {
+      ...reservation,
+      ...createSeatReservationDto,
+      user,
+      seat,
+      status: 1,
+    };
+
+    await this.reservationRepository.save(reservation);
+
+    return;
+  }
+
+  async updateSeatOne(reservationId: number): Promise<void> {
+    let reservation = await this.reservationRepository.findOne(reservationId);
+
+    if (reservation === undefined)
+      throw new HttpError(
+        HttpStatus.NOT_FOUND,
+        HttpMessage.NOT_FOUND_RESERVATION,
+      );
+
+    reservation = {
+      ...reservation,
+      endTime: moment(moment.now()).toDate(),
+      status: 2,
+    };
 
     await this.reservationRepository.save(reservation);
 
@@ -138,7 +192,6 @@ export class ReservationService {
         HttpMessage.FAIL_DELETE_RESERVATION,
       );
     }
-
 
     return;
   }

@@ -5,6 +5,7 @@ import { FloorRepository } from 'src/floor/floor.repository';
 import { HttpStatus, Injectable } from '@nestjs/common';
 
 import { CreateRoomDto } from './dtos/create-room.dto';
+import { SearchRoomDto } from './dtos/search-room.dto';
 import { UpdateRoomDto } from './dtos/update-room.dto';
 import { Room } from './room.entity';
 import { RoomRepository } from './room.repository';
@@ -22,6 +23,12 @@ export class RoomService {
     return rooms;
   }
 
+  async searchAll(search: SearchRoomDto): Promise<Room[]> {
+    const rooms = await this.roomRepository.search(search);
+
+    return rooms;
+  }
+
   async findOne(roomId: number): Promise<Room> {
     const room = await this.roomRepository.getOneById(roomId);
 
@@ -31,7 +38,7 @@ export class RoomService {
     return room;
   }
 
-  async createOne(createRoomDto: CreateRoomDto): Promise<void> {
+  async createOne(createRoomDto: CreateRoomDto): Promise<Room> {
     const { floorId } = createRoomDto;
 
     const floor = await this.floorRepository.findOne(floorId);
@@ -43,12 +50,12 @@ export class RoomService {
     room = { ...room, ...createRoomDto, floor };
 
     try {
-      await this.roomRepository.save(room);
+      room = await this.roomRepository.save(room);
     } catch (err) {
       throw new HttpError(HttpStatus.BAD_REQUEST, HttpMessage.FAIL_SAVE_ROOM);
     }
 
-    return;
+    return room;
   }
 
   async updateOne(roomId: number, updateRoomDto: UpdateRoomDto): Promise<void> {
@@ -68,7 +75,7 @@ export class RoomService {
     return;
   }
 
-  async deleteOne(roomId: number): Promise<void> {
+  async deleteOne(roomId: number): Promise<Room> {
     const room = await this.roomRepository.findOne(roomId);
 
     if (room === undefined)
@@ -80,6 +87,6 @@ export class RoomService {
       throw new HttpError(HttpStatus.BAD_REQUEST, HttpMessage.FAIL_DELETE_ROOM);
     }
 
-    return;
+    return room;
   }
 }

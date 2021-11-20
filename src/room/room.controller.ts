@@ -7,8 +7,9 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { CreateRoomDto } from './dtos/create-room.dto';
 import { UpdateRoomDto } from './dtos/update-room.dto';
@@ -30,6 +31,21 @@ export class RoomController {
     return rooms;
   }
 
+  @Get('search')
+  @HttpCode(200)
+  @ApiOperation({ summary: '검색한 회의실 조회' })
+  @ApiQuery({
+    name: 'floorId',
+    required: false,
+    type: Number,
+  })
+  @ApiResponse({ status: 200, description: 'Success' })
+  async searchAll(@Query() search): Promise<Room[]> {
+    const rooms = await this.roomService.searchAll(search);
+
+    return rooms;
+  }
+
   @Get(':roomId')
   @HttpCode(200)
   @ApiOperation({ summary: '특정 회의실 조회' })
@@ -45,10 +61,10 @@ export class RoomController {
   @HttpCode(201)
   @ApiOperation({ summary: '회의실 생성' })
   @ApiResponse({ status: 201, description: 'Success' })
-  async createOne(@Body() createRoomDto: CreateRoomDto): Promise<string> {
-    await this.roomService.createOne(createRoomDto);
+  async createOne(@Body() createRoomDto: CreateRoomDto): Promise<Room> {
+    const room = await this.roomService.createOne(createRoomDto);
 
-    return 'success';
+    return room;
   }
 
   @Patch(':roomId')
@@ -68,9 +84,9 @@ export class RoomController {
   @HttpCode(200)
   @ApiOperation({ summary: '특정 회의실 삭제' })
   @ApiResponse({ status: 200, description: 'Success' })
-  async deleteOne(@Param('roomId') roomId: number): Promise<string> {
-    await this.roomService.deleteOne(roomId);
+  async deleteOne(@Param('roomId') roomId: number): Promise<Room> {
+    const room = await this.roomService.deleteOne(roomId);
 
-    return 'success';
+    return room;
   }
 }

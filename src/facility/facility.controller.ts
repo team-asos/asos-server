@@ -7,8 +7,9 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { CreateFacilityDto } from './dtos/create-facility.dto';
 import { UpdateFacilityDto } from './dtos/update-facility.dto';
@@ -30,6 +31,21 @@ export class FacilityController {
     return facilities;
   }
 
+  @Get('search')
+  @HttpCode(200)
+  @ApiOperation({ summary: '검색한 시설 조회' })
+  @ApiQuery({
+    name: 'floorId',
+    required: false,
+    type: Number,
+  })
+  @ApiResponse({ status: 200, description: 'Success' })
+  async searchAll(@Query() search): Promise<Facility[]> {
+    const facilities = await this.facilityService.searchAll(search);
+
+    return facilities;
+  }
+
   @Post()
   @HttpCode(201)
   @ApiOperation({ summary: '시설 생성' })
@@ -38,10 +54,10 @@ export class FacilityController {
   @ApiResponse({ status: 404, description: 'Wrong floorId' })
   async createOne(
     @Body() createFacilityDto: CreateFacilityDto,
-  ): Promise<string> {
-    await this.facilityService.createOne(createFacilityDto);
+  ): Promise<Facility> {
+    const facility = await this.facilityService.createOne(createFacilityDto);
 
-    return 'success';
+    return facility;
   }
 
   @Patch(':facilityId')
@@ -61,9 +77,9 @@ export class FacilityController {
   @HttpCode(200)
   @ApiOperation({ summary: '특정 시설 삭제' })
   @ApiResponse({ status: 200, description: 'Success' })
-  async deleteOne(@Param('facilityId') facilityId: number): Promise<string> {
-    await this.facilityService.deleteOne(facilityId);
+  async deleteOne(@Param('facilityId') facilityId: number): Promise<Facility> {
+    const facility = await this.facilityService.deleteOne(facilityId);
 
-    return 'success';
+    return facility;
   }
 }

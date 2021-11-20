@@ -5,6 +5,7 @@ import { FloorRepository } from 'src/floor/floor.repository';
 import { HttpStatus, Injectable } from '@nestjs/common';
 
 import { CreateSeatDto } from './dtos/create-seat.dto';
+import { SearchSeatDto } from './dtos/search-seat.dto';
 import { UpdateSeatDto } from './dtos/update-seat.dto';
 import { Seat } from './seat.entity';
 import { SeatRepository } from './seat.repository';
@@ -22,6 +23,12 @@ export class SeatService {
     return seats;
   }
 
+  async searchAll(search: SearchSeatDto): Promise<Seat[]> {
+    const seats = await this.seatRepository.search(search);
+
+    return seats;
+  }
+
   async findOne(seatId: number): Promise<Seat> {
     const seat = await this.seatRepository.getOneById(seatId);
 
@@ -31,24 +38,24 @@ export class SeatService {
     return seat;
   }
 
-  async createOne(createSeatDto: CreateSeatDto): Promise<void> {
+  async createOne(createSeatDto: CreateSeatDto): Promise<Seat> {
     const { floorId } = createSeatDto;
 
     const floor = await this.floorRepository.findOne(floorId);
 
     if (floor === undefined)
-      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_SEAT);
+      throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_FLOOR);
 
     let seat = new Seat();
     seat = { ...seat, ...createSeatDto, floor };
 
     try {
-      await this.seatRepository.save(seat);
+      seat = await this.seatRepository.save(seat);
     } catch (err) {
       throw new HttpError(HttpStatus.BAD_REQUEST, HttpMessage.FAIL_SAVE_SEAT);
     }
 
-    return;
+    return seat;
   }
 
   async updateOne(seatId: number, updateSeatDto: UpdateSeatDto): Promise<void> {
@@ -68,7 +75,7 @@ export class SeatService {
     return;
   }
 
-  async deleteOne(seatId: number): Promise<void> {
+  async deleteOne(seatId: number): Promise<Seat> {
     const seat = await this.seatRepository.findOne(seatId);
 
     if (seat === undefined)
@@ -80,6 +87,6 @@ export class SeatService {
       throw new HttpError(HttpStatus.BAD_REQUEST, HttpMessage.FAIL_DELETE_SEAT);
     }
 
-    return;
+    return seat;
   }
 }

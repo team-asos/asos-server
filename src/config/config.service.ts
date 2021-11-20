@@ -1,3 +1,5 @@
+import 'winston-daily-rotate-file';
+
 import * as dotenv from 'dotenv';
 import * as moment from 'moment';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
@@ -61,6 +63,7 @@ export class ConfigService {
       namingStrategy: new SnakeNamingStrategy(),
       keepConnectionAlive: true,
       logging: ['error'],
+      timezone: 'Z',
     };
   }
 
@@ -96,11 +99,13 @@ export class ConfigService {
     return {
       levels: logLevels,
       transports: [
-        new File({
-          level: 'http',
-          filename: `${moment(new Date()).format('YYYY-MM-DD')}.log`,
+        new winston.transports.DailyRotateFile({
+          filename: '%DATE%.log',
+          datePattern: 'YYYY-MM-DD',
+          zippedArchive: true,
+          maxSize: '20m',
           dirname: 'log',
-          maxsize: 5000000,
+          level: 'http',
           format: combine(loggingFormat),
         }),
         new Console({

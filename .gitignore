@@ -5,6 +5,7 @@
 # Logs
 logs
 *.log
+*.log.gz
 npm-debug.log*
 pnpm-debug.log*
 yarn-debug.log*
@@ -37,3 +38,6 @@ lerna-debug.log*
 # env
 .development.env
 .production.env
+
+# file
+/file

@@ -1,3 +1,4 @@
+import { AnswerRepository } from 'src/answer/answer.repository';
 import HttpError from 'src/common/exceptions/http.exception';
 import { HttpMessage } from 'src/common/utils/errors/http-message.enum';
 import { UserRepository } from 'src/user/user.repository';
@@ -14,11 +15,12 @@ import { QuestionRepository } from './question.repository';
 export class QuestionService {
   constructor(
     private readonly questionRepository: QuestionRepository,
+    private readonly answerRepository: AnswerRepository,
     private readonly userRepository: UserRepository,
   ) {}
 
   async findAll(): Promise<Question[]> {
-    const questions = await this.questionRepository.find();
+    const questions = await this.questionRepository.getMany();
 
     return questions;
   }
@@ -38,11 +40,13 @@ export class QuestionService {
       throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_USER);
 
     let question = new Question();
+
     question = {
       ...question,
       ...createQuestionDto,
       user,
     };
+
     try {
       await this.questionRepository.save(question);
     } catch (err) {
@@ -64,6 +68,7 @@ export class QuestionService {
       throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_QUESTION);
 
     question = { ...question, ...updateQuestionDto };
+
     try {
       await this.questionRepository.save(question);
     } catch (err) {
@@ -73,15 +78,15 @@ export class QuestionService {
       );
     }
 
-
     return;
   }
 
   async deleteOne(questionId: number): Promise<void> {
-    const question = await this.questionRepository.findOne(questionId);
+    const question = await this.questionRepository.getOneById(questionId);
 
     if (question === undefined)
       throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_QUESTION);
+
     try {
       await this.questionRepository.deleteOneById(questionId);
     } catch (err) {
@@ -89,8 +94,10 @@ export class QuestionService {
         HttpStatus.BAD_REQUEST,
         HttpMessage.FAIL_DELETE_QUESTION,
       );
+    } finally {
+      if (question.answer)
+        await this.answerRepository.deleteOneById(question.answer.id);
     }
-
 
     return;
   }

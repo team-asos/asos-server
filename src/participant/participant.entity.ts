@@ -10,6 +10,8 @@ export class Participant {
   @ManyToOne(() => User, user => user.participants)
   user: User;
 
-  @ManyToOne(() => Reservation, reservation => reservation.participants)
+  @ManyToOne(() => Reservation, reservation => reservation.participants, {
+    onDelete: 'CASCADE',
+  })
   reservation: Reservation;
 }
