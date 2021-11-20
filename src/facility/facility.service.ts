@@ -29,7 +29,7 @@ export class FacilityService {
     return facilities;
   }
 
-  async createOne(createFacilityDto: CreateFacilityDto): Promise<void> {
+  async createOne(createFacilityDto: CreateFacilityDto): Promise<Facility> {
     const { floorId } = createFacilityDto;
     const floor = await this.floorRepository.findOne(floorId);
 
@@ -41,7 +41,7 @@ export class FacilityService {
     facility = { ...facility, ...createFacilityDto, floor };
 
     try {
-      await this.facilityRepository.save(facility);
+      facility = await this.facilityRepository.save(facility);
     } catch (err) {
       throw new HttpError(
         HttpStatus.BAD_REQUEST,
@@ -49,7 +49,7 @@ export class FacilityService {
       );
     }
 
-    return;
+    return facility;
   }
 
   async updateOne(
@@ -75,7 +75,7 @@ export class FacilityService {
     return;
   }
 
-  async deleteOne(facilityId: number): Promise<void> {
+  async deleteOne(facilityId: number): Promise<Facility> {
     const facility = await this.facilityRepository.findOne();
 
     if (facility === undefined)
@@ -90,6 +90,6 @@ export class FacilityService {
       );
     }
 
-    return;
+    return facility;
   }
 }

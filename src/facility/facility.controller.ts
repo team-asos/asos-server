@@ -54,10 +54,10 @@ export class FacilityController {
   @ApiResponse({ status: 404, description: 'Wrong floorId' })
   async createOne(
     @Body() createFacilityDto: CreateFacilityDto,
-  ): Promise<string> {
-    await this.facilityService.createOne(createFacilityDto);
+  ): Promise<Facility> {
+    const facility = await this.facilityService.createOne(createFacilityDto);
 
-    return 'success';
+    return facility;
   }
 
   @Patch(':facilityId')
@@ -77,9 +77,9 @@ export class FacilityController {
   @HttpCode(200)
   @ApiOperation({ summary: '특정 시설 삭제' })
   @ApiResponse({ status: 200, description: 'Success' })
-  async deleteOne(@Param('facilityId') facilityId: number): Promise<string> {
-    await this.facilityService.deleteOne(facilityId);
+  async deleteOne(@Param('facilityId') facilityId: number): Promise<Facility> {
+    const facility = await this.facilityService.deleteOne(facilityId);
 
-    return 'success';
+    return facility;
   }
 }
