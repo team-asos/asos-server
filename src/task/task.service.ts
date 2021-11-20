@@ -17,7 +17,7 @@ export class TaskService {
   async updateReservationStatus(): Promise<void> {
     await this.reservationRepository.updateReservationStatus();
 
-    const file = await this.parseReservation();
+    // const file = await this.parseReservation();
 
     // try {
     //   await this.ftpService.upload(`./file/${file}`, `Import/${file}`);
