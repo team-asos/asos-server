@@ -38,7 +38,7 @@ export class SeatService {
     return seat;
   }
 
-  async createOne(createSeatDto: CreateSeatDto): Promise<void> {
+  async createOne(createSeatDto: CreateSeatDto): Promise<Seat> {
     const { floorId } = createSeatDto;
 
     const floor = await this.floorRepository.findOne(floorId);
@@ -50,12 +50,12 @@ export class SeatService {
     seat = { ...seat, ...createSeatDto, floor };
 
     try {
-      await this.seatRepository.save(seat);
+      seat = await this.seatRepository.save(seat);
     } catch (err) {
       throw new HttpError(HttpStatus.BAD_REQUEST, HttpMessage.FAIL_SAVE_SEAT);
     }
 
-    return;
+    return seat;
   }
 
   async updateOne(seatId: number, updateSeatDto: UpdateSeatDto): Promise<void> {
@@ -75,7 +75,7 @@ export class SeatService {
     return;
   }
 
-  async deleteOne(seatId: number): Promise<void> {
+  async deleteOne(seatId: number): Promise<Seat> {
     const seat = await this.seatRepository.findOne(seatId);
 
     if (seat === undefined)
@@ -87,6 +87,6 @@ export class SeatService {
       throw new HttpError(HttpStatus.BAD_REQUEST, HttpMessage.FAIL_DELETE_SEAT);
     }
 
-    return;
+    return seat;
   }
 }
