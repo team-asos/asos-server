@@ -6,6 +6,7 @@ export class SearchReservationDto extends PartialType(
   PickType(CreateReservationDto, [
     'userId',
     'seatId',
+    'roomId',
     'floorId',
     'status',
   ] as const),

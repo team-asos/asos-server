@@ -48,7 +48,7 @@ export class ReservationService {
     createRoomReservationDto: CreateRoomReservationDto,
   ): Promise<void> {
     const queryRunner = getConnection().createQueryRunner();
-
+    let userCount = 1;
     await queryRunner.startTransaction();
 
     try {
@@ -62,8 +62,41 @@ export class ReservationService {
       if (room === undefined)
         throw new HttpError(HttpStatus.NOT_FOUND, HttpMessage.NOT_FOUND_ROOM);
 
+      // 예약자가 기존 예약한 회의실이 있는 지 확인
+      const prevRoomReservations = await this.reservationRepository.find({
+        user,
+        seat: null,
+        status: 1,
+      });
+
+      if (prevRoomReservations.length !== 0) {
+        throw new HttpError(
+          HttpStatus.BAD_REQUEST,
+          HttpMessage.FAIL_SAVE_RESERVATION,
+        );
+      }
+
+      // 예약하려는 회의실이 이미 예약 되어 있는지 확인
+      const duplicatedRoomReservations = await this.reservationRepository.find({
+        room,
+        status: 1,
+      });
+
+      if (duplicatedRoomReservations.length !== 0) {
+        throw new HttpError(
+          HttpStatus.BAD_REQUEST,
+          HttpMessage.FAIL_SAVE_RESERVATION,
+        );
+      }
+
       let reservation = new Reservation();
-      reservation = { ...reservation, ...createRoomReservationDto, user, room };
+      reservation = {
+        ...reservation,
+        ...createRoomReservationDto,
+        user,
+        room,
+        status: 1,
+      };
 
       const savedReservation = await queryRunner.manager.save(
         Reservation,
@@ -80,8 +113,17 @@ export class ReservationService {
             );
 
           const participant = new Participant();
+
           participant.user = user;
           participant.reservation = savedReservation;
+
+          if (participant.user !== null) userCount += 1;
+
+          if (reservation.room.maxUser < userCount)
+            throw new HttpError(
+              HttpStatus.NOT_FOUND,
+              HttpMessage.FAIL_SAVE_RESERVATION,
+            );
 
           await queryRunner.manager.save(Participant, participant);
         }),
