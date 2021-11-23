@@ -19,15 +19,18 @@ export class ReservationRepository extends Repository<Reservation> {
   }
 
   async search(search: SearchReservationDto): Promise<Reservation[]> {
-    const { userId, seatId, floorId, status } = search;
+    const { userId, seatId, roomId, floorId, status } = search;
 
     const reservations = await this.createQueryBuilder('reservation')
       .leftJoinAndSelect('reservation.seat', 'seat')
       .leftJoinAndSelect('reservation.room', 'room')
+      .leftJoinAndSelect('reservation.participants', 'participants')
+      .leftJoinAndSelect('participants.user', 'user')
       .leftJoinAndSelect('seat.floor', 'seat.floor')
       .leftJoinAndSelect('room.floor', 'room.floor')
       .where(userId ? 'reservation.user_id = (:userId)' : '1=1', { userId })
       .andWhere(seatId ? 'seat.id = (:seatId)' : '1=1', { seatId })
+      .andWhere(roomId ? 'room.id = (:roomId)' : '1=1', { roomId })
       .andWhere(floorId ? 'seat.floor.id = (:floorId)' : '1=1', { floorId })
       .andWhere(
         status !== undefined ? 'reservation.status = (:status)' : '1=1',
