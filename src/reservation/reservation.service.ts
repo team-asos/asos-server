@@ -48,12 +48,14 @@ export class ReservationService {
     roomId: number,
     search: SearchReservationDto,
   ): Promise<Reservation[]> {
+    const { date } = search;
+
     const reservations = await this.reservationRepository.search({
       roomId,
-      startTime: search.startTime,
+      date,
     });
 
-    const today = moment(`${search.startTime}`).toDate();
+    const today = moment(`${date}`).toDate();
 
     let table: any = [
       {

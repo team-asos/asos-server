@@ -70,7 +70,7 @@ export class ReservationController {
   }
 
   @ApiQuery({
-    name: 'startTime',
+    name: 'date',
     required: false,
     type: Date,
   })

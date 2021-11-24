@@ -19,7 +19,7 @@ export class ReservationRepository extends Repository<Reservation> {
   }
 
   async search(search: SearchReservationDto): Promise<Reservation[]> {
-    const { userId, seatId, roomId, floorId, status, startTime } = search;
+    const { userId, seatId, roomId, floorId, status, date } = search;
 
     const reservations = await this.createQueryBuilder('reservation')
       .leftJoinAndSelect('reservation.seat', 'seat')
@@ -37,8 +37,8 @@ export class ReservationRepository extends Repository<Reservation> {
         { status },
       )
       .andWhere(
-        startTime
-          ? `DATE(reservation.startTime) BETWEEN "${startTime} 00:00:00" AND "${startTime} 23:59:59"`
+        date
+          ? `DATE(reservation.startTime) BETWEEN "${date} 00:00:00" AND "${date} 23:59:59"`
           : '1=1',
       )
       .getMany();
