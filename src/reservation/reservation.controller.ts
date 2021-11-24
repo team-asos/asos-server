@@ -81,7 +81,7 @@ export class ReservationController {
 
   @Post('room')
   @HttpCode(201)
-  @ApiOperation({ summary: '회의실 예약 사용' })
+  @ApiOperation({ summary: '회의실 예약 생상' })
   @ApiResponse({ status: 201, description: 'Success' })
   @ApiResponse({
     status: 400,
