@@ -104,8 +104,8 @@ export class ReservationService {
           row.start_time < reservation.endTime,
       );
 
-      if (index !== -1) return { ...reservations[index] };
-      else return {};
+      if (index !== -1) return { ...row, ...reservations[index] };
+      else return { ...row };
     });
 
     return table;
