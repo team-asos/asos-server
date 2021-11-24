@@ -44,10 +44,16 @@ export class ReservationService {
     return reservation;
   }
 
-  async findRoomTable(roomId: number): Promise<Reservation[]> {
-    const reservations = await this.reservationRepository.search({ roomId });
+  async findRoomTable(
+    roomId: number,
+    search: SearchReservationDto,
+  ): Promise<Reservation[]> {
+    const reservations = await this.reservationRepository.search({
+      roomId,
+      startTime: search.startTime,
+    });
 
-    const today = moment().toDate();
+    const today = moment(`${search.startTime}`).toDate();
 
     let table: any = [
       {
@@ -92,8 +98,8 @@ export class ReservationService {
     table = table.map(row => {
       const index = reservations.findIndex(
         reservation =>
-          row.start_time <= reservation.startTime &&
-          row.end_time >= reservation.startTime,
+          row.start_time >= reservation.startTime &&
+          row.start_time < reservation.endTime,
       );
 
       if (index !== -1) return { ...reservations[index] };
