@@ -22,10 +22,11 @@ export class ReservationRepository extends Repository<Reservation> {
     const { userId, seatId, roomId, floorId, status, date } = search;
 
     const reservations = await this.createQueryBuilder('reservation')
+      .leftJoinAndSelect('reservation.user', 'user')
       .leftJoinAndSelect('reservation.seat', 'seat')
       .leftJoinAndSelect('reservation.room', 'room')
       .leftJoinAndSelect('reservation.participants', 'participants')
-      .leftJoinAndSelect('participants.user', 'user')
+      .leftJoinAndSelect('participants.user', 'participant')
       .leftJoinAndSelect('seat.floor', 'seat_floor')
       .leftJoinAndSelect('room.floor', 'room_floor')
       .where(userId ? 'reservation.user_id = (:userId)' : '1=1', { userId })
