@@ -5,7 +5,7 @@ import { FtpService } from 'nestjs-ftp';
 import { ReservationRepository } from 'src/reservation/reservation.repository';
 
 import { Injectable } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class TaskService {
@@ -14,7 +14,7 @@ export class TaskService {
     private readonly ftpService: FtpService,
   ) {}
 
-  @Cron(CronExpression.EVERY_5_SECONDS)
+  @Cron('0 */3 * * * *')
   async updateReservationStatus(): Promise<void> {
     await this.reservationRepository.updateStatus();
 
@@ -69,22 +69,20 @@ export class TaskService {
 
     await csvWriter.writeRecords(records);
 
-    fs.unlinkSync(`${originPath}${file}`);
+    try {
+      const response = await this.ftpService.upload(
+        `${originPath}${file}`,
+        `${destinationPath}${file}`,
+      );
 
-    // try {
-    //   const response = await this.ftpService.upload(
-    //     `${originPath}${file}`,
-    //     `${destinationPath}${file}`,
-    //   );
-
-    //   if (response.code === 226) console.log('FTP 전송 성공!');
-    //   else if (response.code === 0) console.log('FTP 전송 실패!');
-    //   else console.log('알 수 없는 응답');
-    // } catch (error) {
-    //   console.log(error);
-    // } finally {
-    //   fs.unlinkSync(`${originPath}${file}`);
-    // }
+      if (response.code === 226) console.log('FTP 전송 성공!');
+      else if (response.code === 0) console.log('FTP 전송 실패!');
+      else console.log('알 수 없는 응답');
+    } catch (error) {
+      console.log(error);
+    } finally {
+      fs.unlinkSync(`${originPath}${file}`);
+    }
 
     return;
   }
