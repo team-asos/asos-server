@@ -14,6 +14,7 @@ import { CreateSeatReservationDto } from './dtos/create-seat-reservation.dto';
 import { SearchReservationDto } from './dtos/search-reservation.dto';
 import { Reservation } from './reservation.entity';
 import { ReservationRepository } from './reservation.repository';
+import { ParticipantRepository } from 'src/participant/participant.repository';
 
 @Injectable()
 export class ReservationService {
@@ -22,6 +23,7 @@ export class ReservationService {
     private readonly reservationRepository: ReservationRepository,
     private readonly seatRepository: SeatRepository,
     private readonly roomRepository: RoomRepository,
+    private readonly participantRepository: ParticipantRepository,
   ) {}
 
   async findAll(): Promise<Reservation[]> {
@@ -48,8 +50,8 @@ export class ReservationService {
     createRoomReservationDto: CreateRoomReservationDto,
   ): Promise<void> {
     const queryRunner = getConnection().createQueryRunner();
-    let userCount = 1;
     await queryRunner.startTransaction();
+    let userCount = 1;
 
     try {
       const { userId, participantIds, roomId } = createRoomReservationDto;
@@ -66,7 +68,6 @@ export class ReservationService {
       const prevRoomReservations = await this.reservationRepository.find({
         user,
         seat: null,
-        status: 1,
       });
 
       if (prevRoomReservations.length !== 0) {
@@ -79,10 +80,20 @@ export class ReservationService {
       // 예약하려는 회의실이 이미 예약 되어 있는지 확인
       const duplicatedRoomReservations = await this.reservationRepository.find({
         room,
-        status: 1,
       });
 
       if (duplicatedRoomReservations.length !== 0) {
+        throw new HttpError(
+          HttpStatus.BAD_REQUEST,
+          HttpMessage.FAIL_SAVE_RESERVATION,
+        );
+      }
+
+      //예약된 참석자가 예약을 할려는 경우
+      const prevRoomParticipants = await this.participantRepository.find({
+        user,
+      });
+      if (prevRoomParticipants.length !== 0) {
         throw new HttpError(
           HttpStatus.BAD_REQUEST,
           HttpMessage.FAIL_SAVE_RESERVATION,
@@ -95,7 +106,6 @@ export class ReservationService {
         ...createRoomReservationDto,
         user,
         room,
-        status: 1,
       };
 
       const savedReservation = await queryRunner.manager.save(
@@ -111,6 +121,33 @@ export class ReservationService {
               HttpStatus.NOT_FOUND,
               HttpMessage.NOT_FOUND_PARTICIPANT,
             );
+
+          //예약자와 기존 예약된 참석자가 있는 지 확인
+          const prevParticipantReservations =
+            await this.participantRepository.find({
+              user,
+            });
+
+          if (prevParticipantReservations.length !== 0) {
+            throw new HttpError(
+              HttpStatus.BAD_REQUEST,
+              HttpMessage.FAIL_SAVE_RESERVATION,
+            );
+          }
+
+          //예약하려는 참석자가 이미 예약 되어 있는지 확인
+          const duplicatedParticipantReservations =
+            await this.participantRepository.find({
+              reservation,
+              user,
+            });
+
+          if (duplicatedParticipantReservations.length !== 0) {
+            throw new HttpError(
+              HttpStatus.BAD_REQUEST,
+              HttpMessage.FAIL_SAVE_RESERVATION,
+            );
+          }
 
           const participant = new Participant();
 

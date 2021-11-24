@@ -8,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ReservationController } from './reservation.controller';
 import { ReservationRepository } from './reservation.repository';
 import { ReservationService } from './reservation.service';
+import { ParticipantRepository } from 'src/participant/participant.repository';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ReservationService } from './reservation.service';
       ReservationRepository,
       SeatRepository,
       RoomRepository,
+      ParticipantRepository,
     ]),
   ],
   controllers: [ReservationController],
