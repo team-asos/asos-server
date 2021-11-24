@@ -10,8 +10,8 @@ export class ReservationRepository extends Repository<Reservation> {
     const reservation = await this.createQueryBuilder('reservation')
       .leftJoinAndSelect('reservation.seat', 'seat')
       .leftJoinAndSelect('reservation.room', 'room')
-      .leftJoinAndSelect('seat.floor', 'seat.floor')
-      .leftJoinAndSelect('room.floor', 'room.floor')
+      .leftJoinAndSelect('seat.floor', 'seat_floor')
+      .leftJoinAndSelect('room.floor', 'room_floor')
       .where('reservation.id = (:reservationId)', { reservationId })
       .getOne();
 
@@ -24,8 +24,10 @@ export class ReservationRepository extends Repository<Reservation> {
     const reservations = await this.createQueryBuilder('reservation')
       .leftJoinAndSelect('reservation.seat', 'seat')
       .leftJoinAndSelect('reservation.room', 'room')
-      .leftJoinAndSelect('seat.floor', 'seat.floor')
-      .leftJoinAndSelect('room.floor', 'room.floor')
+      .leftJoinAndSelect('reservation.participants', 'participants')
+      .leftJoinAndSelect('participants.user', 'user')
+      .leftJoinAndSelect('seat.floor', 'seat_floor')
+      .leftJoinAndSelect('room.floor', 'room_floor')
       .where(userId ? 'reservation.user_id = (:userId)' : '1=1', { userId })
       .andWhere(seatId ? 'seat.id = (:seatId)' : '1=1', { seatId })
       .andWhere(roomId ? 'room.id = (:roomId)' : '1=1', { roomId })

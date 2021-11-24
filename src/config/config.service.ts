@@ -34,7 +34,7 @@ export class ConfigService {
   }
 
   public getBoolean(key: string): boolean {
-    return Boolean(this.get(key));
+    return JSON.parse(this.get(key));
   }
 
   get env(): string {

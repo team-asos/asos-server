@@ -1,3 +1,5 @@
+import { Room } from 'src/room/room.entity';
+
 import {
   Body,
   Controller,
@@ -65,6 +67,16 @@ export class ReservationController {
     const reservation = await this.reservationService.findOne(reservationId);
 
     return reservation;
+  }
+
+  @Get('room/:roomId/table')
+  @HttpCode(200)
+  @ApiOperation({ summary: '회의실 예약 테이블 조회' })
+  @ApiResponse({ status: 200, description: 'Success' })
+  async findRoomTable(@Param('roomId') roomId: number): Promise<Reservation[]> {
+    const table = await this.reservationService.findRoomTable(roomId);
+
+    return table;
   }
 
   @Post('room')
