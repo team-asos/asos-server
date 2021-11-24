@@ -1,7 +1,8 @@
 import { createObjectCsvWriter } from 'csv-writer';
-import * as fs from 'fs';
+import { unlinkSync } from 'fs';
 import * as moment from 'moment';
 import { FtpService } from 'nestjs-ftp';
+import { LoggerService } from 'src/common/utils/logger/logger.service';
 import { ReservationRepository } from 'src/reservation/reservation.repository';
 
 import { Injectable } from '@nestjs/common';
@@ -12,6 +13,7 @@ export class TaskService {
   constructor(
     private readonly reservationRepository: ReservationRepository,
     private readonly ftpService: FtpService,
+    private readonly loggerService: LoggerService,
   ) {}
 
   @Cron('0 */3 * * * *')
@@ -75,13 +77,13 @@ export class TaskService {
         `${destinationPath}${file}`,
       );
 
-      if (response.code === 226) console.log('FTP 전송 성공!');
-      else if (response.code === 0) console.log('FTP 전송 실패!');
-      else console.log('알 수 없는 응답');
+      if (response.code === 226) this.loggerService.info('ftp success');
+      else if (response.code === 0) this.loggerService.error('ftp failed');
+      else this.loggerService.error('ftp unknown response');
     } catch (error) {
       console.log(error);
     } finally {
-      fs.unlinkSync(`${originPath}${file}`);
+      unlinkSync(`${originPath}${file}`);
     }
 
     return;
