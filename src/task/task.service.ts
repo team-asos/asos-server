@@ -4,7 +4,7 @@ import { FtpService } from 'nestjs-ftp';
 import { ReservationRepository } from 'src/reservation/reservation.repository';
 
 import { Injectable } from '@nestjs/common';
-import { Cron, CronExpression } from '@nestjs/schedule';
+import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class TaskService {
@@ -13,7 +13,7 @@ export class TaskService {
     private readonly ftpService: FtpService,
   ) {}
 
-  @Cron(CronExpression.EVERY_5_MINUTES)
+  @Cron('0 */3 * * * *')
   async updateReservationStatus(): Promise<void> {
     await this.reservationRepository.updateReservationStatus();
 
