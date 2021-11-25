@@ -1,12 +1,10 @@
 import { Answer } from 'src/answer/answer.entity';
-import { Notification } from 'src/notification/notification.entity';
 import { User } from 'src/user/user.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -31,10 +29,6 @@ export class Question {
 
   @DeleteDateColumn({ select: false })
   deletedAt: Date;
-
-  @OneToOne(() => Notification, notification => notification.question)
-  @JoinColumn()
-  notification: Notification;
 
   @OneToOne(() => Answer, answer => answer.question)
   answer: Answer;
