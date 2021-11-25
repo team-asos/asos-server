@@ -3,6 +3,7 @@ import { unlinkSync } from 'fs';
 import * as moment from 'moment';
 import { FtpService } from 'nestjs-ftp';
 import { LoggerService } from 'src/common/utils/logger/logger.service';
+import { ConfigService } from 'src/config/config.service';
 import { ReservationRepository } from 'src/reservation/reservation.repository';
 
 import { Injectable } from '@nestjs/common';
@@ -14,18 +15,20 @@ export class TaskService {
     private readonly reservationRepository: ReservationRepository,
     private readonly ftpService: FtpService,
     private readonly loggerService: LoggerService,
+    private readonly configService: ConfigService,
   ) {}
 
   @Cron('0 */3 * * * *')
-  async updateReservationStatus(): Promise<void> {
+  async eslConverter(): Promise<void> {
     await this.reservationRepository.updateStatus();
 
-    await this.eslConverter();
+    if (this.configService.getBoolean('FTP_ALLOW'))
+      await this.sendReservations();
 
     return;
   }
 
-  private async eslConverter(): Promise<void> {
+  async sendReservations(): Promise<void> {
     const reservations = await this.reservationRepository.parseReservation();
 
     const parse = reservation => {
