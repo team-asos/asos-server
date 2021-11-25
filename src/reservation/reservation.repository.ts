@@ -54,7 +54,7 @@ export class ReservationRepository extends Repository<Reservation> {
       .execute();
   }
 
-  async updateReservationStatus(): Promise<void> {
+  async updateStatus(): Promise<void> {
     const nowTime = moment(moment.now());
 
     const reservations = await this.createQueryBuilder('reservation')
@@ -98,8 +98,8 @@ export class ReservationRepository extends Repository<Reservation> {
       .leftJoinAndSelect('reservation.user', 'user')
       .leftJoinAndSelect('reservation.seat', 'seat')
       .leftJoinAndSelect('reservation.room', 'room')
-      .leftJoinAndSelect('seat.floor', 'seat.floor')
-      .leftJoinAndSelect('room.floor', 'room.floor')
+      .leftJoinAndSelect('seat.floor', 'seat_floor')
+      .leftJoinAndSelect('room.floor', 'room_floor')
       .select([
         'reservation.startTime',
         'reservation.endTime',
@@ -109,10 +109,10 @@ export class ReservationRepository extends Repository<Reservation> {
         'user.department',
         'seat.name',
         'seat.tagId',
-        'seat.floor.name',
+        'seat_floor.name',
         'room.name',
         'room.tagId',
-        'room.floor.name',
+        'room_floor.name',
       ])
       .where('reservation.status = 1')
       .getMany();

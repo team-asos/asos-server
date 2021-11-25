@@ -1,6 +1,9 @@
 import { createObjectCsvWriter } from 'csv-writer';
+import { unlinkSync } from 'fs';
 import * as moment from 'moment';
 import { FtpService } from 'nestjs-ftp';
+import { LoggerService } from 'src/common/utils/logger/logger.service';
+import { ConfigService } from 'src/config/config.service';
 import { ReservationRepository } from 'src/reservation/reservation.repository';
 
 import { Injectable } from '@nestjs/common';
@@ -11,33 +14,33 @@ export class TaskService {
   constructor(
     private readonly reservationRepository: ReservationRepository,
     private readonly ftpService: FtpService,
+    private readonly loggerService: LoggerService,
+    private readonly configService: ConfigService,
   ) {}
 
   @Cron('0 */3 * * * *')
-  async updateReservationStatus(): Promise<void> {
-    await this.reservationRepository.updateReservationStatus();
+  async eslConverter(): Promise<void> {
+    await this.reservationRepository.updateStatus();
 
-    // const file = await this.parseReservation();
-
-    // try {
-    //   await this.ftpService.upload(`./file/${file}`, `Import/${file}`);
-    // } catch (error) {
-    //   console.log(error);
-    // }
+    if (this.configService.getBoolean('FTP_ALLOW'))
+      await this.sendReservations();
 
     return;
   }
 
-  private async parseReservation(): Promise<string> {
+  async sendReservations(): Promise<void> {
     const reservations = await this.reservationRepository.parseReservation();
 
     const parse = reservation => {
       return {
+        floor: reservation.seat
+          ? `${reservation.seat.floor.name}`
+          : `${reservation.room.floor.name}`,
         location: reservation.seat
-          ? `${reservation.seat.floor.name}-${reservation.seat.name}`
-          : `${reservation.room.floor.name}-${reservation.room.name}`,
-        start_time: moment(reservation.startTime).format('HH : MM'),
-        end_time: moment(reservation.endTime).format('HH : MM'),
+          ? `${reservation.seat.name}`
+          : `${reservation.room.name}`,
+        start_time: moment(reservation.startTime).format('HH : mm'),
+        end_time: moment(reservation.endTime).format('HH : mm'),
         department: reservation.user.department,
         phone: reservation.user.tel,
         name: reservation.user.name,
@@ -50,13 +53,14 @@ export class TaskService {
 
     const records = reservations.map(reservation => parse(reservation));
 
-    const path = './file/';
-    const fileName = `import_${moment().format('YYYYMMDDHHmmss')}`;
-    const extension = '.csv';
+    const originPath = './file/';
+    const destinationPath = 'Import/';
+    const file = `import_${moment().format('YYYYMMDDHHmmss')}.csv`;
 
     const csvWriter = createObjectCsvWriter({
-      path: path + fileName + extension,
+      path: originPath + file,
       header: [
+        { id: 'floor', title: 'floor' },
         { id: 'location', title: 'location' },
         { id: 'start_time', title: 'start_time' },
         { id: 'end_time', title: 'end_time' },
@@ -70,6 +74,21 @@ export class TaskService {
 
     await csvWriter.writeRecords(records);
 
-    return fileName + extension;
+    try {
+      const response = await this.ftpService.upload(
+        `${originPath}${file}`,
+        `${destinationPath}${file}`,
+      );
+
+      if (response.code === 226) this.loggerService.info('ftp success');
+      else if (response.code === 0) this.loggerService.error('ftp failed');
+      else this.loggerService.error('ftp unknown response');
+    } catch (error) {
+      console.log(error);
+    } finally {
+      unlinkSync(`${originPath}${file}`);
+    }
+
+    return;
   }
 }

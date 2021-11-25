@@ -18,7 +18,7 @@ import { TaskService } from './task.service';
           port: configService.getNumber('FTP_PORT'),
           user: configService.get('FTP_USER'),
           password: configService.get('FTP_PASSWORD'),
-          secure: false,
+          secure: configService.getBoolean('FTP_SECURE'),
         };
       },
     }),
