@@ -92,31 +92,4 @@ export class ReservationRepository extends Repository<Reservation> {
 
     return;
   }
-
-  async parseReservation(): Promise<any> {
-    const reservations = await this.createQueryBuilder('reservation')
-      .leftJoinAndSelect('reservation.user', 'user')
-      .leftJoinAndSelect('reservation.seat', 'seat')
-      .leftJoinAndSelect('reservation.room', 'room')
-      .leftJoinAndSelect('seat.floor', 'seat_floor')
-      .leftJoinAndSelect('room.floor', 'room_floor')
-      .select([
-        'reservation.startTime',
-        'reservation.endTime',
-        'reservation.status',
-        'user.name',
-        'user.tel',
-        'user.department',
-        'seat.name',
-        'seat.tagId',
-        'seat_floor.name',
-        'room.name',
-        'room.tagId',
-        'room_floor.name',
-      ])
-      .where('reservation.status = 1')
-      .getMany();
-
-    return reservations;
-  }
 }
