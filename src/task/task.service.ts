@@ -5,6 +5,8 @@ import { FtpService } from 'nestjs-ftp';
 import { LoggerService } from 'src/common/utils/logger/logger.service';
 import { ConfigService } from 'src/config/config.service';
 import { ReservationRepository } from 'src/reservation/reservation.repository';
+import { RoomRepository } from 'src/room/room.repository';
+import { SeatRepository } from 'src/seat/seat.repository';
 
 import { Injectable } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
@@ -12,6 +14,8 @@ import { Cron } from '@nestjs/schedule';
 @Injectable()
 export class TaskService {
   constructor(
+    private readonly seatRepository: SeatRepository,
+    private readonly roomRepository: RoomRepository,
     private readonly reservationRepository: ReservationRepository,
     private readonly ftpService: FtpService,
     private readonly loggerService: LoggerService,
@@ -29,29 +33,95 @@ export class TaskService {
   }
 
   async sendReservations(): Promise<void> {
-    const reservations = await this.reservationRepository.parseReservation();
+    const seats = await this.seatRepository.parseSeat();
+    const rooms = await this.roomRepository.parseRoom();
 
-    const parse = reservation => {
+    const insertSpace = text =>
+      text.replace(/010-/gi, '').replace(/ /gi, '').split('').join(' ');
+
+    const seatParse = seat => {
+      const user = seat.reservations[0].user;
+      const floor = seat.floor;
+      const reservation = seat.reservations[0];
+
+      // 좌석에 있는 사람이 회의중인지 확인
+      const hasMeeting = rooms.map(room => {
+        const reservation = room.reservations[0];
+
+        // 빈 회의실 예외 처리
+        if (!reservation) return false;
+
+        // 회의 예약자
+        if (reservation.user.id === user.id) return reservation.id;
+
+        // 회의 참석자
+        const index = reservation.participants.findIndex(
+          participant => participant.user.id === user.id,
+        );
+
+        if (index !== -1) return reservation.id;
+
+        return false;
+      });
+
+      const meetingIndex = hasMeeting.find(meeting => meeting !== false);
+
       return {
-        floor: reservation.seat
-          ? `${reservation.seat.floor.name}`
-          : `${reservation.room.floor.name}`,
-        location: reservation.seat
-          ? `${reservation.seat.name}`
-          : `${reservation.room.name}`,
-        start_time: moment(reservation.startTime).format('HH : mm'),
-        end_time: moment(reservation.endTime).format('HH : mm'),
-        department: reservation.user.department,
-        phone: reservation.user.tel,
-        name: reservation.user.name,
-        status: reservation.status,
-        tag_id: reservation.seat
-          ? reservation.seat.tagId
-          : reservation.room.tagId,
+        tag_id: seat.tagId,
+        name: insertSpace(user.name),
+        phone: insertSpace(user.tel),
+        department: insertSpace(user.department + '/' + user.position),
+        location: insertSpace(floor.name + '-' + seat.name),
+        time: moment(reservation.startTime).format('MM / DD'),
+        status: meetingIndex === -1 ? '업 무 중' : '회 의 중',
+        topic: ``,
+        qr:
+          meetingIndex === -1
+            ? `https://atec-sos.ga`
+            : `https://atec-sos.ga/${meetingIndex}`,
+        promotion: meetingIndex === -1 ? false : true,
       };
     };
 
-    const records = reservations.map(reservation => parse(reservation));
+    const roomParse = room => {
+      if (room.reservations.length === 0) {
+        return {
+          tag_id: room.tagId,
+          name: ``,
+          phone: ``,
+          department: ``,
+          location: insertSpace(room.floor.name + '-' + room.name),
+          time: ``,
+          status: ``,
+          topic: ``,
+          qr: `https://atec-sos.ga`,
+          promotion: true,
+        };
+      }
+
+      const user = room.reservations[0].user;
+      const reservation = room.reservations[0];
+
+      return {
+        tag_id: room.tagId,
+        name: insertSpace(user.name),
+        phone: user.tel.replace(/010-/gi, ''),
+        department: ``,
+        location: insertSpace(room.floor.name + '-' + room.name),
+        time:
+          moment(reservation.startTime).format('HH : mm') +
+          ' - ' +
+          moment(reservation.endTime).format('HH : mm'),
+        status: ``,
+        topic: reservation.topic,
+        qr: `https://atec-sos.ga`,
+        promotion: false,
+      };
+    };
+
+    const seatRecords = seats.map(seat => seatParse(seat));
+    const roomRecords = rooms.map(room => roomParse(room));
+    const records = seatRecords.concat(roomRecords);
 
     const originPath = './file/';
     const destinationPath = 'Import/';
@@ -60,15 +130,16 @@ export class TaskService {
     const csvWriter = createObjectCsvWriter({
       path: originPath + file,
       header: [
-        { id: 'floor', title: 'floor' },
-        { id: 'location', title: 'location' },
-        { id: 'start_time', title: 'start_time' },
-        { id: 'end_time', title: 'end_time' },
-        { id: 'department', title: 'department' },
-        { id: 'phone', title: 'phone' },
-        { id: 'name', title: 'name' },
-        { id: 'status', title: 'status' },
         { id: 'tag_id', title: 'tag_id' },
+        { id: 'name', title: 'name' },
+        { id: 'phone', title: 'phone' },
+        { id: 'department', title: 'department' },
+        { id: 'location', title: 'location' },
+        { id: 'time', title: 'time' },
+        { id: 'status', title: 'status' },
+        { id: 'topic', title: 'topic' },
+        { id: 'qr', title: 'qr' },
+        { id: 'promotion', title: 'promotion' },
       ],
     });
 

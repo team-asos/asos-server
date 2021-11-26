@@ -23,6 +23,9 @@ export class Reservation {
   @Column({ type: 'datetime', nullable: true })
   endTime: Date;
 
+  @Column({ default: '' })
+  topic: string;
+
   @Column({ default: 0 })
   status: number;
 

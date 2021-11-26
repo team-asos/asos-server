@@ -38,4 +38,27 @@ export class SeatRepository extends Repository<Seat> {
       .where('id = (:seatId)', { seatId })
       .execute();
   }
+
+  async parseSeat(): Promise<Seat[]> {
+    const seats = await this.createQueryBuilder('seat')
+      .leftJoin('seat.floor', 'floor')
+      .leftJoin('seat.reservations', 'reservations')
+      .leftJoin('reservations.user', 'user')
+      .select([
+        'user.name',
+        'user.tel',
+        'user.department',
+        'user.position',
+        'seat.name',
+        'seat.tagId',
+        'floor.name',
+        'reservations.id',
+        'reservations.startTime',
+      ])
+      .where('seat.tagId IS NOT NULL')
+      .andWhere('reservations.status = 1')
+      .getMany();
+
+    return seats;
+  }
 }
