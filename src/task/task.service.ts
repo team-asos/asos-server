@@ -73,13 +73,12 @@ export class TaskService {
         department: insertSpace(user.department + '/' + user.position),
         location: insertSpace(floor.name + '-' + seat.name),
         time: moment(reservation.startTime).format('MM / DD'),
-        status: meetingIndex === -1 ? '업 무 중' : '회 의 중',
+        status: meetingIndex ? '회 의 중' : '업 무 중',
         topic: ``,
-        qr:
-          meetingIndex === -1
-            ? `https://atec-sos.ga`
-            : `https://atec-sos.ga/${meetingIndex}`,
-        promotion: meetingIndex === -1 ? false : true,
+        qr: meetingIndex
+          ? `https://atec-sos.ga/${meetingIndex}`
+          : `https://atec-sos.ga`,
+        promotion: meetingIndex ? true : false,
       };
     };
 
