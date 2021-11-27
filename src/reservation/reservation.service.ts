@@ -212,7 +212,7 @@ export class ReservationService {
     let reservation = new Reservation();
     reservation = {
       ...reservation,
-      ...createSeatReservationDto,
+      startTime: moment(moment.now()).toDate(),
       user,
       seat,
       status: 1,
