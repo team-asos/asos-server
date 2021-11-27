@@ -5,6 +5,9 @@ export class CreateRoomDto {
   name: string;
 
   @IsNumber()
+  maxUser: number;
+
+  @IsNumber()
   x: number;
 
   @IsNumber()
@@ -17,7 +20,7 @@ export class CreateRoomDto {
   height: number;
 
   @IsNumber()
-  maxUser: number;
+  tagId: number;
 
   @IsNumber()
   floorId: number;
