@@ -10,8 +10,8 @@ export class ReservationRepository extends Repository<Reservation> {
     const reservation = await this.createQueryBuilder('reservation')
       .leftJoinAndSelect('reservation.seat', 'seat')
       .leftJoinAndSelect('reservation.room', 'room')
-      .leftJoinAndSelect('seat.floor', 'seat.floor')
-      .leftJoinAndSelect('room.floor', 'room.floor')
+      .leftJoinAndSelect('seat.floor', 'seat_floor')
+      .leftJoinAndSelect('room.floor', 'room_floor')
       .where('reservation.id = (:reservationId)', { reservationId })
       .getOne();
 
@@ -19,19 +19,28 @@ export class ReservationRepository extends Repository<Reservation> {
   }
 
   async search(search: SearchReservationDto): Promise<Reservation[]> {
-    const { userId, seatId, floorId, status } = search;
+    const { userId, seatId, roomId, floorId, status, date } = search;
 
     const reservations = await this.createQueryBuilder('reservation')
+      .leftJoinAndSelect('reservation.user', 'user')
       .leftJoinAndSelect('reservation.seat', 'seat')
       .leftJoinAndSelect('reservation.room', 'room')
-      .leftJoinAndSelect('seat.floor', 'seat.floor')
-      .leftJoinAndSelect('room.floor', 'room.floor')
+      .leftJoinAndSelect('reservation.participants', 'participants')
+      .leftJoinAndSelect('participants.user', 'participant')
+      .leftJoinAndSelect('seat.floor', 'seat_floor')
+      .leftJoinAndSelect('room.floor', 'room_floor')
       .where(userId ? 'reservation.user_id = (:userId)' : '1=1', { userId })
       .andWhere(seatId ? 'seat.id = (:seatId)' : '1=1', { seatId })
-      .andWhere(floorId ? 'seat.floor.id = (:floorId)' : '1=1', { floorId })
+      .andWhere(roomId ? 'room.id = (:roomId)' : '1=1', { roomId })
+      .andWhere(floorId ? 'seat_floor.id = (:floorId)' : '1=1', { floorId })
       .andWhere(
         status !== undefined ? 'reservation.status = (:status)' : '1=1',
         { status },
+      )
+      .andWhere(
+        date
+          ? `DATE(reservation.startTime) BETWEEN "${date} 00:00:00" AND "${date} 23:59:59"`
+          : '1=1',
       )
       .getMany();
 
@@ -45,7 +54,7 @@ export class ReservationRepository extends Repository<Reservation> {
       .execute();
   }
 
-  async updateReservationStatus(): Promise<void> {
+  async updateStatus(): Promise<void> {
     const nowTime = moment(moment.now());
 
     const reservations = await this.createQueryBuilder('reservation')

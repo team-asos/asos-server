@@ -44,6 +44,73 @@ export class ReservationService {
     return reservation;
   }
 
+  async findRoomTable(
+    roomId: number,
+    search: SearchReservationDto,
+  ): Promise<Reservation[]> {
+    const { date } = search;
+
+    const reservations = await this.reservationRepository.search({
+      roomId,
+      date,
+    });
+
+    const today = moment(`${date}`).toDate();
+
+    let table: any = [
+      {
+        start_time: new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          today.getDate(),
+          8,
+          0,
+          0,
+        ),
+        end_time: new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          today.getDate(),
+          8,
+          30,
+          0,
+        ),
+      },
+    ];
+
+    const end_time = new Date(
+      today.getFullYear(),
+      today.getMonth(),
+      today.getDate(),
+      17,
+      30,
+      0,
+    );
+
+    while (true) {
+      const last = table[table.length - 1];
+      if (moment(last.start_time).diff(end_time) === 0) break;
+
+      table.push({
+        start_time: moment(last.start_time).add(30, 'minutes').toDate(),
+        end_time: moment(last.end_time).add(30, 'minutes').toDate(),
+      });
+    }
+
+    table = table.map(row => {
+      const index = reservations.findIndex(
+        reservation =>
+          row.start_time >= reservation.startTime &&
+          row.start_time < reservation.endTime,
+      );
+
+      if (index !== -1) return { ...row, ...reservations[index] };
+      else return { ...row };
+    });
+
+    return table;
+  }
+
   async createRoomOne(
     createRoomReservationDto: CreateRoomReservationDto,
   ): Promise<void> {

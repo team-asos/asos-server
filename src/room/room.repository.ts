@@ -38,4 +38,28 @@ export class RoomRepository extends Repository<Room> {
       .where('id = (:roomId)', { roomId })
       .execute();
   }
+
+  async parseRoom(): Promise<Room[]> {
+    const rooms = await this.createQueryBuilder('room')
+      .leftJoin('room.floor', 'floor')
+      .leftJoin('room.reservations', 'reservations', 'reservations.status = 1')
+      .leftJoin('reservations.user', 'user')
+      .select([
+        'user.name',
+        'user.tel',
+        'user.department',
+        'user.position',
+        'room.name',
+        'room.tagId',
+        'floor.name',
+        'reservations.id',
+        'reservations.startTime',
+        'reservations.endTime',
+        'reservations.topic',
+      ])
+      .where('room.tagId IS NOT NULL')
+      .getMany();
+
+    return rooms;
+  }
 }

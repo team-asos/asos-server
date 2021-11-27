@@ -8,10 +8,4 @@ export class CreateRoomReservationDto extends OmitType(CreateReservationDto, [
   'status',
   'seatId',
   'floorId',
-] as const) {
-  @IsDateString()
-  startTime: Date;
-
-  @IsDateString()
-  endTime: Date;
-}
+] as const) {}

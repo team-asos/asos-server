@@ -34,7 +34,7 @@ export class ConfigService {
   }
 
   public getBoolean(key: string): boolean {
-    return Boolean(this.get(key));
+    return JSON.parse(this.get(key));
   }
 
   get env(): string {
@@ -63,7 +63,7 @@ export class ConfigService {
       namingStrategy: new SnakeNamingStrategy(),
       keepConnectionAlive: true,
       logging: ['error'],
-      timezone: 'Z',
+      timezone: '+09:00',
     };
   }
 

@@ -17,11 +17,14 @@ export class Reservation {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'datetime' })
   startTime: Date;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'datetime', nullable: true })
   endTime: Date;
+
+  @Column({ default: '' })
+  topic: string;
 
   @Column({ default: 0 })
   status: number;
