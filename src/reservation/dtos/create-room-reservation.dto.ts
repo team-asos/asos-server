@@ -1,3 +1,5 @@
+import { IsDateString } from 'class-validator';
+
 import { OmitType } from '@nestjs/swagger';
 
 import { CreateReservationDto } from './create-reservation.dto';
