@@ -29,7 +29,7 @@ export class Seat {
   @Column()
   height: number;
 
-  @Column({ unique: true, nullable: true })
+  @Column({ unique: true, nullable: false, default: 10000 })
   tagId: number;
 
   @CreateDateColumn({ select: false })

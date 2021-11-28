@@ -32,7 +32,7 @@ export class Room {
   @Column()
   height: number;
 
-  @Column({ unique: true, nullable: true })
+  @Column({ unique: true, nullable: false, default: 20000 })
   tagId: number;
 
   @CreateDateColumn({ select: false })
