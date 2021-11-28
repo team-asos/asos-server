@@ -26,8 +26,18 @@ export class TaskService {
   async eslConverter(): Promise<void> {
     await this.reservationRepository.updateStatus();
 
-    if (this.configService.getBoolean('FTP_ALLOW'))
-      await this.sendReservations();
+    // Development
+    if (['development'].includes(this.configService.env)) {
+      if (this.configService.getBoolean('FTP_ALLOW'))
+        await this.sendReservations();
+    }
+    // Production
+    else {
+      if (this.configService.get('NODE_APP_INSTANCE') === '0') {
+        if (this.configService.getBoolean('FTP_ALLOW'))
+          await this.sendReservations();
+      }
+    }
 
     return;
   }
