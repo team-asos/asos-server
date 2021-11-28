@@ -36,7 +36,12 @@ export class UserService {
   }
 
   async createOne(createUserDto: CreateUserDto): Promise<void> {
-    const { password } = createUserDto;
+    const { email, password } = createUserDto;
+
+    const isExist = await this.userRepository.getOneByEmail(email);
+
+    if (isExist)
+      throw new HttpError(HttpStatus.BAD_REQUEST, HttpMessage.DUPLICATE_ID);
 
     const saltOrRounds = 10;
     const hash = await bcrypt.hash(password, saltOrRounds);

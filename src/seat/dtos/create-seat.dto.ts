@@ -17,5 +17,8 @@ export class CreateSeatDto {
   height: number;
 
   @IsNumber()
+  tagId: number;
+
+  @IsNumber()
   floorId: number;
 }

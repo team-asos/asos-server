@@ -17,6 +17,12 @@ export class SeatRepository extends Repository<Seat> {
     const { floorId } = search;
 
     const seats = await this.createQueryBuilder('seat')
+      .leftJoinAndSelect(
+        'seat.reservations',
+        'reservations',
+        'reservations.status = 1',
+      )
+      .leftJoinAndSelect('reservations.user', 'user')
       .where(floorId ? 'seat.floor_id = (:floorId)' : '1=1', { floorId })
       .getMany();
 
