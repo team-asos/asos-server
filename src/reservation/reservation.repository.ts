@@ -32,7 +32,12 @@ export class ReservationRepository extends Repository<Reservation> {
       .leftJoinAndSelect('participants.user', 'participant')
       .leftJoinAndSelect('seat.floor', 'seat_floor')
       .leftJoinAndSelect('room.floor', 'room_floor')
-      .where(userId ? 'reservation.user_id = (:userId)' : '1=1', { userId })
+      .where(
+        userId
+          ? 'reservation.user_id = (:userId) OR participant.id = (:userId)'
+          : '1=1',
+        { userId },
+      )
       .andWhere(seatId ? 'seat.id = (:seatId)' : '1=1', { seatId })
       .andWhere(roomId ? 'room.id = (:roomId)' : '1=1', { roomId })
       .andWhere(floorId ? 'seat_floor.id = (:floorId)' : '1=1', { floorId })
