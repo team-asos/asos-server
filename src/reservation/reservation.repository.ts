@@ -8,8 +8,11 @@ import { Reservation } from './reservation.entity';
 export class ReservationRepository extends Repository<Reservation> {
   async getOneById(reservationId: number): Promise<Reservation> {
     const reservation = await this.createQueryBuilder('reservation')
+      .leftJoinAndSelect('reservation.user', 'user')
       .leftJoinAndSelect('reservation.seat', 'seat')
       .leftJoinAndSelect('reservation.room', 'room')
+      .leftJoinAndSelect('reservation.participants', 'participants')
+      .leftJoinAndSelect('participants.user', 'participant')
       .leftJoinAndSelect('seat.floor', 'seat_floor')
       .leftJoinAndSelect('room.floor', 'room_floor')
       .where('reservation.id = (:reservationId)', { reservationId })
