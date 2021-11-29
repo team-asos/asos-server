@@ -50,6 +50,21 @@ export class TaskService {
       text.replace(/010-/gi, '').replace(/ /gi, '').split('').join(' ');
 
     const seatParse = seat => {
+      if (seat.reservations.length === 0) {
+        return {
+          tag_id: seat.tagId,
+          name: ``,
+          phone: ``,
+          department: ``,
+          location: insertSpace(seat.floor.name + '-' + seat.name),
+          time: ``,
+          status: ``,
+          topic: ``,
+          qr: `https://atec-sos.ga/seat-reservation`,
+          promotion: true,
+        };
+      }
+
       const user = seat.reservations[0].user;
       const floor = seat.floor;
       const reservation = seat.reservations[0];
@@ -86,9 +101,9 @@ export class TaskService {
         status: meetingIndex ? '회 의 중' : '업 무 중',
         topic: ``,
         qr: meetingIndex
-          ? `https://atec-sos.ga/${meetingIndex}`
-          : `https://atec-sos.ga`,
-        promotion: meetingIndex ? true : false,
+          ? `https://atec-sos.ga/reservation-info/${meetingIndex}`
+          : ``,
+        promotion: false,
       };
     };
 
@@ -103,7 +118,7 @@ export class TaskService {
           time: ``,
           status: ``,
           topic: ``,
-          qr: `https://atec-sos.ga`,
+          qr: `https://atec-sos.ga/room-check`,
           promotion: true,
         };
       }
@@ -123,7 +138,7 @@ export class TaskService {
           moment(reservation.endTime).format('HH : mm'),
         status: ``,
         topic: reservation.topic,
-        qr: `https://atec-sos.ga`,
+        qr: `https://atec-sos.ga/reservation-info/${reservation.id}`,
         promotion: false,
       };
     };

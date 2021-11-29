@@ -62,7 +62,6 @@ export class SeatRepository extends Repository<Seat> {
         'reservations.startTime',
       ])
       .where('seat.tagId IS NOT NULL')
-      .andWhere('reservations.status = 1')
       .getMany();
 
     return seats;
