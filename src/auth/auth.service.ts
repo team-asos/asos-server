@@ -1,8 +1,8 @@
 import * as bcrypt from 'bcrypt';
+import { User } from 'src/api/user/user.entity';
+import { UserRepository } from 'src/api/user/user.repository';
 import HttpError from 'src/common/exceptions/http.exception';
 import { HttpMessage } from 'src/common/utils/errors/http-message.enum';
-import { User } from 'src/user/user.entity';
-import { UserRepository } from 'src/user/user.repository';
 
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';

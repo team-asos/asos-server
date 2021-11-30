@@ -1,5 +1,5 @@
+import { UserRepository } from 'src/api/user/user.repository';
 import { ConfigService } from 'src/config/config.service';
-import { UserRepository } from 'src/user/user.repository';
 
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
