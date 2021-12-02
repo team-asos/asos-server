@@ -14,6 +14,7 @@ import { AppController } from './app.controller';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
+import { MockModule } from './mock/mock.module';
 import { TaskModule } from './tasks/task.module';
 
 @Module({
@@ -34,6 +35,7 @@ import { TaskModule } from './tasks/task.module';
     AnswerModule,
     ScheduleModule.forRoot(),
     TaskModule,
+    MockModule,
   ],
   controllers: [AppController],
   providers: [],

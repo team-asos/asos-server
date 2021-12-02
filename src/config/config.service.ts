@@ -19,7 +19,8 @@ export class ConfigService {
   constructor() {
     dotenv.config({
       path:
-        process.env.NODE_ENV === 'development'
+        process.env.NODE_ENV === 'development' ||
+        process.env.NODE_ENV === 'dummy'
           ? '.development.env'
           : '.production.env',
     });

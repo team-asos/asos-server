@@ -18,5 +18,6 @@ import { AnswerService } from './answer.service';
   ],
   controllers: [AnswerController],
   providers: [AnswerService],
+  exports: [AnswerService],
 })
 export class AnswerModule {}
