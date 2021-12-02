@@ -223,6 +223,8 @@ export class MockService {
       floorId++;
     }
 
+    console.log('더미데이터 생성 종료!');
+
     return;
   }
 }

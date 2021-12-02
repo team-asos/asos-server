@@ -54,7 +54,7 @@ async function bootstrap() {
   }
 
   // Dummy
-  if (configService.getBoolean('DUMMY_ALLOW')) {
+  if (['dummy'].includes(configService.env)) {
     mockService.dummy();
   }
 
