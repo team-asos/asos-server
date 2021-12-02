@@ -8,6 +8,13 @@ import { SeatService } from 'src/api/seat/seat.service';
 import { CreateUserDto } from 'src/api/user/dtos/create-user.dto';
 import { UserService } from 'src/api/user/user.service';
 import { ConfigService } from 'src/config/config.service';
+import {
+  ANSWERS,
+  DEPARTMENTS,
+  POSITIONS,
+  QUESTIONS,
+  TABLES,
+} from 'src/constants/index';
 import { getConnection } from 'typeorm';
 
 import { Injectable } from '@nestjs/common';
@@ -31,69 +38,21 @@ export class MockService {
   }
 
   getDepartment(): string {
-    const DEPARTMENTS = [
-      '사장실',
-      '비서실',
-      '기획실',
-      '인사부',
-      '인력개발부',
-      '재무부',
-      '총무부',
-      '경리부',
-      '국내영업부',
-      '해외영업부',
-      '해외사업부',
-      '영업관리부',
-      '자재부',
-      '구매부',
-      '생산관리부',
-      '내부품질관리부',
-      '외부품질관리부',
-      '고객지원부',
-      '연구개발부',
-      '홍보부',
-      '물류부',
-    ];
-
     return DEPARTMENTS[this.getBetween(0, DEPARTMENTS.length - 1)];
   }
 
   getPosition(): string {
-    const POSITIONS = [
-      '회장',
-      '사장',
-      '부사장',
-      '전무이사',
-      '상무이사',
-      '이사',
-      '부장',
-      '차장',
-      '과장',
-      '대리',
-      '계장',
-      '주임',
-      '사원',
-      '인턴',
-    ];
-
     return POSITIONS[this.getBetween(0, POSITIONS.length - 1)];
+  }
+
+  getQuestion(): string {
+    return '';
   }
 
   async dummy(): Promise<void> {
     /**
      * 상수
      */
-    const TABLES = [
-      'user',
-      'reservation',
-      'floor',
-      'seat',
-      'room',
-      'facility',
-      'question',
-      'answer',
-    ];
-
     // USER SETTING
     const USER_COUNT = this.configService.getNumber('USER_COUNT') || 100;
 
@@ -107,7 +66,8 @@ export class MockService {
     const SEAT_WIDTH = 1;
     const SEAT_HEIGHT = 1;
     const SEAT_LINE_MAX = this.configService.getNumber('SEAT_LINE_MAX') || 8;
-    const SEAT_GAP_EACH = this.configService.getNumber('SEAT_GAP_EACH') || 4;
+    const SEAT_COL_GROUP = this.configService.getNumber('SEAT_COL_GROUP') || 4;
+    const SEAT_ROW_GROUP = this.configService.getNumber('SEAT_ROW_GROUP') || 4;
     const SEAT_PADDING = this.configService.getNumber('SEAT_PADDING') || 1;
     const SEAT_TAG_START = 10000;
 
@@ -181,9 +141,15 @@ export class MockService {
           name: `${String.fromCharCode(65 + ((floorId - 1) % 26))}${i + 1}`,
           x:
             (i % SEAT_LINE_MAX) +
-            this.getQuotient(i % SEAT_LINE_MAX, SEAT_GAP_EACH) +
+            this.getQuotient(i % SEAT_LINE_MAX, SEAT_COL_GROUP) +
             SEAT_PADDING,
-          y: this.getQuotient(i, SEAT_LINE_MAX) + 1,
+          y:
+            this.getQuotient(i, SEAT_LINE_MAX) +
+            this.getQuotient(
+              this.getQuotient(i, SEAT_LINE_MAX),
+              SEAT_ROW_GROUP,
+            ) +
+            1,
           width: SEAT_WIDTH,
           height: SEAT_HEIGHT,
           tagId: SEAT_TAG_START + i + (floorId - 1) * SEAT_COUNT,
