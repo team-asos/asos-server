@@ -22,6 +22,10 @@ export class MockService {
     private readonly roomService: RoomService,
   ) {}
 
+  getQuotient(dividend: number, divisor: number): number {
+    return parseInt(String(dividend / divisor));
+  }
+
   getBetween(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
@@ -100,15 +104,19 @@ export class MockService {
 
     // SEAT SETTING
     const SEAT_COUNT = this.configService.getNumber('SEAT_COUNT') || 200;
-    const SEAT_TAG_START =
-      this.configService.getNumber('SEAT_TAG_START') || 10000;
+    const SEAT_WIDTH = 1;
+    const SEAT_HEIGHT = 1;
+    const SEAT_LINE_MAX = this.configService.getNumber('SEAT_LINE_MAX') || 8;
+    const SEAT_GAP_EACH = this.configService.getNumber('SEAT_GAP_EACH') || 4;
+    const SEAT_PADDING = this.configService.getNumber('SEAT_PADDING') || 1;
+    const SEAT_TAG_START = 10000;
 
     // ROOM SETTING
     const ROOM_COUNT = this.configService.getNumber('ROOM_COUNT') || 10;
     const ROOM_WIDTH = this.configService.getNumber('ROOM_WIDTH') || 3;
     const ROOM_HEIGHT = this.configService.getNumber('ROOM_HEIGHT') || 4;
-    const ROOM_TAG_START =
-      this.configService.getNumber('ROOM_TAG_START') || 20000;
+    const ROOM_PADDING = this.configService.getNumber('ROOM_PADDING') || 1;
+    const ROOM_TAG_START = 20000;
 
     /**
      * 데이터베이스 초기화
@@ -153,35 +161,6 @@ export class MockService {
       };
     });
 
-    seats = Array.from({ length: SEAT_COUNT }, (_, i) => {
-      const floorId = this.getBetween(1, FLOOR_COUNT);
-
-      return {
-        name: `${String.fromCharCode(65 + ((floorId - 1) % 26))}${i + 1}`,
-        x: this.getBetween(1, FLOOR_WIDTH - 2),
-        y: this.getBetween(1, FLOOR_HEIGHT - ROOM_HEIGHT - 4),
-        width: 1,
-        height: 1,
-        tagId: SEAT_TAG_START + i,
-        floorId,
-      };
-    });
-
-    rooms = Array.from({ length: ROOM_COUNT }, (_, i) => {
-      const floorId = this.getBetween(1, FLOOR_COUNT);
-
-      return {
-        name: `회의실${i + 1}`,
-        maxUser: 4,
-        x: this.getBetween(1, FLOOR_WIDTH - ROOM_WIDTH - 2),
-        y: FLOOR_HEIGHT - ROOM_HEIGHT - 2,
-        width: ROOM_WIDTH,
-        height: ROOM_HEIGHT,
-        tagId: ROOM_TAG_START + i,
-        floorId,
-      };
-    });
-
     try {
       await Promise.all(
         users.map(async user => await this.userService.createOne(user)),
@@ -190,16 +169,49 @@ export class MockService {
       for (const floor of floors) {
         await this.floorService.createOne(floor);
       }
-
-      await Promise.all(
-        seats.map(async seat => await this.seatService.createOne(seat)),
-      );
-
-      await Promise.all(
-        rooms.map(async room => await this.roomService.createOne(room)),
-      );
     } catch (error) {
       console.log(`error: ${error}`);
+    }
+
+    let floorId = 1;
+
+    for (const floor of floors) {
+      seats = Array.from({ length: SEAT_COUNT }, (_, i) => {
+        return {
+          name: `${String.fromCharCode(65 + ((floorId - 1) % 26))}${i + 1}`,
+          x:
+            (i % SEAT_LINE_MAX) +
+            this.getQuotient(i % SEAT_LINE_MAX, SEAT_GAP_EACH) +
+            SEAT_PADDING,
+          y: this.getQuotient(i, SEAT_LINE_MAX) + 1,
+          width: SEAT_WIDTH,
+          height: SEAT_HEIGHT,
+          tagId: SEAT_TAG_START + i + (floorId - 1) * SEAT_COUNT,
+          floorId,
+        };
+      });
+
+      rooms = Array.from({ length: ROOM_COUNT }, (_, i) => {
+        return {
+          name: `회의실${i + 1}`,
+          maxUser: 4,
+          x: ROOM_WIDTH * i + ROOM_PADDING,
+          y: FLOOR_HEIGHT - ROOM_HEIGHT - 2,
+          width: ROOM_WIDTH,
+          height: ROOM_HEIGHT,
+          tagId: ROOM_TAG_START + i + (floorId - 1) * ROOM_COUNT,
+          floorId,
+        };
+      });
+
+      try {
+        for (const seat of seats) await this.seatService.createOne(seat);
+        for (const room of rooms) await this.roomService.createOne(room);
+      } catch (error) {
+        console.log(`error: ${error}`);
+      }
+
+      floorId++;
     }
 
     return;
