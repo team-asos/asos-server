@@ -1,6 +1,10 @@
 import * as faker from 'faker/locale/ko';
+import { AnswerService } from 'src/api/answer/answer.service';
+import { CreateAnswerDto } from 'src/api/answer/dtos/create-answer.dto';
 import { CreateFloorDto } from 'src/api/floor/dtos/create-floor.dto';
 import { FloorService } from 'src/api/floor/floor.service';
+import { CreateQuestionDto } from 'src/api/question/dtos/create-question.dto';
+import { QuestionService } from 'src/api/question/question.service';
 import { CreateRoomDto } from 'src/api/room/dtos/create-room.dto';
 import { RoomService } from 'src/api/room/room.service';
 import { CreateSeatDto } from 'src/api/seat/dtos/create-seat.dto';
@@ -24,6 +28,8 @@ export class MockService {
   constructor(
     private readonly configService: ConfigService,
     private readonly userService: UserService,
+    private readonly questionService: QuestionService,
+    private readonly answerService: AnswerService,
     private readonly floorService: FloorService,
     private readonly seatService: SeatService,
     private readonly roomService: RoomService,
@@ -37,16 +43,19 @@ export class MockService {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
+  getQuestion(): string {
+    return QUESTIONS[this.getBetween(0, QUESTIONS.length - 1)];
+  }
+
+  getAnswer(): string {
+    return ANSWERS[this.getBetween(0, ANSWERS.length - 1)];
+  }
   getDepartment(): string {
     return DEPARTMENTS[this.getBetween(0, DEPARTMENTS.length - 1)];
   }
 
   getPosition(): string {
     return POSITIONS[this.getBetween(0, POSITIONS.length - 1)];
-  }
-
-  getQuestion(): string {
-    return '';
   }
 
   async dummy(): Promise<void> {
@@ -78,6 +87,12 @@ export class MockService {
     const ROOM_PADDING = this.configService.getNumber('ROOM_PADDING') || 1;
     const ROOM_TAG_START = 20000;
 
+    // QUESTION SETTING
+    const QUESTION_COUNT = this.configService.getNumber('QUESTION_COUNT') || 10;
+
+    // ANSWER SETTING
+    const ANSWER_COUNT = this.configService.getNumber('ANSWER_COUNT') || 10;
+
     /**
      * 데이터베이스 초기화
      */
@@ -93,6 +108,8 @@ export class MockService {
      * 더미데이터 초기화
      */
     let users: CreateUserDto[] = [];
+    let questions: CreateQuestionDto[] = [];
+    let answers: CreateAnswerDto[] = [];
     let floors: CreateFloorDto[] = [];
     let seats: CreateSeatDto[] = [];
     let rooms: CreateRoomDto[] = [];
@@ -100,16 +117,32 @@ export class MockService {
     /**
      * 더미데이터 생성
      */
-    users = Array.from({ length: USER_COUNT }, () => {
+    users = Array.from({ length: USER_COUNT }, (_, i) => {
       return {
         email: faker.internet.email(),
         name: faker.name.lastName() + faker.name.firstName(),
         password: '123',
         tel: faker.phone.phoneNumber('010-####-####'),
-        role: 0,
+        role: i === 0 ? 1 : 0,
         employeeId: faker.finance.routingNumber(),
         department: this.getDepartment(),
         position: this.getPosition(),
+      };
+    });
+
+    questions = Array.from({ length: QUESTION_COUNT }, () => {
+      return {
+        title: this.getQuestion(),
+        message: this.getQuestion(),
+        userId: this.getBetween(1, USER_COUNT),
+      };
+    });
+
+    answers = Array.from({ length: ANSWER_COUNT }, (_, i) => {
+      return {
+        message: this.getAnswer(),
+        userId: 1,
+        questionId: i + 1,
       };
     });
 
@@ -124,6 +157,16 @@ export class MockService {
     try {
       await Promise.all(
         users.map(async user => await this.userService.createOne(user)),
+      );
+
+      await Promise.all(
+        questions.map(
+          async question => await this.questionService.createOne(question),
+        ),
+      );
+
+      await Promise.all(
+        answers.map(async answer => await this.answerService.createOne(answer)),
       );
 
       for (const floor of floors) {
