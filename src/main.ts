@@ -55,7 +55,7 @@ async function bootstrap() {
 
   // Dummy
   if (configService.getBoolean('DUMMY_ALLOW')) {
-    mockService.dummy(1);
+    mockService.dummy();
   }
 
   const port = configService.get('PORT');

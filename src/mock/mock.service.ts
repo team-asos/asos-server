@@ -1,16 +1,75 @@
-import { Injectable } from '@nestjs/common';
 import * as faker from 'faker/locale/ko';
+import { CreateFloorDto } from 'src/api/floor/dtos/create-floor.dto';
+import { FloorService } from 'src/api/floor/floor.service';
+import { CreateSeatDto } from 'src/api/seat/dtos/create-seat.dto';
+import { SeatService } from 'src/api/seat/seat.service';
 import { CreateUserDto } from 'src/api/user/dtos/create-user.dto';
 import { UserService } from 'src/api/user/user.service';
+import { getConnection } from 'typeorm';
+
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class MockService {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly floorService: FloorService,
+    private readonly seatService: SeatService,
+  ) {}
 
-  async dummy(count: number): Promise<void> {
+  async dummy(): Promise<void> {
+    /**
+     * 상수
+     */
+    const TABLES = [
+      'user',
+      'reservation',
+      'floor',
+      'seat',
+      'room',
+      'facility',
+      'question',
+      'answer',
+    ];
+
+    // USER SETTING
+    const USER_COUNT = 100;
+
+    // FLOOR SETTING
+    const FLOOR_COUNT = 7;
+    const FLOOR_WIDTH = 24;
+    const FLOOR_HEIGHT = 24;
+
+    // SEAT SETTING
+    const SEAT_COUNT = 30;
+    const SEAT_TAG_START = 10000;
+
+    // ROOM SETTING
+    const ROOM_TAG_START = 20000;
+
+    /**
+     * 데이터베이스 초기화
+     */
+
+    const connection = await getConnection();
+
+    await connection.query('SET foreign_key_checks = 0;');
+    for (const TABLE of TABLES) {
+      await connection.query(`TRUNCATE ${TABLE};`);
+    }
+    await connection.query('SET foreign_key_checks = 1;');
+
+    /**
+     * 더미데이터 초기화
+     */
     let users: CreateUserDto[] = [];
+    let floors: CreateFloorDto[] = [];
+    let seats: CreateSeatDto[] = [];
 
-    users = Array.from({ length: count }, () => {
+    /**
+     * 더미데이터 생성
+     */
+    users = Array.from({ length: USER_COUNT }, () => {
       return {
         email: faker.internet.email(),
         name: faker.name.lastName() + faker.name.firstName(),
@@ -23,10 +82,36 @@ export class MockService {
       };
     });
 
+    floors = Array.from({ length: FLOOR_COUNT }, (_, i) => {
+      return {
+        name: `${i + 1}층`,
+        width: FLOOR_WIDTH,
+        height: FLOOR_HEIGHT,
+      };
+    });
+
+    seats = Array.from({ length: SEAT_COUNT }, (_, i) => {
+      const floor = faker.datatype.number(FLOOR_COUNT - 1);
+
+      return {
+        name: `${faker.random.alpha({ count: 1, upcase: true })}${i + 1}`,
+        x: faker.datatype.number(FLOOR_WIDTH),
+        y: faker.datatype.number(FLOOR_HEIGHT),
+        width: 1,
+        height: 1,
+        tagId: SEAT_TAG_START + i,
+        floorId: floor,
+      };
+    });
+
     try {
       await Promise.all(
         users.map(async user => await this.userService.createOne(user)),
       );
+      await floors.map(async floor => await this.floorService.createOne(floor)),
+        await Promise.all(
+          seats.map(async seat => await this.seatService.createOne(seat)),
+        );
     } catch (error) {
       console.log(`error: ${error}`);
     }
