@@ -18,5 +18,6 @@ import { QuestionService } from './question.service';
   ],
   controllers: [QuestionController],
   providers: [QuestionService],
+  exports: [QuestionService],
 })
 export class QuestionModule {}

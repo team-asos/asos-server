@@ -1,6 +1,6 @@
 {
   "name": "asos-server",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "세종대학교 캡스톤 디자인 프로젝트",
   "author": "",
   "private": true,
@@ -13,6 +13,7 @@
     "start:dev": "cross-env NODE_ENV=development TZ=Asia/Seoul nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
+    "start:dummy": "cross-env NODE_ENV=dummy TZ=Asia/Seoul nest start --watch",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",

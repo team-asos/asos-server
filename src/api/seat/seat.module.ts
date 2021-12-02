@@ -11,5 +11,6 @@ import { SeatService } from './seat.service';
   imports: [TypeOrmModule.forFeature([SeatRepository, FloorRepository])],
   controllers: [SeatController],
   providers: [SeatService],
+  exports: [SeatService],
 })
 export class SeatModule {}

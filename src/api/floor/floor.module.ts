@@ -9,5 +9,6 @@ import { FloorService } from './floor.service';
   imports: [TypeOrmModule.forFeature([FloorRepository])],
   controllers: [FloorController],
   providers: [FloorService],
+  exports: [FloorService],
 })
 export class FloorModule {}
