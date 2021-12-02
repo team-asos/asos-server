@@ -10,12 +10,15 @@ import { LoggerService } from './common/utils/logger/logger.service';
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
 import { setupSwagger } from './config/swagger/setup';
+import { MockModule } from './mock/mock.module';
+import { MockService } from './mock/mock.service';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   const configService = app.select(ConfigModule).get(ConfigService);
   const loggerService = app.select(ConfigModule).get(LoggerService);
+  const mockService = app.select(MockModule).get(MockService);
 
   // CORS
   app.enableCors(configService.corsConfig);
@@ -48,6 +51,11 @@ async function bootstrap() {
   // Swagger
   if (['development'].includes(configService.env)) {
     setupSwagger(app, configService.swaggerConfig);
+  }
+
+  // Dummy
+  if (configService.getBoolean('DUMMY_ALLOW')) {
+    mockService.dummy(1);
   }
 
   const port = configService.get('PORT');
