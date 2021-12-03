@@ -171,7 +171,7 @@ export class ReservationService {
 
   async createSeatOne(
     createSeatReservationDto: CreateSeatReservationDto,
-  ): Promise<void> {
+  ): Promise<Reservation> {
     const { userId, seatId } = createSeatReservationDto;
 
     const user = await this.userRepository.findOne(userId);
@@ -218,9 +218,9 @@ export class ReservationService {
       status: 1,
     };
 
-    await this.reservationRepository.save(reservation);
+    const savedReservation = await this.reservationRepository.save(reservation);
 
-    return;
+    return savedReservation;
   }
 
   async updateSeatOne(reservationId: number): Promise<void> {
