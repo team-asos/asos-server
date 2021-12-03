@@ -205,7 +205,7 @@ export class MockService {
           name: `회의실${i + 1}`,
           maxUser: 4,
           x: ROOM_WIDTH * i + ROOM_PADDING,
-          y: FLOOR_HEIGHT - ROOM_HEIGHT - 2,
+          y: FLOOR_HEIGHT - ROOM_HEIGHT - ROOM_PADDING,
           width: ROOM_WIDTH,
           height: ROOM_HEIGHT,
           tagId: ROOM_TAG_START + i + (floorId - 1) * ROOM_COUNT,
