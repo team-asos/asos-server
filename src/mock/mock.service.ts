@@ -176,9 +176,48 @@ export class MockService {
       console.log(`error: ${error}`);
     }
 
+    // Dynamic Arrangement
+    // const dynamics = [
+    //   {
+    //     SEAT_COUNT: 72,
+    //     SEAT_LINE_MAX: 12,
+    //     SEAT_COL_GROUP: 6,
+    //     SEAT_ROW_GROUP: 2,
+    //   },
+    //   {
+    //     SEAT_COUNT: 72,
+    //     SEAT_LINE_MAX: 12,
+    //     SEAT_COL_GROUP: 4,
+    //     SEAT_ROW_GROUP: 2,
+    //   },
+    //   {
+    //     SEAT_COUNT: 60,
+    //     SEAT_LINE_MAX: 10,
+    //     SEAT_COL_GROUP: 2,
+    //     SEAT_ROW_GROUP: 2,
+    //   },
+    //   {
+    //     SEAT_COUNT: 60,
+    //     SEAT_LINE_MAX: 12,
+    //     SEAT_COL_GROUP: 6,
+    //     SEAT_ROW_GROUP: 1,
+    //   },
+    //   {
+    //     SEAT_COUNT: 80,
+    //     SEAT_LINE_MAX: 10,
+    //     SEAT_COL_GROUP: 2,
+    //     SEAT_ROW_GROUP: 0,
+    //   },
+    // ];
+
     let floorId = 1;
 
     for (const floor of floors) {
+      // const SEAT_COUNT = dynamics[floorId - 1].SEAT_COUNT;
+      // const SEAT_LINE_MAX = dynamics[floorId - 1].SEAT_LINE_MAX;
+      // const SEAT_COL_GROUP = dynamics[floorId - 1].SEAT_COL_GROUP;
+      // const SEAT_ROW_GROUP = dynamics[floorId - 1].SEAT_ROW_GROUP;
+
       seats = Array.from({ length: SEAT_COUNT }, (_, i) => {
         return {
           name: `${String.fromCharCode(65 + ((floorId - 1) % 26))}${i + 1}`,
@@ -188,10 +227,12 @@ export class MockService {
             SEAT_PADDING,
           y:
             this.getQuotient(i, SEAT_LINE_MAX) +
-            this.getQuotient(
-              this.getQuotient(i, SEAT_LINE_MAX),
-              SEAT_ROW_GROUP,
-            ) +
+            (SEAT_ROW_GROUP === 0
+              ? SEAT_ROW_GROUP
+              : this.getQuotient(
+                  this.getQuotient(i, SEAT_LINE_MAX),
+                  SEAT_ROW_GROUP,
+                )) +
             1,
           width: SEAT_WIDTH,
           height: SEAT_HEIGHT,
