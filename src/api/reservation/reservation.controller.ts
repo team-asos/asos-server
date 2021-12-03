@@ -108,10 +108,12 @@ export class ReservationController {
   @ApiResponse({ status: 404, description: 'Wrong userId OR Wrong seatId' })
   async createSeatOne(
     @Body() createSeatReservationDto: CreateSeatReservationDto,
-  ): Promise<string> {
-    await this.reservationService.createSeatOne(createSeatReservationDto);
+  ): Promise<Reservation> {
+    const reservation = await this.reservationService.createSeatOne(
+      createSeatReservationDto,
+    );
 
-    return 'success';
+    return reservation;
   }
 
   @Patch(':reservationId/seat')
