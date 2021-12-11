@@ -31,9 +31,10 @@ export class QuestionService {
     return questions;
   }
 
-  async createOne(createQuestionDto: CreateQuestionDto): Promise<void> {
-    const { userId } = createQuestionDto;
-
+  async createOne(
+    userId: number,
+    createQuestionDto: CreateQuestionDto,
+  ): Promise<void> {
     const user = await this.userRepository.findOne(userId);
 
     if (user === undefined)

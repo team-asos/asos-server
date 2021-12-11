@@ -1,4 +1,4 @@
-import { IsNumber, IsString, Length, MinLength } from 'class-validator';
+import { IsString, Length, MinLength } from 'class-validator';
 
 export class CreateQuestionDto {
   @IsString()
@@ -8,7 +8,4 @@ export class CreateQuestionDto {
   @IsString()
   @Length(0, 500)
   message: string;
-
-  @IsNumber()
-  userId: number;
 }

@@ -159,11 +159,11 @@ export class MockService {
         users.map(async user => await this.userService.createOne(user)),
       );
 
-      await Promise.all(
-        questions.map(
-          async question => await this.questionService.createOne(question),
-        ),
-      );
+      // await Promise.all(
+      //   questions.map(
+      //     async question => await this.questionService.createOne(question),
+      //   ),
+      // );
 
       await Promise.all(
         answers.map(async answer => await this.answerService.createOne(answer)),

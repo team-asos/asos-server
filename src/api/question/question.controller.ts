@@ -1,3 +1,8 @@
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { Role } from 'src/common/roles/role.enum';
+import { Roles } from 'src/common/roles/roles.decorator';
+
 import {
   Body,
   Controller,
@@ -8,8 +13,16 @@ import {
   Patch,
   Post,
   Query,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { CreateQuestionDto } from './dtos/create-question.dto';
 import { UpdateQuestionDto } from './dtos/update-question.dto';
@@ -46,14 +59,18 @@ export class QuestionController {
     return questions;
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.User)
   @Post()
   @HttpCode(201)
   @ApiOperation({ summary: '질문 생성' })
   @ApiResponse({ status: 201, description: 'Success' })
   async createOne(
+    @Req() req: any,
     @Body() createQuestionDto: CreateQuestionDto,
   ): Promise<string> {
-    await this.questionService.createOne(createQuestionDto);
+    await this.questionService.createOne(req.user.id, createQuestionDto);
 
     return 'success';
   }
