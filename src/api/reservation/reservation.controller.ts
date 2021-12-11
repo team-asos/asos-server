@@ -1,3 +1,8 @@
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { Role } from 'src/common/roles/role.enum';
+import { Roles } from 'src/common/roles/roles.decorator';
+
 import {
   Body,
   Controller,
@@ -8,8 +13,16 @@ import {
   Patch,
   Post,
   Query,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { CreateRoomReservationDto } from './dtos/create-room-reservation.dto';
 import { CreateSeatReservationDto } from './dtos/create-seat-reservation.dto';
@@ -85,6 +98,9 @@ export class ReservationController {
     return table;
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.User)
   @Post('room')
   @HttpCode(201)
   @ApiOperation({ summary: '회의실 예약 생성' })
@@ -94,22 +110,31 @@ export class ReservationController {
     description: 'Fail To Save Participant',
   })
   async createRoomOne(
+    @Req() req: any,
     @Body() createRoomReservationDto: CreateRoomReservationDto,
   ): Promise<string> {
-    await this.reservationService.createRoomOne(createRoomReservationDto);
+    await this.reservationService.createRoomOne(
+      req.user.id,
+      createRoomReservationDto,
+    );
 
     return 'success';
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.User)
   @Post('seat')
   @HttpCode(201)
   @ApiOperation({ summary: '좌석 사용 시작' })
   @ApiResponse({ status: 201, description: 'Success' })
   @ApiResponse({ status: 404, description: 'Wrong userId OR Wrong seatId' })
   async createSeatOne(
+    @Req() req: any,
     @Body() createSeatReservationDto: CreateSeatReservationDto,
   ): Promise<Reservation> {
     const reservation = await this.reservationService.createSeatOne(
+      req.user.id,
       createSeatReservationDto,
     );
 
