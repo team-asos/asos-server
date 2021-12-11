@@ -112,7 +112,6 @@ export class ReservationService {
   }
 
   async createRoomOne(
-    userId: number,
     createRoomReservationDto: CreateRoomReservationDto,
   ): Promise<void> {
     const queryRunner = getConnection().createQueryRunner();
@@ -120,7 +119,7 @@ export class ReservationService {
     await queryRunner.startTransaction();
 
     try {
-      const { participantIds, roomId } = createRoomReservationDto;
+      const { userId, participantIds, roomId } = createRoomReservationDto;
 
       const user = await this.userRepository.findOne(userId);
       if (user === undefined)
@@ -171,10 +170,9 @@ export class ReservationService {
   }
 
   async createSeatOne(
-    userId: number,
     createSeatReservationDto: CreateSeatReservationDto,
   ): Promise<Reservation> {
-    const { seatId } = createSeatReservationDto;
+    const { userId, seatId } = createSeatReservationDto;
 
     const user = await this.userRepository.findOne(userId);
     if (user === undefined)

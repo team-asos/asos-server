@@ -7,7 +7,6 @@ export class CreateSeatReservationDto extends OmitType(CreateReservationDto, [
   'endTime',
   'topic',
   'status',
-  'userId',
   'roomId',
   'floorId',
   'participantIds',
