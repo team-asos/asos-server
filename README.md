@@ -8,11 +8,11 @@
 
 ## 서버 구조
 
-![Test1](1.png)
+![1](https://user-images.githubusercontent.com/26927792/177561818-e39d4a54-df8a-4480-8c17-dd9a0095ee0b.png)
 
-![Test2](2.png)
+![2](https://user-images.githubusercontent.com/26927792/177561825-442402e7-6e82-46c9-91ce-9a5a5920d761.png)
 
-![Test3](3.png)
+![3](https://user-images.githubusercontent.com/26927792/177561846-69589b1b-ada8-4461-8459-bb4c1979ca0f.png)
 
 ## 설치 및 실행 방법
 
