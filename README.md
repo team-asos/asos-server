@@ -19,7 +19,14 @@
 의존성 설치
 
 ```bash
+$ git checkout refactor
 $ npm install
+```
+
+더미데이터 생성
+
+```bash
+$ start:dummy
 ```
 
 실행
