@@ -19,7 +19,6 @@
 의존성 설치
 
 ```bash
-$ git checkout refactor
 $ npm install
 ```
 
